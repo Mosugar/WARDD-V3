@@ -10,27 +10,25 @@ const Artists = () => {
   const sliderRef = useRef(null);
 
   const artists = [
-    { id: "1", name: "ARTIST 1", genre: "Hip Hop" },
-    { id: "2", name: "ARTIST 2", genre: "Pop" },
-    { id: "3", name: "ARTIST 3", genre: "Electronic" },
-    { id: "4", name: "ARTIST 4", genre: "R&B" },
-    { id: "5", name: "ARTIST 5", genre: "Rock" },
-    { id: "6", name: "ARTIST 6", genre: "Indie" },
-    { id: "7", name: "ARTIST 7", genre: "Jazz" },
-    { id: "8", name: "ARTIST 8", genre: "Trap" },
-    { id: "9", name: "ARTIST 9", genre: "Soul" },
-    { id: "18", name: "ARTIST 10", genre: "Afro" },
-    { id: "11", name: "ARTIST 11", genre: "Afro" },
-    { id: "12", name: "ARTIST 11", genre: "Afro" },
-    { id: "13", name: "ARTIST 11", genre: "Afro" },
-    { id: "14", name: "ARTIST 11", genre: "rap" },
-    { id: "15", name: "ARTIST 11", genre: "Afro" },
-    { id: "16", name: "ARTIST 11", genre: "Afro" },
-    { id: "17", name: "ARTIST 11", genre: "Afro" },
-    
-    { id: "19", name: "ARTIST 11", genre: "Afro" },
-    
-
+    { id: "1", name: "ARTIST 1", image: "JPG", genre: "Hip Hop" },
+    { id: "2", name: "ARTIST 2", image: "JPG", genre: "Pop" },
+    { id: "3", name: "ARTIST 3", image: "JPG", genre: "Electronic" },
+    { id: "4", name: "ARTIST 4", image: "JPG", genre: "R&B" },
+    { id: "5", name: "ARTIST 5", image: "JPG", genre: "Rock" },
+    { id: "6", name: "ARTIST 6", image: "JPG", genre: "Indie" },
+    { id: "7", name: "ARTIST 7", image: "jpg", genre: "Jazz" },
+    { id: "8", name: "ARTIST 8", image: "jpg", genre: "Trap" },
+    { id: "9", name: "ARTIST 9", image: "jpg", genre: "Soul" },
+    { id: "18", name: "ARTIST 10", image: "jpg", genre: "Afro" },
+    { id: "11", name: "ARTIST 11", image: "jpg", genre: "Afro" },
+    { id: "12", name: "ARTIST 11", image: "jpg", genre: "Afro" },
+    { id: "13", name: "ARTIST 11", image: "jpg", genre: "Afro" },
+    { id: "14", name: "ARTIST 11", image: "jpg", genre: "rap" },
+    { id: "15", name: "ARTIST 11", image: "jpg", genre: "Afro" },
+    { id: "16", name: "ARTIST 11", image: "jpg", genre: "Afro" },
+    { id: "17", name: "ARTIST 11", image: "jpg", genre: "Afro" },
+    { id: "18", name: "ARTIST 11", image: "jpg", genre: "Afro" },
+    { id: "19", name: "ARTIST 11", image: "jpg", genre: "Afro" },
   ];
 
   const getImageStyle = (index) => {
@@ -122,13 +120,15 @@ const Artists = () => {
                   className={style.artistCard}
                   style={{
                     ...getImageStyle(index),
-                    transform: `${getImageStyle(index).transform} translateX(${isDragging ? currentTranslate * 0.3 : 0}px)`,
-                    transition: isDragging ? 'none' : 'all 0.5s ease',
+                    transform: `${getImageStyle(index).transform} translateX(${
+                      isDragging ? currentTranslate * 0.3 : 0
+                    }px)`,
+                    transition: isDragging ? "none" : "all 0.5s ease",
                   }}
                 >
                   <div className={style.imageContainer}>
                     <Image
-                      src={`/art/${artist.id}.jpg`}
+                      src={`/art/${artist.id}.${artist.image}`}
                       alt={artist.name}
                       width={300}
                       height={300}
@@ -144,7 +144,10 @@ const Artists = () => {
 
         <div className={style.progressContainer}>
           <div className={style.progressBar}>
-            <div className={style.progressFill} style={{ width: `${progress}%` }} />
+            <div
+              className={style.progressFill}
+              style={{ width: `${progress}%` }}
+            />
           </div>
         </div>
 
