@@ -1,0 +1,174 @@
+.content {
+  width: 100%;
+  /* background: url("/images/bg/aziz banner.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat; */
+  position: relative;
+}
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  height: 100vh;
+  position: relative;
+  z-index: 2;
+}
+.hero_background_image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.left_part {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 5%;
+}
+.heading {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.3;
+  padding-bottom: 25px;
+  color: var(--dark-green);
+  font-family: "Sequel Bold";
+  width: 50%;
+}
+.description {
+  padding-bottom: 26px;
+}
+.description p {
+  width: 40%;
+  font-size: var(--fz-md);
+  font-weight: normal;
+  line-height: var(--text-height);
+  color: var(--dark-green);
+  font-family: "Nexa Bold";
+}
+.btn {
+  margin-top: 30px;
+}
+.btn button {
+  width: 230px;
+  height: 55px;
+  font-size: var(--fz-md);
+  color: var(--dark);
+  font-weight: 800;
+  background-color: var(--white);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 30px;
+}
+.btn button::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--dark-green);
+  border-radius: 50%;
+  transition: top 0.4s ease, border-radius 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn button a {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px;
+  z-index: 2;
+  font-family: "Sequel Bold";
+}
+.btn button:hover::before {
+  border-radius: 0;
+  top: 0;
+}
+.btn button:hover a {
+  color: var(--green);
+}
+
+.right_part {
+  width: 100%;
+  height: 65vh;
+  background-image: url("/images/contact-bg.jpg");
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  z-index: 0;
+}
+
+@media (max-width: 800px) {
+  .content {
+    margin: 0;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .right_part {
+    order: -1;
+    background: url("/images/pic.jpg") center/cover no-repeat !important;
+    position: relative;
+    z-index: 1;
+    height: 100vh; /* ← this fixes it */
+  }
+
+  .left_part {
+    padding: 60px;
+  }
+  .description p {
+    width: 100%;
+  }
+  .heading {
+    font-size: 2.5rem;
+    width: 80%;
+  }
+}
+
+@media (max-width: 770px) {
+  .container {
+    background-position: calc(70%);
+    border-image: fill 0 linear-gradient(to top, #00000089, transparent);
+  }
+  .heading {
+    width: 90%;
+  }
+}
+
+@media (max-width: 550px) {
+  .heading {
+    font-size: 2.5rem;
+    width: 100%;
+  }
+  .left_part {
+    padding: 50px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .left_part h1 {
+    text-align: center;
+  }
+  .left_part p {
+    text-align: center;
+  }
+  .heading {
+    opacity: 0;
+  }
+  .description p {
+    color: var(--white);
+  }
+}

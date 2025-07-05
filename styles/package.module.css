@@ -1,0 +1,532 @@
+.content {
+  width: 100%;
+  padding: 100px 0;
+  background-color: #ffffff;
+  position: relative;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Main Section */
+.mainSection {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  margin-bottom: 80px;
+}
+
+/* Section Title - Centered on desktop */
+.sectionTitle {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-bottom: 40px;
+  padding-left: 0;
+}
+
+.sectionTitle h2 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--dark-green);
+  font-family: "Sequel Bold";
+  text-transform: capitalize;
+  margin: 0;
+}
+
+/* Left Side - Video */
+.leftSide {
+  position: relative;
+}
+
+.titleBadge {
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  background-color: var(--white);
+  padding: 12px 30px;
+  border-radius: 25px;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.titleBadge span {
+  font-family: "Sequel Bold";
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dark-green);
+  letter-spacing: 1px;
+}
+
+.videoContainer {
+  width: 100%;
+  height: 400px;
+  background-color: var(--dark-green);
+  border-radius: 25px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  overflow: visible;
+}
+
+/* Add scalloped edges to video container - same as packages */
+.videoContainer {
+  background: 
+    radial-gradient(circle 15px at left 50%, transparent 50%, var(--dark-green) 50%),
+    radial-gradient(circle 15px at right 50%, transparent 50%, var(--dark-green) 50%),
+    var(--dark-green);
+}
+
+.microphoneIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--green);
+  z-index: 5;
+  opacity: 0.3;
+}
+
+.videoContainer iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  position: relative;
+  z-index: 10;
+}
+
+/* Right Side - Services Menu */
+.rightSide {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background-color: #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.serviceButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  background-color: var(--white);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Sequel Bold";
+  color: var(--dark-green);
+  min-height: 55px;
+  position: relative;
+}
+
+.serviceButton:hover {
+  background-color: #f8fafc;
+  transform: translateX(3px);
+}
+
+.serviceButton.active {
+  background-color: var(--green);
+  color: var(--dark-green);
+}
+
+.serviceButton.active .arrowIcon {
+  background-color: var(--dark-green);
+  color: var(--white);
+}
+
+.serviceNumber {
+  font-size: 14px;
+  font-weight: 700;
+  margin-right: 15px;
+  min-width: 25px;
+  opacity: 0.7;
+}
+
+.serviceName {
+  flex: 1;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.arrowIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--dark-green);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.serviceButton:hover .arrowIcon {
+  transform: translateX(3px);
+  background-color: var(--green);
+  color: var(--dark-green);
+}
+
+/* Packages Section */
+.packagesSection {
+  margin-top: 80px;
+}
+
+.packagesHeading {
+  text-align: center;
+  margin-bottom: 50px;
+
+}
+
+.packagesHeading h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--dark-green);
+  font-family: "Sequel Bold";
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.packagesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.packageCard {
+  background-color: var(--green);
+  border-radius: 25px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(164, 255, 76, 0.2);
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+  position: relative;
+  overflow: visible;
+}
+
+/* Create scalloped edges using pseudo-elements */
+.packageCard::before,
+.packageCard::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-color: #f5f7fa; /* Same as container background */
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.packageCard::before {
+  left: -15px;
+}
+
+.packageCard::after {
+  right: -15px;
+}
+
+/* Additional top and bottom cutouts */
+.packageCard {
+  background: 
+    radial-gradient(circle 15px at left 50%, transparent 50%, var(--green) 50%),
+    radial-gradient(circle 15px at right 50%, transparent 50%, var(--green) 50%),
+    var(--green);
+}
+
+.packageCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(164, 255, 76, 0.3);
+}
+
+.packageHeader {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.packageHeader h3 {
+  color: var(--dark-green);
+  font-weight: 700;
+  font-size: 25px;
+  text-transform: uppercase;
+  font-family: "Sequel Bold";
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.packageFeatures {
+  flex: 1;
+  margin-bottom: 25px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.checkIcon {
+  margin-right: 12px;
+  color: var(--dark-green);
+  flex-shrink: 0;
+}
+
+.featureItem span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dark-green);
+  font-family: "Nexa bold";
+  line-height: 1.4;
+}
+
+.packageFooter {
+  text-align: center;
+  margin-top: auto;
+}
+
+.reserveButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 35px;
+  background-color: var(--dark-green);
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 30px;
+  font-family: "Sequel Bold";
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.reserveButton:hover {
+  background-color: var(--white);
+  color: var(--dark-green);
+  transform: translateY(-2px);
+}
+
+.buttonArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.reserveButton:hover .buttonArrow {
+  transform: translateX(3px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .mainSection {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  
+  .videoContainer {
+    height: 350px;
+  }
+  
+  .packagesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .mainSection {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .rightSide {
+    order: -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  .serviceButton {
+    flex: 1;
+    min-width: 180px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+  .videoContainer {
+    height: 300px;
+  }
+  
+  .packagesGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 50px 0;
+  }
+  
+  .container {
+    width: 95%;
+  }
+  
+  .rightSide {
+    flex-direction: column;
+    gap: 7px;
+  }
+  
+  .serviceButton {
+    min-width: auto;
+    padding: 16px 20px;
+    min-height: 55px;
+  }
+  
+  .serviceNumber {
+    font-size: 15px;
+    margin-right: 16px;
+    min-width: 26px;
+  }
+  
+  .serviceName {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .arrowIcon {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .videoContainer {
+    height: 200px;
+    border-radius: 20px;
+  }
+  
+  .titleBadge {
+    left: 15px;
+    padding: 8px 16px;
+  }
+  
+  .titleBadge span {
+    font-size: 10px;
+  }
+  
+  .packagesHeading h2 {
+    font-size: 2rem;
+  }
+  
+  .sectionTitle {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .sectionTitle h2 {
+    font-size: 2.5rem;
+  }
+  
+  .mainSection {
+    margin-bottom: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 40px 0;
+  }
+  
+  .packagesHeading h2 {
+    font-size: 1.8rem;
+  }
+  
+  .packageCard {
+    border-radius: 15px;
+  }
+  
+  .packageHeader {
+    padding: 20px 20px 15px;
+  }
+  
+  .packageFeatures {
+    padding: 0 20px;
+    margin-bottom: 20px;
+  }
+  
+  .packageFooter {
+    padding: 0 20px 20px;
+  }
+  
+  .featureItem span {
+    font-size: 11px;
+  }
+  
+  .reserveButton {
+    padding: 10px 20px;
+    font-size: 11px;
+  }
+  
+  .sectionTitle {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  
+  .sectionTitle h2 {
+    font-size: 2rem;
+  }
+  
+  .serviceButton {
+    padding: 14px 18px;
+    min-height: 50px;
+  }
+  
+  .serviceNumber {
+    font-size: 13px;
+    margin-right: 14px;
+    min-width: 24px;
+  }
+  
+  .serviceName {
+    font-size: 13px;
+  }
+  
+  .arrowIcon {
+    width: 26px;
+    height: 26px;
+  }
+  
+  .videoContainer {
+    height: 180px;
+    border-radius: 15px;
+  }
+  
+  .titleBadge {
+    left: 10px;
+    padding: 6px 12px;
+  }
+  
+  .titleBadge span {
+    font-size: 9px;
+  }
+  
+  .mainSection {
+    margin-bottom: 40px;
+  }
+  
+  .rightSide {
+    gap: 6px;
+  }
+}

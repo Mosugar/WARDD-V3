@@ -1,0 +1,205 @@
+.content {
+  width: 100%;
+  padding: 100px 0;
+  background-color: var(--white);
+  position: relative;
+}
+
+.container {
+  width: 90%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.heading {
+  padding-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.heading h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--dark-green);
+  text-align: center;
+  line-height: 1.2;
+  font-family: "Sequel Bold";
+  text-transform: capitalize;
+}
+
+/* New grid layout for two producers */
+.producersGrid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+  animation: float 6s ease-in-out infinite;
+}
+
+.card:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.card:nth-child(2) {
+  animation-delay: 3s;
+}
+
+.card:hover {
+  transform: translateY(-15px) rotate(2deg) scale(1.05);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.picture {
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 20px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.picture:hover {
+  transform: scale(1.05);
+  box-shadow: 0 20px 40px rgba(164, 255, 76, 0.4);
+}
+
+.picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 50%;
+  transform-origin: center center;
+}
+
+.picture:hover img {
+  transform: scale(1.1);
+}
+
+.details {
+  position: static;
+  background: none;
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 0;
+}
+
+.details h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-transform: capitalize;
+  color: var(--dark-green);
+  letter-spacing: 1px;
+  font-family: "Sequel Bold";
+  margin-bottom: 5px;
+  transition: all 0.3s ease;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.details span {
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: #666;
+  font-family: "Nexa bold";
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+
+.card:hover .details h3 {
+  color: var(--green);
+  transform: scale(1.1);
+  animation-play-state: paused;
+}
+
+.card:hover .details span {
+  color: var(--dark-green);
+  opacity: 1;
+  transform: translateY(-3px);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+@media (max-width: 800px) {
+  .producersGrid {
+    gap: 40px;
+  }
+  
+  .picture {
+    width: 280px;
+    height: 280px;
+  }
+}
+
+@media (max-width: 550px) {
+  .heading h1 {
+    font-size: 2.7rem;
+  }
+  
+  .producersGrid {
+    gap: 30px;
+  }
+  
+  .picture {
+    width: 240px;
+    height: 240px;
+  }
+  
+  .details h3 {
+    font-size: 1.3rem;
+  }
+  
+  .details span {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .content {
+    padding-top: 100px;
+  }
+  
+  .heading h1 {
+    font-size: 2.3rem;
+  }
+  
+  .picture {
+    width: 200px;
+    height: 200px;
+  }
+}

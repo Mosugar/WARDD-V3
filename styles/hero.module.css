@@ -1,0 +1,204 @@
+.content {
+  width: 100%;
+  height: 100svh;
+  position: relative;
+  /* background-color: var(--green);
+  background: url("../public/images/bg/vol.jpg");
+  background-position: center;
+  background-size: cover; */
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding: 0 5%;
+}
+
+.bold {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.textB {
+  position: absolute;
+  top:  15%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.bold h1 {
+  font-size: 4rem;
+  color: #000000; /* Black text */
+  line-height: 1.1;
+  font-family: "Sequel Bold";
+  font-weight: 900;
+  text-align: center;
+  margin: 0;
+}
+
+.bold a {
+  position: absolute;
+  top: 87%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .bold a {
+    display: none; /* Adjusted for smaller screens */
+  }
+}
+.bold a button {
+  color: var(--green);
+  font-size: var(--fz-md);
+  font-weight: 700;
+  background-color: var(--dark-green);
+  width: 260px;
+  height: 55px;
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  font-family: "Sequel Bold";
+  cursor: pointer;
+  border: none;
+}
+
+.bold button::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--white);
+  border-radius: 50%;
+  transition: top 0.4s ease, border-radius 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bold button span {
+  position: relative;
+  z-index: 5;
+}
+
+.bold button:hover::before {
+  border-radius: 0;
+  top: 0;
+}
+
+.bold button:hover span {
+  color: var(--dark-green);
+}
+
+/* Remove description styles since we're not using it */
+.description {
+  display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 770px) {
+  .textB {
+    top: 17%; /* Moved lower */
+  }
+  
+  .bold h1 {
+    font-size: 2.8rem; /* Smaller font size */
+    line-height: 1.2;
+  }
+  
+  .bold a {
+    top: 80%; /* Moved button much lower */
+  }
+  
+  .bold a button {
+    width: 200px;
+    height: 50px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 550px) {
+  .textB {
+    top: 16%; /* Lower for small screens */
+    /* Even lower position */
+    width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .bold h1 {
+    font-size: 2.2rem; /* Much smaller font */
+    line-height: 1.3;
+    /* Split text into two lines with better spacing */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .bold a {
+    top: 78%; /* Position button much lower */
+  }
+  
+  .bold a button {
+    width: 180px;
+    height: 45px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .textB {
+    width: 95%;
+  }
+  
+  .bold h1 {
+    font-size: 1.9rem; /* Even smaller */
+    line-height: 1.4;
+    gap: 0.3rem;
+  }
+  
+  .bold a {
+    top: 81%; /* Button positioned even lower */
+  }
+  
+  .bold a button {
+    width: 240px;
+    height: 42px;
+    font-size: 0.8rem;
+  }
+  
+  .content {
+    background-position: center top; /* Adjust background for mobile */
+  }
+}
+
+@media (max-width: 380px) {
+  .textB {
+    top: 30%;
+  }
+  
+  .bold h1 {
+    font-size: 1.7rem;
+    line-height: 1.4;
+  }
+  
+  .bold a {
+    top: 70%; /* Much lower position for smallest screens */
+  }
+  
+  .bold a button {
+    width: 150px;
+    height: 40px;
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,69 @@
+.content {
+    width: 100%;
+    padding: 100px 0 0;
+    user-select: none;
+  }
+  .container {
+    width: 90%;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .heading {
+    padding-bottom: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .heading h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--dark-green);
+    line-height: 1.1;
+    font-family: "Sequel Bold";
+    text-transform:capitalize;
+  }
+  .card {
+    margin: 0 10px;
+    overflow: hidden;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: var(--dark-green);
+    position: relative;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    animation: pulse 2.5s infinite;
+    z-index: 1;
+  }
+  .card iframe {
+    position: relative;
+    z-index: 2;
+  }
+  @keyframes pulse {
+    0% {
+      background-color: rgba(0, 0, 0, 0);
+    }
+    50% {
+      background-color: rgba(0, 0, 0, 0.185);
+    }
+    100% {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  }
+  @media (max-width: 770px) {
+    .content {
+      padding-top: 70px;
+    }
+  }
+  @media (max-width: 550px) {
+    .heading h1 {
+      font-size: 2.7rem;
+    }
+  }
+  

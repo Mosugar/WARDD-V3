@@ -1,0 +1,357 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+:root {
+  --green: #a4ff4c;
+  --dark-green: #002c15;
+  --dark-grey: #212121;
+  --light-grey: rgb(52, 52, 52);
+  --white: #fff;
+  --lightest-grey: rgb(52, 52, 52);
+  --dark-slate: #323232;
+  --slate: #f8f8f8;
+  --dark: #0c0c0c;
+  --light-w: #fff;
+
+  --fz-xxxs: 11px;
+  --fz-xxs: 12px;
+  --fz-xs: 13px;
+  --fz-sm: 14px;
+  --fz-md: 16px;
+  --fz-lg: 18px;
+  --fz-xl: 20px;
+  --fz-2xl: 22px;
+  --fz-3xl: 2rem;
+  --fz-4xl: 4rem;
+  --fz-5xl: 7rem;
+  --fz-6xl: 12rem;
+
+  --thin: 100;
+  --extra-light: 200;
+  --light: 300;
+  --normal: 400;
+  --medium: 500;
+  --semi-bold: 600;
+  --bold: 700;
+  --extra-bold: 800;
+  --black: 900;
+
+  --radius-sm: 7px;
+  --radius: 10px;
+  --radius-lg: 15px;
+  --radius-circle: 50%;
+  --radius-full: 30px;
+
+  --text-height: 22px;
+  --bold-height: 4.2rem;
+  --black-height: 6.5rem;
+
+  --easing: cubic-bezier(0.645, 0.045, 0.355, 1);
+  --transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* Sequel */
+
+@font-face {
+  font-family: 'SequelLight';
+  src: url('../fonts/Sequel/SequelSans-LightBody.woff2') format('woff2'),
+      url('../fonts/Sequel/SequelSans-LightBody.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sequel Medium';
+  src: url('../fonts/Sequel/SequelSans-MediumBody.woff2') format('woff2'),
+      url('../fonts/Sequel/SequelSans-MediumBody.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sequel Black';
+  src: url('../fonts/Sequel/SequelSans-BlackBody.woff2') format('woff2'),
+      url('../fonts/Sequel/SequelSans-BlackBody.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sequel Bold';
+  src: url('../fonts/Sequel/SequelSans-BoldBody.woff2') format('woff2'),
+      url('../fonts/Sequel/SequelSans-BoldBody.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
+/* Nexa */
+
+@font-face {
+  font-family: 'Nexa bold';
+  src: url('../fonts/Nexa/Nexa-Bold.eot');
+  src: url('../fonts/Nexa/Nexa-Bold.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Nexa/Nexa-Bold.woff2') format('woff2'),
+      url('../fonts/Nexa/Nexa-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nexa';
+  src: url('../fonts/Nexa/Nexa-Light.eot');
+  src: url('../fonts/Nexa/Nexa-Light.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/Nexa/Nexa-Light.woff2') format('woff2'),
+      url('../fonts/Nexa/Nexa-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
+/* Cool */
+
+@font-face {
+  font-family: "Coolvetica";
+  src: url("../fonts/Cool/CoolveticaCompressedRg-Regular.eot");
+  src: url("../fonts/Cool/CoolveticaCompressedRg-Regular.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/Cool/CoolveticaCompressedRg-Regular.woff2") format("woff2"),
+    url("../fonts/Cool/CoolveticaCompressedRg-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Coolvetica";
+  src: url("../fonts/Cool/CoolveticaCondensedRg-Regular.eot");
+  src: url("../fonts/Cool/CoolveticaCondensedRg-Regular.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/Cool/CoolveticaCondensedRg-Regular.woff2") format("woff2"),
+    url("../fonts/Cool/CoolveticaCondensedRg-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Coolvetica";
+  src: url("../fonts/Cool/CoolveticaCrammedRg-Regular.eot");
+  src: url("../fonts/Cool/CoolveticaCrammedRg-Regular.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/Cool/CoolveticaCrammedRg-Regular.woff2") format("woff2"),
+    url("../fonts/Cool/CoolveticaCrammedRg-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Coolvetica";
+  src: url("../fonts/Cool/CoolveticaRg-Regular.eot");
+  src: url("../fonts/Cool/CoolveticaRg-Regular.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/Cool/CoolveticaRg-Regular.woff2") format("woff2"),
+    url("../fonts/Cool/CoolveticaRg-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Matrice */
+
+@font-face {
+  font-family: "Matrice Black";
+  src: url("../fonts/Matrice/FONTSPRINGDEMO-MatriceBlackBold.eot");
+  src: url("../fonts/Matrice/FONTSPRINGDEMO-MatriceBlackBold.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/Matrice/FONTSPRINGDEMO-MatriceBlackBold.woff2")
+      format("woff2"),
+    url("../fonts/Matrice/FONTSPRINGDEMO-MatriceBlackBold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Matrice Medium";
+  src: url("../fonts/Matrice/FONTSPRINGDEMO-MatriceMediumRegular.eot");
+  src: url("../fonts/Matrice/FONTSPRINGDEMO-MatriceMediumRegular.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/Matrice/FONTSPRINGDEMO-MatriceMediumRegular.woff2")
+      format("woff2"),
+    url("../fonts/Matrice/FONTSPRINGDEMO-MatriceMediumRegular.woff")
+      format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Matrice Bold";
+  src: url("../fonts/Matrice/FONTSPRINGDEMO-MatriceBoldBold.eot");
+  src: url("../fonts/Matrice/FONTSPRINGDEMO-MatriceBoldBold.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/Matrice/FONTSPRINGDEMO-MatriceBoldBold.woff2") format("woff2"),
+    url("../fonts/Matrice/FONTSPRINGDEMO-MatriceBoldBold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Makro font */
+
+@font-face {
+  font-family: "Makro Extra";
+  src: url("../fonts/Makro/MakroTrial-Extrabold.eot");
+  src: url("../fonts/Makro/MakroTrial-Extrabold.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/Makro/MakroTrial-Extrabold.woff2") format("woff2"),
+    url("../fonts/Makro/MakroTrial-Extrabold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Makro";
+  src: url("../fonts/Makro/MakroTrial-Bold.eot");
+  src: url("../fonts/Makro/MakroTrial-Bold.eot?#iefix")
+      format("embedded-opentype"),
+    url("../fonts/Makro/MakroTrial-Bold.woff2") format("woff2"),
+    url("../fonts/Makro/MakroTrial-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("../fonts/Manrope/Manrope-Bold.eot");
+  src: url("../fonts/Manrope/Manrope-Bold.woff2") format("woff2"),
+    url("../fonts/Manrope/Manrope-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("../fonts/Manrope/Manrope-ExtraBold.eot");
+  src: url("../fonts/Manrope/Manrope-ExtraBold.woff2") format("woff2"),
+    url("../fonts/Manrope/Manrope-ExtraBold.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("../fonts/Manrope/Manrope-SemiBold.eot");
+  src: url("../fonts/Manrope/Manrope-SemiBold.woff2") format("woff2"),
+    url("../fonts/Manrope/Manrope-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("../fonts/Manrope/Manrope-Regular.eot");
+  src: url("../fonts/Manrope/Manrope-Regular.woff2") format("woff2"),
+    url("../fonts/Manrope/Manrope-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("../fonts/Manrope/Manrope-ExtraLight.eot");
+  src: url("../fonts/Manrope/Manrope-ExtraLight.woff2") format("woff2"),
+    url("../fonts/Manrope/Manrope-ExtraLight.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("../fonts/Manrope/Manrope-Light.eot");
+  src: url("../fonts/Manrope/Manrope-Light.woff2") format("woff2"),
+    url("../fonts/Manrope/Manrope-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Manrope";
+  src: url("../fonts/Manrope/Manrope-Medium.eot");
+  src: url("../fonts/Manrope/Manrope-Medium.woff2") format("woff2"),
+    url("../fonts/Manrope/Manrope-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+html {
+  scroll-behavior: smooth;
+  width: 100%;
+}
+body {
+  width: 100%;
+  overflowwww: hidden;
+  background-color: var(--light);
+  user-select: none;
+}
+.company-c {
+  color: var(--green);
+}
+svg.active {
+  rotate: 45deg;
+}
+.active {
+  transform: translateY(0);
+}
+
+::-moz-selection {
+  color: var(--white);
+  background: var(--dark-green);
+}
+
+::selection {
+  color: var(--white);
+  background: var(--dark-green);
+}
+
+::-webkit-scrollbar {
+  width: 1px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  box-shadow: none;
+}
+::-webkit-scrollbar-thumb {
+  background: #000;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #fff;
+}
+::-webkit-scrollbar-track-piece {
+  border: none;
+}

@@ -1,0 +1,249 @@
+.content {
+  width: 100%;
+}
+.logo {
+  font-size: var(--fz-3xl);
+  color: var(--green);
+  font-weight: 700;
+  text-transform: uppercase;
+  position: absolute;
+  top: 55px;
+  left: 60px;
+  z-index: 1387509842;
+  cursor: pointer;
+  transform: translateY(-300%);
+}
+.hamburger:hover.active .bar {
+  transform: translateY(-100%);
+}
+.hamburger.active .bar {
+  transform: translateY(-100%);
+}
+.hamburger:hover.active .bar_two {
+  display: block;
+}
+.hamburger:hover.active .bar_three {
+  transform: translateY(100%);
+}
+.hamburger.active .bar_three {
+  transform: translateY(100%);
+}
+.hamburger {
+  position: absolute;
+  top: 50px;
+  right: 60px;
+  z-index: 1802342098312;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background-color: var(--dark-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.hamburger:active::after {
+  width: 100%;
+  height: 100%;
+}
+.hamburger svg rect {
+  transition: transform 0.2s ease;
+}
+.hamburger:hover .bar {
+  transform: translateY(2px);
+}
+.hamburger:hover .bar_two {
+  display: none;
+}
+.hamburger:hover .bar_three {
+  transform: translateY(-2px);
+}
+.hide_hamb {
+  position: absolute;
+  top: -0.5px;
+  left: 45px;
+}
+.navigation {
+  width: 100%;
+  height: 100svh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #93ec40;
+  z-index: 1387509841;
+  display: grid;
+  padding: 100px;
+  align-items: center;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 50px;
+  transition: top 0.4s ease;
+  /* transform: translateY(-100%); */
+}
+.left_part {
+  grid-column: span 3 / span 3;
+  width: 100%;
+  border-right: 1px solid #b2b2b2;
+  display: flex;
+  justify-content: space-evenly;
+  /* align-items: center; */
+}
+.links li a {
+  font-size: 2.3rem;
+  font-weight: 700;
+  color: var(--dark-green);
+  text-transform: uppercase;
+  line-height: 1.7;
+  position: relative;
+  font-family: "Nexa bold";
+}
+.links li a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--white);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s ease;
+}
+.links li a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.links li a:hover {
+  color: var(--white);
+}
+.social {
+  grid-column: span 2 / span 2;
+}
+.s_heading {
+  padding-bottom: 20px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: var(--dark-green);
+  font-family: "Nexa bold";
+}
+.social ul {
+  display: flex;
+}
+.social ul li {
+  padding-right: 10px;
+}
+.social ul li svg {
+  fill: var(--dark-green);
+}
+.social ul li svg:hover {
+  fill: var(--white);
+}
+.email {
+  padding-top: 50px;
+}
+.email a {
+  font-size: 1.4rem;
+  text-transform: lowercase;
+  color: var(--dark-green);
+  font-weight: 600;
+  position: relative;
+  font-family: "Nexa bold";
+}
+.email a::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--dark-green);
+  transform: scaleX(0.2);
+  transform-origin: right;
+  transition: transform 0.4s ease;
+}
+.email a:hover::after {
+  transform: scaleX(1);
+  transform-origin: right;
+}
+.email:hover a {
+  color: var(--dark-green);
+}
+@media (max-width: 1000px) {
+  .navigation {
+    display: flex;
+    /* flex-direction: column; */
+    justify-content: center;
+    align-items: center;
+  }
+  .left_part {
+    border-right: none;
+  }
+}
+@media (max-width: 740px) {
+  .navigation {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+  }
+  .left_part {
+    border-right: none;
+  }
+}
+@media (max-width: 740px) {
+  .left_part {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .social {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .navigation {
+    padding: 0;
+    align-items: center;
+  }
+  .social {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .logo {
+    top: 45px;
+    left: 50px;
+  }
+  .hamburger {
+    top: 60px;
+    right: 50px;
+  }
+}
+@media (max-width: 600px) {
+  .logo {
+    top: 25px;
+    left: 30px;
+  }
+  .hamburger {
+    top: 30px;
+    right: 30px;
+  }
+  .links li a {
+    font-size: 2.4rem;
+  }
+  .email {
+    display: none;
+  }
+}
+@media (max-width: 360px) {
+  .links li a {
+    font-size: 1.8rem;
+  }
+}

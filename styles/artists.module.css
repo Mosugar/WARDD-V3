@@ -1,0 +1,223 @@
+.content {
+    width: 100%;
+    padding: 50px 0;
+    background-color: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .container {
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+  }
+  
+  .heading {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  
+  .heading h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--white);
+    font-family: "Sequel Bold",;
+    letter-spacing: 3px;
+    margin: 0;
+  }
+  
+  .artistsSlider {
+    width: 100%;
+    height: 380px;
+    overflow: hidden;
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .artistsSlider:active {
+    cursor: grabbing;
+  }
+  
+  .artistsTrack {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .artistCard {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-origin: center center;
+    will-change: transform, opacity;
+    transition: all 0.5s ease;
+  }
+  
+  .imageContainer {
+    width: 230px;
+    height: 230px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid var(--green);
+    /* box-shadow: 0 0 30px rgba(164, 255, 76, 0.25); */
+    transition: all 0.5s ease;
+  }
+  
+  .artistImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+  }
+  
+  .progressContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 40px 0 20px;
+    padding: 0 50px;
+  }
+  
+  .progressBar {
+    width: 300px;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  
+  .progressFill {
+    height: 100%;
+    background: linear-gradient(10deg, var(--green), #7bc142);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+  
+  .subtitle {
+    text-align: center;
+    color: var(--white);
+    font-family: "Nexa Bold", sans-serif;
+    font-weight: 400;
+    opacity: 0.8;
+  }
+  
+  .subtitle p {
+    font-size: 1rem;
+    margin: 4px 0;
+    font-weight: 300;
+  }
+  
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .heading h1 {
+      font-size: 3.2rem;
+    }
+  
+    .imageContainer {
+      width: 150px;
+      height: 150px;
+    }
+  }
+  
+  @media (max-width: 900px) {
+    .artistsSlider {
+      height: 300px;
+    }
+  
+    .imageContainer {
+      width: 130px;
+      height: 130px;
+    }
+  
+    .progressBar {
+      width: 250px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .content {
+      margin-top: 60px;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .content {
+      height: 80vh;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .heading {
+      margin-bottom: 30px;
+    }
+    
+    .heading h1 {
+      font-size: 2.4rem;
+    }
+  
+    .artistsSlider {
+      height: 240px;
+    }
+  
+    .imageContainer {
+      width: 150px;
+      height: 150px;
+    }
+  
+    .progressContainer {
+      margin: 30px 0 15px;
+    }
+  
+    .progressBar {
+      width: 240px;
+    }
+  
+    .subtitle p {
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 450px) {
+    .heading h1 {
+      font-size: 2.5rem;
+      margin-top: 1%;
+    }
+    .progressContainer {
+      margin: 90px 0px 15px;
+    }
+    .imageContainer {
+      width: 150px;
+      height: 150px;
+      
+    }
+  
+    .progressBar {
+      width: 220px;
+      
+    }
+  
+    .subtitle p {
+      /* padding: 2%; */
+      font-size: 1rem;
+    }
+  }
