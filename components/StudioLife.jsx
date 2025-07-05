@@ -29,8 +29,9 @@ const StudioLife = () => {
   const isDesktop = useIsDesktop();
 
   const studioImages = [
+    { src: "/studiolife/1.jpg", alt: "Artist in vocal booth" },
     { src: "/studiolife/2.jpg", alt: "Artist in vocal booth" },
-    { src: "/studiolife/3.jpg", alt: "Mixing console" },
+    { src: "/studiolife/3.JPG", alt: "Mixing console" },
     { src: "/studiolife/4.JPG", alt: "Producer working" },
     { src: "/studiolife/5.JPG", alt: "Team collaboration" },
     { src: "/studiolife/6.JPG", alt: "Live recording" },

@@ -128,7 +128,7 @@ const Artists = () => {
                 >
                   <div className={style.imageContainer}>
                     <Image
-                      src={`/art/${artist.id}.JPG`}
+                      src={`/art/${artist.id}.jpg`}
                       alt={artist.name}
                       width={300}
                       height={300}
