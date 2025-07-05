@@ -29,25 +29,25 @@ const StudioLife = () => {
   const isDesktop = useIsDesktop();
 
   const studioImages = [
-    { src: "/studiolife/2.JPG", alt: "Artist in vocal booth" },
-    { src: "/studiolife/3.JPG", alt: "Mixing console" },
+    { src: "/studiolife/2.jpg", alt: "Artist in vocal booth" },
+    { src: "/studiolife/3.jpg", alt: "Mixing console" },
     { src: "/studiolife/4.JPG", alt: "Producer working" },
     { src: "/studiolife/5.JPG", alt: "Team collaboration" },
     { src: "/studiolife/6.JPG", alt: "Live recording" },
     { src: "/studiolife/7.JPG", alt: "Equipment setup" },
     { src: "/studiolife/8.JPG", alt: "Artist performance" },
-    { src: "/studiolife/9.JPG", alt: "Artist performance" },
+    { src: "/studiolife/9.jpg", alt: "Artist performance" },
     { src: "/studiolife/10.JPG", alt: "Studio ambiance" },
     { src: "/studiolife/11.JPG", alt: "Creative workspace" },
     { src: "/studiolife/12.JPG", alt: "Studio equipment" },
-    { src: "/studiolife/13.JPG", alt: "Recording session" },
-    { src: "/studiolife/14.JPG", alt: "Artist collaboration" },
-    { src: "/studiolife/15.JPG", alt: "Sound mixing" },
+    { src: "/studiolife/13.jpg", alt: "Recording session" },
+    { src: "/studiolife/14.jpg", alt: "Artist collaboration" },
+    { src: "/studiolife/15.jpg", alt: "Sound mixing" },
     { src: "/studiolife/16.JPG", alt: "Studio vibe" },
     { src: "/studiolife/17.JPG", alt: "Creative process" },
     { src: "/studiolife/18.JPG", alt: "Studio life" },
     { src: "/studiolife/19.JPG", alt: "Recording equipment" },
-    { src: "/studiolife/20.JPG", alt: "Studio ambiance" }
+    { src: "/studiolife/20.jpg", alt: "Studio ambiance" }
   ];
 
   // Create infinite loop by duplicating images for seamless scroll
