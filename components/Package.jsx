@@ -69,9 +69,10 @@ const Package = () => {
         "Instru non exclusif"
       ]
     },
+    
     {
-      pack: "PACK PREMIUM", 
-      email: "mailto:contact@warddstudio.com?subject=Pack%20Premium",
+      pack: "PACK PROFESSIONNEL",
+      email: "mailto:contact@warddstudio.com?subject=Pack%20Basic", 
       features: [
         "Enregistrement",
         "Mixage",
@@ -81,10 +82,10 @@ const Package = () => {
         "Instru non exclusif",
         "Tuning vocal avancé"
       ]
-    },
+    } ,
     {
-      pack: "PACK BASIC",
-      email: "mailto:contact@warddstudio.com?subject=Pack%20Basic", 
+      pack: "PACK PREMIUM", 
+      email: "mailto:contact@warddstudio.com?subject=Pack%20Premium",
       features: [
         "Enregistrement",
         "Mixage",
