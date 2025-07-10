@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 // SVG Icons Components
 const Calendar = ({ size = 20 }) => (
@@ -45,13 +45,6 @@ const Music = ({ size = 20 }) => (
   </svg>
 );
 
-const CreditCard = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-    <line x1="1" y1="10" x2="23" y2="10"/>
-  </svg>
-);
-
 const Check = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <polyline points="20,6 9,17 4,12"/>
@@ -76,7 +69,7 @@ const BookingSystem = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
-  const [selectedService, setSelectedService] = useState('');
+  const [selectedServices, setSelectedServices] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [formData, setFormData] = useState({
     name: '',
@@ -84,72 +77,59 @@ const BookingSystem = () => {
     phone: '',
     artistName: '',
     projectType: '',
-    duration: '',
     specialRequests: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Services configuration
   const services = [
     {
       id: 'recording',
       name: 'RECORDING',
-      duration: '2-8 hours',
-      price: '300 DH/hour',
-      description: 'Professional vocal recording with top-tier equipment',
-      icon: '🎤'
+      duration: '2-8 heures',
+      price: '300 DH/heure',
+      description: 'Enregistrement vocal professionnel avec équipement haut de gamme'
     },
     {
       id: 'mixing',
       name: 'MIXAGE',
-      duration: '1-3 days',
+      duration: '1-3 jours',
       price: '800 DH/track',
-      description: 'Expert mixing to bring your track to life',
-      icon: '🎛️'
+      description: 'Mixage expert pour donner vie à votre morceau'
     },
     {
       id: 'mastering',
       name: 'MASTERING',
-      duration: '1-2 days',
+      duration: '1-2 jours',
       price: '400 DH/track',
-      description: 'Final polish for radio-ready sound',
-      icon: '🎯'
+      description: 'Finalisation pour un son prêt pour la radio'
     },
     {
       id: 'production',
       name: 'PRODUCTION',
-      duration: '1-5 days',
-      price: 'Custom Quote',
-      description: 'Complete music production from concept to finish',
-      icon: '🎹'
+      duration: '1-5 jours',
+      price: 'Devis personnalisé',
+      description: 'Production musicale complète du concept au produit fini'
     },
     {
       id: 'beatmaking',
       name: 'BEATMAKING',
-      duration: '2-4 hours',
+      duration: '2-4 heures',
       price: '500 DH/beat',
-      description: 'Custom beats crafted for your style',
-      icon: '🥁'
+      description: 'Beats personnalisés adaptés à votre style'
     }
   ];
 
-  // Available time slots
   const timeSlots = [
     '09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
   ];
 
-  // Calendar functionality
-  const daysInMonth = (date) => {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  };
-
-  const firstDayOfMonth = (date) => {
-    return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-  };
+  const daysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  const firstDayOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
   const isDateAvailable = (day) => {
     const today = new Date();
     const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    return checkDate >= today && checkDate.getDay() !== 0; // Not Sunday and not in the past
+    return checkDate >= today && checkDate.getDay() !== 0;
   };
 
   const formatDate = (date) => {
@@ -178,12 +158,10 @@ const BookingSystem = () => {
     const firstDay = firstDayOfMonth(currentMonth);
     const monthDays = [];
     
-    // Empty cells for days before month starts
     for (let i = 0; i < firstDay; i++) {
-      monthDays.push(<div key={`empty-${i}`} style={{ padding: '1rem' }}></div>);
+      monthDays.push(<div key={`empty-${i}`} className="p-2 sm:p-4"></div>);
     }
     
-    // Days of the month
     for (let day = 1; day <= days; day++) {
       const isAvailable = isDateAvailable(day);
       const isSelected = selectedDate === `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -193,30 +171,15 @@ const BookingSystem = () => {
           key={day}
           onClick={() => isAvailable && setSelectedDate(`${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
           disabled={!isAvailable}
-          style={{
-            padding: '1rem',
-            textAlign: 'center',
-            borderRadius: '8px',
-            border: '2px solid',
-            backgroundColor: isSelected ? '#22c55e' : '#ffffff',
-            color: isSelected ? '#ffffff' : isAvailable ? '#000000' : '#d1d5db',
-            borderColor: isSelected ? '#22c55e' : '#e5e7eb',
-            cursor: isAvailable ? 'pointer' : 'not-allowed',
-            transition: 'all 0.2s',
-            fontWeight: isSelected ? 'bold' : 'normal'
-          }}
-          onMouseEnter={(e) => {
-            if (isAvailable && !isSelected) {
-              e.target.style.backgroundColor = '#22c55e';
-              e.target.style.color = '#ffffff';
+          className={`
+            p-2 sm:p-4 text-center rounded-lg sm:rounded-xl font-medium transition-all duration-300 text-sm sm:text-base
+            ${isSelected 
+              ? 'bg-green-500 text-white shadow-lg scale-105' 
+              : isAvailable 
+                ? 'bg-white hover:bg-green-50 text-gray-800 hover:text-green-600 hover:scale-105 shadow-sm hover:shadow-md border border-gray-200 hover:border-green-300' 
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
             }
-          }}
-          onMouseLeave={(e) => {
-            if (isAvailable && !isSelected) {
-              e.target.style.backgroundColor = '#ffffff';
-              e.target.style.color = '#000000';
-            }
-          }}
+          `}
         >
           {day}
         </button>
@@ -224,6 +187,16 @@ const BookingSystem = () => {
     }
     
     return monthDays;
+  };
+
+  const handleServiceToggle = (serviceId) => {
+    setSelectedServices(prev => {
+      if (prev.includes(serviceId)) {
+        return prev.filter(id => id !== serviceId);
+      } else {
+        return [...prev, serviceId];
+      }
+    });
   };
 
   const handleNext = () => {
@@ -239,11 +212,13 @@ const BookingSystem = () => {
   };
 
   const handleSubmit = async () => {
-    const selectedServiceData = services.find(s => s.id === selectedService);
+    setIsSubmitting(true);
+    const selectedServicesData = services.filter(s => selectedServices.includes(s.id));
+    const serviceNames = selectedServicesData.map(s => s.name).join(', ');
+    
     const bookingData = {
-      service: selectedService,
-      serviceName: selectedServiceData?.name,
-      servicePrice: selectedServiceData?.price,
+      services: selectedServices,
+      serviceNames: serviceNames,
       date: selectedDate,
       time: selectedTime,
       formattedDate: formatDate(new Date(selectedDate)),
@@ -251,126 +226,107 @@ const BookingSystem = () => {
     };
     
     try {
-      // Send to Formspree
       const response = await fetch('https://formspree.io/f/xkgbdwbw', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          subject: `🎵 Nouvelle réservation Wardd Music - ${bookingData.serviceName}`,
+          subject: `Nouvelle réservation Wardd Music - ${serviceNames}`,
           message: `
-📅 NOUVELLE RÉSERVATION WARDD MUSIC STUDIO
+NOUVELLE RÉSERVATION WARDD MUSIC STUDIO
 
-🎯 DÉTAILS DE LA SESSION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Service demandé: ${bookingData.serviceName}
-Prix: ${bookingData.servicePrice}
+DÉTAILS DE LA SESSION:
+Services demandés: ${serviceNames}
 Date: ${bookingData.formattedDate}
 Heure: ${bookingData.time}
 
-👤 INFORMATIONS CLIENT:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INFORMATIONS CLIENT:
 Nom complet: ${bookingData.name}
 Email: ${bookingData.email}
 Téléphone: ${bookingData.phone}
 Nom d'artiste: ${bookingData.artistName || 'Non spécifié'}
 Type de projet: ${bookingData.projectType || 'Non spécifié'}
 
-💬 DEMANDES SPÉCIALES:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DEMANDES SPÉCIALES:
 ${bookingData.specialRequests || 'Aucune demande spéciale'}
 
-🌟 ACTIONS À EFFECTUER:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Confirmer la disponibilité du créneau
-✅ Envoyer un devis détaillé
-✅ Contacter le client sous 24h
-
-📧 Répondre à: ${bookingData.email}
-📞 Appeler: ${bookingData.phone}
-
 ---
-Réservation effectuée via warddmusic.com le ${new Date().toLocaleDateString('fr-FR')} à ${new Date().toLocaleTimeString('fr-FR')}
+Réservation effectuée le ${new Date().toLocaleDateString('fr-FR')}
           `,
-          // Additional form fields for better organization
           _replyto: bookingData.email,
-          _subject: `🎵 Nouvelle réservation Wardd Music - ${bookingData.serviceName}`,
+          _subject: `Nouvelle réservation Wardd Music - ${serviceNames}`,
           client_name: bookingData.name,
           client_email: bookingData.email,
           client_phone: bookingData.phone,
-          service_requested: bookingData.serviceName,
+          services_requested: serviceNames,
           booking_date: bookingData.formattedDate,
-          booking_time: bookingData.time,
-          artist_name: bookingData.artistName,
-          project_type: bookingData.projectType,
-          special_requests: bookingData.specialRequests
+          booking_time: bookingData.time
         })
       });
 
       if (response.ok) {
-        alert('🎉 Réservation envoyée avec succès!\n\n✅ Nous avons reçu votre demande\n📧 Vous recevrez une confirmation par email\n⏰ Nous vous contacterons sous 24h\n\nMerci de faire confiance à Wardd Music! 🎵');
+        setCurrentStep(5);
+        setTimeout(() => {
+          alert('Réservation envoyée avec succès!\n\nNous avons reçu votre demande\nVous recevrez une confirmation par email\nNous vous contacterons sous 24h\n\nMerci de faire confiance à Wardd Music!');
+        }, 1000);
       } else {
         throw new Error('Erreur lors de l\'envoi');
       }
     } catch (error) {
       console.error('Error:', error);
       
-      // Fallback: Open email client with pre-filled data
-      const subject = encodeURIComponent(`🎵 Réservation ${bookingData.serviceName} - ${bookingData.formattedDate}`);
+      const subject = encodeURIComponent(`Réservation ${serviceNames} - ${bookingData.formattedDate}`);
       const body = encodeURIComponent(`
 Bonjour l'équipe Wardd Music,
 
 Je souhaite réserver une session au studio:
 
-📅 DÉTAILS DE LA SESSION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Service: ${bookingData.serviceName}
-Prix: ${bookingData.servicePrice}
+Services: ${serviceNames}
 Date: ${bookingData.formattedDate}
 Heure: ${bookingData.time}
 
-👤 MES INFORMATIONS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Mes informations:
 Nom: ${bookingData.name}
 Email: ${bookingData.email}
 Téléphone: ${bookingData.phone}
 Nom d'artiste: ${bookingData.artistName || 'Non spécifié'}
 Type de projet: ${bookingData.projectType || 'Non spécifié'}
 
-💬 DEMANDES SPÉCIALES:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Demandes spéciales:
 ${bookingData.specialRequests || 'Aucune'}
 
-Merci de me confirmer la disponibilité! 🎵
+Merci de me confirmer la disponibilité!
 
 Cordialement,
 ${bookingData.name}
       `);
       
       window.location.href = `mailto:contact@warddstudio.com?subject=${subject}&body=${body}`;
-      alert('📧 Erreur de connexion.\nVotre client email va s\'ouvrir avec toutes les informations pré-remplies!');
+      alert('Erreur de connexion.\nVotre client email va s\'ouvrir avec toutes les informations pré-remplies!');
     }
     
-    // Reset form
-    setCurrentStep(1);
-    setSelectedDate('');
-    setSelectedTime('');
-    setSelectedService('');
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      artistName: '',
-      projectType: '',
-      duration: '',
-      specialRequests: ''
-    });
+    setIsSubmitting(false);
+    
+    setTimeout(() => {
+      setCurrentStep(1);
+      setSelectedDate('');
+      setSelectedTime('');
+      setSelectedServices([]);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        artistName: '',
+        projectType: '',
+        specialRequests: ''
+      });
+    }, 3000);
   };
 
   const isStepComplete = (step) => {
     switch (step) {
-      case 1: return selectedService !== '';
+      case 1: return selectedServices.length > 0;
       case 2: return selectedDate !== '';
       case 3: return selectedTime !== '';
       case 4: return formData.name && formData.email && formData.phone;
@@ -378,695 +334,470 @@ ${bookingData.name}
     }
   };
 
-  return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', padding: '3rem 0' }}>
-      <div style={{ maxWidth: '64rem', margin: '0 auto', padding: '0 1rem' }}>
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ 
-            fontSize: '2.5rem', 
-            fontWeight: 'bold', 
-            color: '#111827', 
-            marginBottom: '1rem',
-            fontFamily: 'Sequel Bold'
-          }}>
-            Réservez votre session
-          </h1>
-          <p style={{ 
-            fontSize: '1.125rem', 
-            color: '#6b7280',
-            fontFamily: 'Nexa bold'
-          }}>
-            Wardd Music Studio - Expérience professionnelle garantie
-          </p>
-        </div>
+  const steps = [
+    { number: 1, title: 'Service', icon: Music },
+    { number: 2, title: 'Date', icon: Calendar },
+    { number: 3, title: 'Heure', icon: Clock },
+    { number: 4, title: 'Détails', icon: User }
+  ];
 
-        {/* Progress Bar */}
-        <div style={{ marginBottom: '2rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>
-            {[1, 2, 3, 4].map((step) => (
-              <React.Fragment key={step}>
-                <div style={{
-                  width: '2.5rem',
-                  height: '2.5rem',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                  backgroundColor: currentStep >= step ? '#22c55e' : '#e5e7eb',
-                  color: currentStep >= step ? '#ffffff' : '#6b7280',
-                  transition: 'all 0.3s'
-                }}>
-                  {isStepComplete(step) ? <Check size={20} /> : step}
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      {/* Header */}
+      <div className="text-center mb-6 sm:mb-12 pt-6 sm:pt-12 px-4">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-gray-800 via-gray-900 to-green-600 bg-clip-text text-transparent mb-4 sm:mb-6">
+          Réservez votre session
+        </h1>
+        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-2">
+          Expérience professionnelle garantie dans notre studio d'enregistrement
+        </p>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mb-8 sm:mb-16 px-4">
+        <div className="flex justify-center items-center max-w-4xl mx-auto">
+          <div className="flex items-center w-full">
+            {steps.map((step, index) => (
+              <React.Fragment key={step.number}>
+                <div className="flex flex-col items-center">
+                  <div className={`
+                    w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center font-bold text-sm sm:text-base lg:text-lg transition-all duration-500
+                    ${currentStep >= step.number 
+                      ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-lg scale-110' 
+                      : 'bg-white text-gray-400 shadow-md'
+                    }
+                    ${currentStep === step.number ? 'animate-pulse ring-2 sm:ring-4 ring-green-200' : ''}
+                  `}>
+                    {isStepComplete(step.number) && step.number < currentStep ? (
+                      <Check className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                    ) : (
+                      <step.icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                    )}
+                  </div>
+                  <span className={`
+                    mt-1 sm:mt-2 font-semibold text-xs sm:text-sm transition-colors duration-300 text-center
+                    ${currentStep >= step.number ? 'text-green-600' : 'text-gray-500'}
+                  `}>
+                    {step.title}
+                  </span>
                 </div>
-                {step < 4 && (
-                  <div style={{
-                    width: '4rem',
-                    height: '0.25rem',
-                    backgroundColor: currentStep > step ? '#22c55e' : '#e5e7eb',
-                    transition: 'all 0.3s'
-                  }} />
+                {index < steps.length - 1 && (
+                  <div className={`
+                    flex-1 h-0.5 sm:h-1 mx-1 sm:mx-2 lg:mx-4 rounded-full transition-all duration-500
+                    ${currentStep > step.number 
+                      ? 'bg-gradient-to-r from-green-400 to-emerald-500' 
+                      : 'bg-gray-200'
+                    }
+                  `} />
                 )}
               </React.Fragment>
             ))}
           </div>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            marginTop: '1rem', 
-            gap: '2rem', 
-            fontSize: '0.875rem' 
-          }}>
-            <span style={{ 
-              color: currentStep >= 1 ? '#059669' : '#6b7280',
-              fontWeight: currentStep >= 1 ? '600' : 'normal'
-            }}>
-              Service
-            </span>
-            <span style={{ 
-              color: currentStep >= 2 ? '#059669' : '#6b7280',
-              fontWeight: currentStep >= 2 ? '600' : 'normal'
-            }}>
-              Date
-            </span>
-            <span style={{ 
-              color: currentStep >= 3 ? '#059669' : '#6b7280',
-              fontWeight: currentStep >= 3 ? '600' : 'normal'
-            }}>
-              Heure
-            </span>
-            <span style={{ 
-              color: currentStep >= 4 ? '#059669' : '#6b7280',
-              fontWeight: currentStep >= 4 ? '600' : 'normal'
-            }}>
-              Détails
-            </span>
-          </div>
         </div>
+      </div>
 
-        {/* Main Content */}
-        <div style={{ 
-          backgroundColor: '#ffffff', 
-          borderRadius: '1rem', 
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', 
-          padding: '2rem' 
-        }}>
-          {/* Step 1: Service Selection */}
-          {currentStep === 1 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <h2 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 'bold', 
-                color: '#111827', 
-                marginBottom: '1.5rem', 
-                textAlign: 'center',
-                fontFamily: 'Sequel Bold'
-              }}>
-                Choisissez votre service
-              </h2>
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-                gap: '1rem' 
-              }}>
-                {services.map((service) => (
-                  <div
-                    key={service.id}
-                    onClick={() => setSelectedService(service.id)}
-                    style={{
-                      padding: '1.5rem',
-                      borderRadius: '0.75rem',
-                      border: '2px solid',
-                      borderColor: selectedService === service.id ? '#22c55e' : '#e5e7eb',
-                      backgroundColor: selectedService === service.id ? '#f0fdf4' : '#ffffff',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s',
-                      boxShadow: selectedService === service.id ? '0 10px 15px -3px rgba(0, 0, 0, 0.1)' : 'none'
-                    }}
-                  >
-                    <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>{service.icon}</div>
-                    <h3 style={{ 
-                      fontWeight: 'bold', 
-                      fontSize: '1.125rem', 
-                      color: '#111827', 
-                      marginBottom: '0.5rem',
-                      fontFamily: 'Sequel Bold'
-                    }}>
-                      {service.name}
-                    </h3>
-                    <p style={{ color: '#059669', fontWeight: '600', marginBottom: '0.5rem' }}>
-                      {service.price}
-                    </p>
-                    <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
-                      {service.duration}
-                    </p>
-                    <p style={{ fontSize: '0.875rem', color: '#9ca3af' }}>
-                      {service.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Step 2: Date Selection */}
-          {currentStep === 2 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <h2 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 'bold', 
-                color: '#111827', 
-                marginBottom: '1.5rem', 
-                textAlign: 'center',
-                fontFamily: 'Sequel Bold'
-              }}>
-                Sélectionnez une date
-              </h2>
-              
-              {/* Calendar Header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <button 
-                  onClick={prevMonth}
-                  style={{ 
-                    padding: '0.5rem', 
-                    borderRadius: '0.5rem', 
-                    border: 'none',
-                    backgroundColor: 'transparent',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                >
-                  <ArrowLeft size={24} />
-                </button>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: '600', fontFamily: 'Sequel Bold' }}>
-                  {currentMonth.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
-                </h3>
-                <button 
-                  onClick={nextMonth}
-                  style={{ 
-                    padding: '0.5rem', 
-                    borderRadius: '0.5rem', 
-                    border: 'none',
-                    backgroundColor: 'transparent',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
-                >
-                  <ArrowRight size={24} />
-                </button>
-              </div>
-
-              {/* Calendar Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.5rem', marginBottom: '1rem' }}>
-                {['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'].map(day => (
-                  <div key={day} style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600', 
-                    color: '#6b7280' 
-                  }}>
-                    {day}
-                  </div>
-                ))}
-                {renderCalendar()}
-              </div>
-
-              {selectedDate && (
-                <div style={{ 
-                  textAlign: 'center', 
-                  padding: '1rem', 
-                  backgroundColor: '#f0fdf4', 
-                  borderRadius: '0.5rem' 
-                }}>
-                  <p style={{ color: '#15803d', fontWeight: '600' }}>
-                    Date sélectionnée: {formatDate(new Date(selectedDate))}
-                  </p>
+      {/* Main Content */}
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="bg-white/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-200/50 overflow-hidden">
+          <div className="p-4 sm:p-6 lg:p-8 xl:p-16">
+            
+            {/* Step 1: Service Selection */}
+            {currentStep === 1 && (
+              <div className="space-y-6 sm:space-y-8 lg:space-y-10">
+                <div className="text-center">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
+                    Choisissez vos services
+                  </h2>
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 px-2">Sélectionnez un ou plusieurs services qui correspondent à vos besoins</p>
+                  {selectedServices.length > 0 && (
+                    <div className="inline-flex items-center gap-2 mt-2 sm:mt-4 px-3 sm:px-4 py-1.5 sm:py-2 bg-green-100 text-green-700 rounded-full text-xs sm:text-sm font-semibold">
+                      <Check size={14} />
+                      {selectedServices.length} service{selectedServices.length > 1 ? 's' : ''} sélectionné{selectedServices.length > 1 ? 's' : ''}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          )}
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+                  {services.map((service) => {
+                    const isSelected = selectedServices.includes(service.id);
+                    return (
+                      <div
+                        key={service.id}
+                        onClick={() => handleServiceToggle(service.id)}
+                        className={`
+                          relative p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl cursor-pointer transition-all duration-300 transform
+                          ${isSelected 
+                            ? 'scale-102 sm:scale-105 shadow-xl sm:shadow-2xl ring-2 sm:ring-4 ring-green-200 bg-gradient-to-br from-green-400 to-emerald-500 text-white' 
+                            : 'hover:scale-102 sm:hover:scale-105 hover:shadow-lg sm:hover:shadow-xl bg-white text-gray-700 shadow-md border-2 border-gray-200 hover:border-green-300'
+                          }
+                        `}
+                      >
+                        <h3 className="font-bold text-lg sm:text-xl mb-2">{service.name}</h3>
+                        <p className={`${isSelected ? 'text-white' : 'text-green-600'} font-semibold mb-1 sm:mb-2 text-sm sm:text-base`}>
+                          {service.price}
+                        </p>
+                        <p className={`${isSelected ? 'text-white/90' : 'text-gray-500'} text-xs sm:text-sm mb-2 sm:mb-3`}>
+                          {service.duration}
+                        </p>
+                        <p className={`${isSelected ? 'text-white/90' : 'text-gray-600'} text-xs sm:text-sm leading-relaxed`}>
+                          {service.description}
+                        </p>
+                        
+                        <div className={`
+                          absolute top-3 sm:top-4 right-3 sm:right-4 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300
+                          ${isSelected 
+                            ? 'bg-white shadow-lg scale-110' 
+                            : 'bg-gray-200'
+                          }
+                        `}>
+                          {isSelected ? (
+                            <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+                          ) : (
+                            <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-gray-400 rounded"></div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
-          {/* Step 3: Time Selection */}
-          {currentStep === 3 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <h2 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 'bold', 
-                color: '#111827', 
-                marginBottom: '1.5rem', 
-                textAlign: 'center',
-                fontFamily: 'Sequel Bold'
-              }}>
-                Choisissez l'heure
-              </h2>
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
-                gap: '1rem' 
-              }}>
-                {timeSlots.map((time) => (
-                  <button
-                    key={time}
-                    onClick={() => setSelectedTime(time)}
-                    style={{
-                      padding: '1rem',
-                      borderRadius: '0.5rem',
-                      border: '2px solid',
-                      borderColor: selectedTime === time ? '#22c55e' : '#e5e7eb',
-                      backgroundColor: selectedTime === time ? '#22c55e' : '#ffffff',
-                      color: selectedTime === time ? '#ffffff' : '#000000',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (selectedTime !== time) {
-                        e.target.style.borderColor = '#22c55e';
-                        e.target.style.backgroundColor = '#f0fdf4';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (selectedTime !== time) {
-                        e.target.style.borderColor = '#e5e7eb';
-                        e.target.style.backgroundColor = '#ffffff';
-                      }
-                    }}
+            {/* Step 2: Date Selection */}
+            {currentStep === 2 && (
+              <div className="space-y-6 sm:space-y-8 lg:space-y-10">
+                <div className="text-center">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
+                    Sélectionnez une date
+                  </h2>
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">Choisissez le jour qui vous convient le mieux</p>
+                </div>
+                
+                <div className="flex justify-between items-center mb-4 sm:mb-8 bg-gradient-to-r from-gray-50 to-white p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg">
+                  <button 
+                    onClick={prevMonth}
+                    className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 text-gray-600 hover:text-green-600"
                   >
-                    {time}
+                    <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
                   </button>
-                ))}
-              </div>
-              
-              {selectedTime && (
-                <div style={{ 
-                  textAlign: 'center', 
-                  padding: '1rem', 
-                  backgroundColor: '#f0fdf4', 
-                  borderRadius: '0.5rem' 
-                }}>
-                  <p style={{ color: '#15803d', fontWeight: '600' }}>
-                    Créneau: {selectedTime} - {formatDate(new Date(selectedDate))}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Step 4: Contact Information */}
-          {currentStep === 4 && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <h2 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 'bold', 
-                color: '#111827', 
-                marginBottom: '1.5rem', 
-                textAlign: 'center',
-                fontFamily: 'Sequel Bold'
-              }}>
-                Vos informations
-              </h2>
-              
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-                gap: '1.5rem' 
-              }}>
-                <div>
-                  <label style={{ 
-                    display: 'block', 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    color: '#374151', 
-                    marginBottom: '0.5rem',
-                    fontFamily: 'Nexa bold'
-                  }}>
-                    <User size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-                    Nom complet *
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem',
-                      outline: 'none',
-                      transition: 'border-color 0.2s, box-shadow 0.2s'
-                    }}
-                    placeholder="Votre nom"
-                    required
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#22c55e';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#d1d5db';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ 
-                    display: 'block', 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    color: '#374151', 
-                    marginBottom: '0.5rem',
-                    fontFamily: 'Nexa bold'
-                  }}>
-                    <Mail size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem',
-                      outline: 'none',
-                      transition: 'border-color 0.2s, box-shadow 0.2s'
-                    }}
-                    placeholder="votre@email.com"
-                    required
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#22c55e';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#d1d5db';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ 
-                    display: 'block', 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    color: '#374151', 
-                    marginBottom: '0.5rem',
-                    fontFamily: 'Nexa bold'
-                  }}>
-                    <Phone size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-                    Téléphone *
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem',
-                      outline: 'none',
-                      transition: 'border-color 0.2s, box-shadow 0.2s'
-                    }}
-                    placeholder="+212 6XX XXX XXX"
-                    required
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#22c55e';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#d1d5db';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ 
-                    display: 'block', 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    color: '#374151', 
-                    marginBottom: '0.5rem',
-                    fontFamily: 'Nexa bold'
-                  }}>
-                    <Music size={16} style={{ display: 'inline', marginRight: '0.5rem' }} />
-                    Nom d'artiste
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.artistName}
-                    onChange={(e) => setFormData({...formData, artistName: e.target.value})}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem',
-                      outline: 'none',
-                      transition: 'border-color 0.2s, box-shadow 0.2s'
-                    }}
-                    placeholder="Votre nom de scène"
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#22c55e';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#d1d5db';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  />
-                </div>
-
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ 
-                    display: 'block', 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    color: '#374151', 
-                    marginBottom: '0.5rem',
-                    fontFamily: 'Nexa bold'
-                  }}>
-                    Type de projet
-                  </label>
-                  <select
-                    value={formData.projectType}
-                    onChange={(e) => setFormData({...formData, projectType: e.target.value})}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem',
-                      outline: 'none',
-                      transition: 'border-color 0.2s, box-shadow 0.2s',
-                      backgroundColor: '#ffffff'
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#22c55e';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#d1d5db';
-                      e.target.style.boxShadow = 'none';
-                    }}
+                  
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 text-center">
+                    {currentMonth.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                  </h3>
+                  
+                  <button 
+                    onClick={nextMonth}
+                    className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 text-gray-600 hover:text-green-600"
                   >
-                    <option value="">Sélectionnez...</option>
-                    <option value="single">Single</option>
-                    <option value="ep">EP</option>
-                    <option value="album">Album</option>
-                    <option value="demo">Demo</option>
-                    <option value="mixtape">Mixtape</option>
-                  </select>
+                    <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </button>
                 </div>
 
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ 
-                    display: 'block', 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    color: '#374151', 
-                    marginBottom: '0.5rem',
-                    fontFamily: 'Nexa bold'
-                  }}>
-                    Demandes spéciales
-                  </label>
-                  <textarea
-                    value={formData.specialRequests}
-                    onChange={(e) => setFormData({...formData, specialRequests: e.target.value})}
-                    rows={4}
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '0.5rem',
-                      fontSize: '1rem',
-                      outline: 'none',
-                      transition: 'border-color 0.2s, box-shadow 0.2s',
-                      resize: 'vertical'
-                    }}
-                    placeholder="Décrivez votre projet, style musical, instruments nécessaires..."
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#22c55e';
-                      e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#d1d5db';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                  />
+                <div className="bg-gradient-to-br from-gray-50 to-white p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg">
+                  <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
+                    {['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'].map(day => (
+                      <div key={day} className="p-2 sm:p-4 text-center font-bold text-gray-600 text-xs sm:text-sm">
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7 gap-1 sm:gap-2">
+                    {renderCalendar()}
+                  </div>
+                </div>
+
+                {selectedDate && (
+                  <div className="text-center p-3 sm:p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl border border-green-200">
+                    <div className="inline-flex items-center gap-2 sm:gap-3 text-green-700 font-bold text-sm sm:text-base lg:text-lg">
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                      <span>Date sélectionnée: {formatDate(new Date(selectedDate))}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Step 3: Time Selection */}
+            {currentStep === 3 && (
+              <div className="space-y-6 sm:space-y-8 lg:space-y-10">
+                <div className="text-center">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
+                    Choisissez l'heure
+                  </h2>
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">Sélectionnez le créneau horaire qui vous convient</p>
+                </div>
+                
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+                  {timeSlots.map((time) => (
+                    <button
+                      key={time}
+                      onClick={() => setSelectedTime(time)}
+                      className={`
+                        relative p-3 sm:p-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300 transform
+                        ${selectedTime === time 
+                          ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-lg sm:shadow-xl scale-105 ring-2 sm:ring-4 ring-green-200' 
+                          : 'bg-white text-gray-700 shadow-md hover:shadow-lg sm:hover:shadow-xl hover:scale-105 border border-gray-200 hover:border-green-300'
+                        }
+                      `}
+                    >
+                      <div className="flex items-center justify-center gap-1 sm:gap-2">
+                        <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <span>{time}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                
+                {selectedTime && (
+                  <div className="text-center p-3 sm:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl border border-blue-200">
+                    <div className="inline-flex items-center gap-2 sm:gap-3 text-blue-700 font-bold text-sm sm:text-base lg:text-lg">
+                      <Clock className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                      <span className="break-words">Créneau: {selectedTime} - {formatDate(new Date(selectedDate))}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Step 4: Contact Information */}
+            {currentStep === 4 && (
+              <div className="space-y-6 sm:space-y-8 lg:space-y-10">
+                <div className="text-center">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
+                    Vos informations
+                  </h2>
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">Complétez vos détails pour finaliser la réservation</p>
+                </div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+                  <div className="space-y-4 sm:space-y-6">
+                    <div>
+                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
+                        <User className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                        Nom complet *
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
+                        placeholder="Votre nom"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
+                        <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                        Email *
+                      </label>
+                      <input
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
+                        placeholder="votre@email.com"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
+                        <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                        Téléphone *
+                      </label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
+                        placeholder="+212 6XX XXX XXX"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
+                        <Music className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                        Nom d'artiste
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.artistName}
+                        onChange={(e) => setFormData({...formData, artistName: e.target.value})}
+                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
+                        placeholder="Votre nom de scène"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
+                        Type de projet
+                      </label>
+                      <select
+                        value={formData.projectType}
+                        onChange={(e) => setFormData({...formData, projectType: e.target.value})}
+                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
+                      >
+                        <option value="">Sélectionnez...</option>
+                        <option value="single">Single</option>
+                        <option value="ep">EP</option>
+                        <option value="album">Album</option>
+                        <option value="demo">Demo</option>
+                        <option value="mixtape">Mixtape</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
+                        Demandes spéciales
+                      </label>
+                      <textarea
+                        value={formData.specialRequests}
+                        onChange={(e) => setFormData({...formData, specialRequests: e.target.value})}
+                        rows={4}
+                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur resize-none text-sm sm:text-base"
+                        placeholder="Décrivez votre projet, style musical, instruments nécessaires..."
+                      />
+                    </div>
+                  </div>
+
+                  {/* Booking Summary */}
+                  <div className="lg:sticky lg:top-8">
+                    <div className="bg-gradient-to-br from-gray-50 to-white p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200">
+                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
+                        Récapitulatif
+                      </h3>
+                      
+                      <div className="space-y-3 sm:space-y-4">
+                        <div className="flex items-start justify-between p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-100">
+                          <span className="font-semibold text-gray-600 text-sm sm:text-base">Services:</span>
+                          <div className="text-right">
+                            {selectedServices.map(serviceId => {
+                              const service = services.find(s => s.id === serviceId);
+                              return (
+                                <div key={serviceId} className="font-bold text-gray-800 text-xs sm:text-sm">
+                                  {service?.name}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-100">
+                          <span className="font-semibold text-gray-600 text-sm sm:text-base">Date:</span>
+                          <span className="font-bold text-gray-800 text-xs sm:text-sm text-right">{selectedDate && formatDate(new Date(selectedDate))}</span>
+                        </div>
+                        
+                        <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-100">
+                          <span className="font-semibold text-gray-600 text-sm sm:text-base">Heure:</span>
+                          <span className="font-bold text-gray-800 text-xs sm:text-sm">{selectedTime}</span>
+                        </div>
+                        
+                        <div className="flex items-start justify-between p-3 sm:p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg sm:rounded-xl border border-green-200">
+                          <span className="font-semibold text-green-700 text-sm sm:text-base">Prix:</span>
+                          <div className="text-right">
+                            {selectedServices.map(serviceId => {
+                              const service = services.find(s => s.id === serviceId);
+                              return (
+                                <div key={serviceId} className="font-bold text-green-800 text-xs sm:text-sm">
+                                  {service?.price}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+            )}
 
-              {/* Booking Summary */}
-              <div style={{ 
-                backgroundColor: '#f9fafb', 
-                padding: '1.5rem', 
-                borderRadius: '0.5rem',
-                marginTop: '1.5rem'
-              }}>
-                <h3 style={{ 
-                  fontWeight: 'bold', 
-                  fontSize: '1.125rem', 
-                  marginBottom: '1rem',
-                  fontFamily: 'Sequel Bold'
-                }}>
-                  Récapitulatif de la réservation
-                </h3>
-                <div style={{ 
-                  display: 'flex', 
-                  flexDirection: 'column', 
-                  gap: '0.5rem', 
-                  fontSize: '0.875rem',
-                  fontFamily: 'Nexa bold'
-                }}>
-                  <p><strong>Service:</strong> {services.find(s => s.id === selectedService)?.name}</p>
-                  <p><strong>Date:</strong> {formatDate(new Date(selectedDate))}</p>
-                  <p><strong>Heure:</strong> {selectedTime}</p>
-                  <p><strong>Prix:</strong> {services.find(s => s.id === selectedService)?.price}</p>
+            {/* Success Step */}
+            {currentStep === 5 && (
+              <div className="text-center py-8 sm:py-12">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 lg:mb-8 animate-bounce">
+                  <Check className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
+                </div>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-4">Réservation confirmée !</h2>
+                <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 lg:mb-8 px-4">Nous vous contacterons sous 24h pour confirmer votre session.</p>
+                <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full text-white font-bold text-sm sm:text-base">
+                  <span>Merci de votre confiance !</span>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Navigation Buttons */}
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            marginTop: '2rem' 
-          }}>
-            <button
-              onClick={handleBack}
-              disabled={currentStep === 1}
-              style={{
-                padding: '0.75rem 1.5rem',
-                borderRadius: '0.5rem',
-                fontWeight: '600',
-                transition: 'all 0.2s',
-                border: 'none',
-                cursor: currentStep === 1 ? 'not-allowed' : 'pointer',
-                backgroundColor: currentStep === 1 ? '#e5e7eb' : '#4b5563',
-                color: currentStep === 1 ? '#9ca3af' : '#ffffff',
-                fontFamily: 'Sequel Bold'
-              }}
-              onMouseEnter={(e) => {
-                if (currentStep !== 1) {
-                  e.target.style.backgroundColor = '#374151';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (currentStep !== 1) {
-                  e.target.style.backgroundColor = '#4b5563';
-                }
-              }}
-            >
-              Retour
-            </button>
+            {/* Navigation Buttons */}
+            {currentStep < 5 && (
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-gray-200" style={{ marginTop: '12%' }}>
+                <button
+                  onClick={handleBack}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300 bg-gray-600 text-white hover:bg-gray-700 hover:scale-105 shadow-lg hover:shadow-xl"
+                >
+                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                  Retour
+                </button>
 
-            {currentStep < 4 ? (
-              <button
-                onClick={handleNext}
-                disabled={!isStepComplete(currentStep)}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '0.5rem',
-                  fontWeight: '600',
-                  transition: 'all 0.2s',
-                  border: 'none',
-                  cursor: !isStepComplete(currentStep) ? 'not-allowed' : 'pointer',
-                  backgroundColor: !isStepComplete(currentStep) ? '#e5e7eb' : '#16a34a',
-                  color: !isStepComplete(currentStep) ? '#9ca3af' : '#ffffff',
-                  fontFamily: 'Sequel Bold'
-                }}
-                onMouseEnter={(e) => {
-                  if (isStepComplete(currentStep)) {
-                    e.target.style.backgroundColor = '#15803d';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (isStepComplete(currentStep)) {
-                    e.target.style.backgroundColor = '#16a34a';
-                  }
-                }}
-              >
-                Suivant
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                disabled={!isStepComplete(currentStep)}
-                style={{
-                  padding: '0.75rem 2rem',
-                  borderRadius: '0.5rem',
-                  fontWeight: '600',
-                  transition: 'all 0.2s',
-                  border: 'none',
-                  cursor: !isStepComplete(currentStep) ? 'not-allowed' : 'pointer',
-                  backgroundColor: !isStepComplete(currentStep) ? '#e5e7eb' : '#16a34a',
-                  color: !isStepComplete(currentStep) ? '#9ca3af' : '#ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  fontFamily: 'Sequel Bold'
-                }}
-                onMouseEnter={(e) => {
-                  if (isStepComplete(currentStep)) {
-                    e.target.style.backgroundColor = '#15803d';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (isStepComplete(currentStep)) {
-                    e.target.style.backgroundColor = '#16a34a';
-                  }
-                }}
-              >
-                <CreditCard size={20} />
-                <span>Confirmer la réservation</span>
-              </button>
+                {currentStep < 4 ? (
+                  <button
+                    onClick={handleNext}
+                    disabled={!isStepComplete(currentStep)}
+                    className={`
+                      w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300
+                      ${!isStepComplete(currentStep) 
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                        : 'bg-gradient-to-r from-green-400 to-emerald-500 text-white hover:from-green-500 hover:to-emerald-600 hover:scale-105 shadow-lg hover:shadow-xl'
+                      }
+                    `}
+                  >
+                    Suivant
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!isStepComplete(currentStep) || isSubmitting}
+                    className={`
+                      w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300
+                      ${!isStepComplete(currentStep) || isSubmitting
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                        : 'bg-gradient-to-r from-green-400 to-emerald-500 text-white hover:from-green-500 hover:to-emerald-600 hover:scale-105 shadow-lg hover:shadow-xl'
+                      }
+                    `}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span className="hidden sm:inline">Envoi en cours...</span>
+                        <span className="sm:hidden">Envoi...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="hidden sm:inline">Confirmer la réservation</span>
+                        <span className="sm:hidden">Confirmer</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>
+      </div>
 
-        {/* Contact Info */}
-        <div style={{ 
-          textAlign: 'center', 
-          marginTop: '2rem', 
-          color: '#6b7280',
-          fontFamily: 'Nexa bold'
-        }}>
-          <p>
-            Questions? Contactez-nous: <strong>+212-617-869001</strong> | <strong>contact@warddstudio.com</strong>
-          </p>
-        </div>
+      {/* Contact Info */}
+      <div className="text-center mt-8 sm:mt-12 mx-3 sm:mx-4 p-4 sm:p-6 bg-white/60 backdrop-blur rounded-xl sm:rounded-2xl border border-gray-200/50 max-w-4xl lg:mx-auto">
+        <p className="text-gray-600 font-medium text-sm sm:text-base">
+          Questions? Contactez-nous: 
+          <a href="tel:+212617869001" className="text-green-600 font-bold hover:text-green-700 transition-colors mx-1 sm:mx-2 block sm:inline">
+            +212-617-869001
+          </a>
+          <span className="hidden sm:inline">|</span>
+          <a href="mailto:contact@warddstudio.com" className="text-green-600 font-bold hover:text-green-700 transition-colors mx-1 sm:mx-2 block sm:inline">
+            contact@warddstudio.com
+          </a>
+        </p>
       </div>
     </div>
   );
