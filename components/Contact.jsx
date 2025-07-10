@@ -17,9 +17,11 @@ const Contact = () => {
             </p>
           </div>
           <div className={style.btn}>
-            <button>
-              <a href="mailto:contact@warddstudio.com">Contactez nous</a>
-            </button>
+          <div className={style.btn}>
+  <button>
+          <a href="/booking">Réserver maintenant</a>
+          </button>
+          </div>
           </div>
         </div>
 

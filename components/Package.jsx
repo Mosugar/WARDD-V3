@@ -59,7 +59,6 @@ const Package = () => {
   const packs = [
     {
       pack: "PACK ÉTUDIANT",
-      email: "mailto:contact@warddstudio.com?subject=Pack%20Etudiant",
       features: [
         "Enregistrement",
         "Mixage", 
@@ -72,7 +71,6 @@ const Package = () => {
     
     {
       pack: "PACK PROFESSIONNEL",
-      email: "mailto:contact@warddstudio.com?subject=Pack%20Basic", 
       features: [
         "Enregistrement",
         "Mixage",
@@ -82,10 +80,9 @@ const Package = () => {
         "Instru non exclusif",
         "Tuning vocal avancé"
       ]
-    } ,
+    },
     {
-      pack: "PACK PREMIUM", 
-      email: "mailto:contact@warddstudio.com?subject=Pack%20Premium",
+      pack: "PACK PREMIUM",
       features: [
         "Enregistrement",
         "Mixage",
@@ -191,7 +188,7 @@ const Package = () => {
                   ))}
                 </div>
                 <div className={style.packageFooter}>
-                  <a href={pack.email} className={style.reserveButton}>
+                  <a href="/booking" className={style.reserveButton}>
                     <span>RÉSERVEZ</span>
                     <div className={style.buttonArrow}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
