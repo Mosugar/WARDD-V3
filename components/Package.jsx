@@ -64,8 +64,7 @@ const Package = () => {
         "Mixage", 
         "Mastering",
         "Shooting (Offert)",
-        "Contenu vidéo pour réseaux sociaux",
-        "Instru non exclusif"
+        "Contenu vidéo pour réseaux sociaux"
       ]
     },
     
@@ -77,7 +76,7 @@ const Package = () => {
         "Mastering",
         "Shooting (Offert)",
         "Contenu vidéo pour réseaux sociaux",
-        "Instru non exclusif",
+        "Instru exclusif",
         "Tuning vocal avancé"
       ]
     },
