@@ -70,6 +70,8 @@ const BookingSystem = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedServices, setSelectedServices] = useState([]);
+  const [selectedIndividualServices, setSelectedIndividualServices] = useState([]);
+  const [showCustomServices, setShowCustomServices] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [formData, setFormData] = useState({
     name: '',
@@ -83,39 +85,65 @@ const BookingSystem = () => {
 
   const services = [
     {
+      id: 'pack-etudiant',
+      name: 'PACK ÉTUDIANT',
+      duration: 'Session complète',
+      price: '700 DH',
+      description: 'Enregistrement, Mixage, Mastering, Shooting (Offert), Contenu vidéo pour réseaux sociaux'
+    },
+    {
+      id: 'pack-professionnel',
+      name: 'PACK PROFESSIONNEL',
+      duration: 'Session complète',
+      price: '1100 DH',
+      description: 'Enregistrement, Mixage, Mastering, Shooting (Offert), Contenu vidéo pour réseaux sociaux, Instru exclusif, Tuning vocal avancé'
+    },
+    {
+      id: 'pack-premium',
+      name: 'PACK PREMIUM',
+      duration: 'Session complète',
+      price: '1700 DH',
+      description: 'Enregistrement, Mixage, Mastering, Shooting (Offert), Contenu vidéo pour réseaux sociaux, Instru non exclusif, Tuning vocal avancé'
+    },
+    {
+      id: 'pack-personnalise',
+      name: 'PACK PERSONNALISÉ',
+      duration: 'Services à la carte',
+      price: 'Devis sur mesure',
+      description: 'Créez votre propre pack en sélectionnant les services qui vous intéressent'
+    }
+  ];
+
+  const individualServices = [
+    {
       id: 'recording',
-      name: 'RECORDING',
-      duration: '2-8 heures',
-      price: '300 DH/heure',
+      name: 'ENREGISTREMENT',
       description: 'Enregistrement vocal professionnel avec équipement haut de gamme'
     },
     {
       id: 'mixing',
       name: 'MIXAGE',
-      duration: '1-3 jours',
-      price: '800 DH/track',
       description: 'Mixage expert pour donner vie à votre morceau'
     },
     {
       id: 'mastering',
       name: 'MASTERING',
-      duration: '1-2 jours',
-      price: '400 DH/track',
       description: 'Finalisation pour un son prêt pour la radio'
     },
     {
-      id: 'production',
-      name: 'PRODUCTION',
-      duration: '1-5 jours',
-      price: 'Devis personnalisé',
-      description: 'Production musicale complète du concept au produit fini'
+      id: 'shooting',
+      name: 'SHOOTING PHOTO/VIDÉO',
+      description: 'Séance photo/vidéo professionnelle pour votre projet'
     },
     {
-      id: 'beatmaking',
-      name: 'BEATMAKING',
-      duration: '2-4 heures',
-      price: '500 DH/beat',
-      description: 'Beats personnalisés adaptés à votre style'
+      id: 'smm',
+      name: 'SMM (SOCIAL MEDIA MANAGING)',
+      description: 'Gestion complète de vos réseaux sociaux et stratégie digitale'
+    },
+    {
+      id: 'vocal-tuning',
+      name: 'TUNING VOCAL',
+      description: 'Correction et amélioration professionnelle de la voix'
     }
   ];
 
@@ -190,7 +218,21 @@ const BookingSystem = () => {
   };
 
   const handleServiceToggle = (serviceId) => {
-    setSelectedServices(prev => {
+    // Handle custom package selection
+    if (serviceId === 'pack-personnalise') {
+      setSelectedServices([serviceId]);
+      setShowCustomServices(true);
+      setSelectedIndividualServices([]); // Reset individual services
+    } else {
+      // Handle predefined package selection
+      setSelectedServices([serviceId]);
+      setShowCustomServices(false);
+      setSelectedIndividualServices([]); // Reset individual services
+    }
+  };
+
+  const handleIndividualServiceToggle = (serviceId) => {
+    setSelectedIndividualServices(prev => {
       if (prev.includes(serviceId)) {
         return prev.filter(id => id !== serviceId);
       } else {
@@ -208,17 +250,31 @@ const BookingSystem = () => {
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    } else {
+      // If on first step, go back to packages section on main site
+      window.location.href = '/#package';
     }
   };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    const selectedServicesData = services.filter(s => selectedServices.includes(s.id));
-    const serviceNames = selectedServicesData.map(s => s.name).join(', ');
+    
+    let finalServiceNames;
+    if (selectedServices.includes('pack-personnalise')) {
+      const customServices = selectedIndividualServices.map(serviceId => {
+        const service = individualServices.find(s => s.id === serviceId);
+        return service?.name;
+      }).filter(Boolean);
+      finalServiceNames = `Pack Personnalisé (${customServices.join(', ')})`;
+    } else {
+      const selectedServicesData = services.filter(s => selectedServices.includes(s.id));
+      finalServiceNames = selectedServicesData.map(s => s.name).join(', ');
+    }
     
     const bookingData = {
       services: selectedServices,
-      serviceNames: serviceNames,
+      individualServices: selectedIndividualServices,
+      serviceNames: finalServiceNames,
       date: selectedDate,
       time: selectedTime,
       formattedDate: formatDate(new Date(selectedDate)),
@@ -232,12 +288,12 @@ const BookingSystem = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          subject: `Nouvelle réservation Wardd Music - ${serviceNames}`,
+          subject: `Nouvelle réservation Wardd Music - ${finalServiceNames}`,
           message: `
 NOUVELLE RÉSERVATION WARDD MUSIC STUDIO
 
 DÉTAILS DE LA SESSION:
-Services demandés: ${serviceNames}
+Pack demandé: ${finalServiceNames}
 Date: ${bookingData.formattedDate}
 Heure: ${bookingData.time}
 
@@ -255,11 +311,11 @@ ${bookingData.specialRequests || 'Aucune demande spéciale'}
 Réservation effectuée le ${new Date().toLocaleDateString('fr-FR')}
           `,
           _replyto: bookingData.email,
-          _subject: `Nouvelle réservation Wardd Music - ${serviceNames}`,
+          _subject: `Nouvelle réservation Wardd Music - ${finalServiceNames}`,
           client_name: bookingData.name,
           client_email: bookingData.email,
           client_phone: bookingData.phone,
-          services_requested: serviceNames,
+          pack_requested: finalServiceNames,
           booking_date: bookingData.formattedDate,
           booking_time: bookingData.time
         })
@@ -276,13 +332,13 @@ Réservation effectuée le ${new Date().toLocaleDateString('fr-FR')}
     } catch (error) {
       console.error('Error:', error);
       
-      const subject = encodeURIComponent(`Réservation ${serviceNames} - ${bookingData.formattedDate}`);
+      const subject = encodeURIComponent(`Réservation ${finalServiceNames} - ${bookingData.formattedDate}`);
       const body = encodeURIComponent(`
 Bonjour l'équipe Wardd Music,
 
 Je souhaite réserver une session au studio:
 
-Services: ${serviceNames}
+Pack: ${finalServiceNames}
 Date: ${bookingData.formattedDate}
 Heure: ${bookingData.time}
 
@@ -313,6 +369,8 @@ ${bookingData.name}
       setSelectedDate('');
       setSelectedTime('');
       setSelectedServices([]);
+      setSelectedIndividualServices([]);
+      setShowCustomServices(false);
       setFormData({
         name: '',
         email: '',
@@ -326,7 +384,11 @@ ${bookingData.name}
 
   const isStepComplete = (step) => {
     switch (step) {
-      case 1: return selectedServices.length > 0;
+      case 1: 
+        if (selectedServices.includes('pack-personnalise')) {
+          return selectedIndividualServices.length > 0;
+        }
+        return selectedServices.length > 0;
       case 2: return selectedDate !== '';
       case 3: return selectedTime !== '';
       case 4: return formData.name && formData.email && formData.phone;
@@ -335,7 +397,7 @@ ${bookingData.name}
   };
 
   const steps = [
-    { number: 1, title: 'Service', icon: Music },
+    { number: 1, title: 'Pack', icon: Music },
     { number: 2, title: 'Date', icon: Calendar },
     { number: 3, title: 'Heure', icon: Clock },
     { number: 4, title: 'Détails', icon: User }
@@ -344,7 +406,7 @@ ${bookingData.name}
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Header */}
-      <div className="text-center mb-6 sm:mb-12 pt-6 sm:pt-12 px-4">
+      <div className="text-center mb-6 sm:mb-12 pt-20 sm:pt-32 lg:pt-40 px-4">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-gray-800 via-gray-900 to-green-600 bg-clip-text text-transparent mb-4 sm:mb-6">
           Réservez votre session
         </h1>
@@ -406,18 +468,18 @@ ${bookingData.name}
               <div className="space-y-6 sm:space-y-8 lg:space-y-10">
                 <div className="text-center">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
-                    Choisissez vos services
+                    Choisissez votre pack
                   </h2>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 px-2">Sélectionnez un ou plusieurs services qui correspondent à vos besoins</p>
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 px-2">Sélectionnez le pack qui correspond à vos besoins artistiques</p>
                   {selectedServices.length > 0 && (
                     <div className="inline-flex items-center gap-2 mt-2 sm:mt-4 px-3 sm:px-4 py-1.5 sm:py-2 bg-green-100 text-green-700 rounded-full text-xs sm:text-sm font-semibold">
                       <Check size={14} />
-                      {selectedServices.length} service{selectedServices.length > 1 ? 's' : ''} sélectionné{selectedServices.length > 1 ? 's' : ''}
+                      Pack sélectionné
                     </div>
                   )}
                 </div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
                   {services.map((service) => {
                     const isSelected = selectedServices.includes(service.id);
                     return (
@@ -453,13 +515,78 @@ ${bookingData.name}
                           {isSelected ? (
                             <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
                           ) : (
-                            <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-gray-400 rounded"></div>
+                            <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-gray-400 rounded-full"></div>
                           )}
                         </div>
                       </div>
                     );
                   })}
                 </div>
+
+                {/* Custom Services Selection */}
+                {showCustomServices && (
+                  <div className="mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                    <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                      Personnalisez votre pack
+                    </h3>
+                    <p className="text-gray-600 text-center mb-6">
+                      Sélectionnez les services qui vous intéressent pour créer votre pack sur mesure
+                    </p>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {individualServices.map((service) => {
+                        const isSelected = selectedIndividualServices.includes(service.id);
+                        return (
+                          <div
+                            key={service.id}
+                            onClick={() => handleIndividualServiceToggle(service.id)}
+                            className={`
+                              relative p-4 rounded-lg cursor-pointer transition-all duration-300 border-2
+                              ${isSelected 
+                                ? 'bg-blue-500 text-white border-blue-500 shadow-lg' 
+                                : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:shadow-md'
+                              }
+                            `}
+                          >
+                            <div className="flex items-start justify-between mb-2">
+                              <h4 className="font-semibold text-sm">{service.name}</h4>
+                              <div className={`
+                                w-5 h-5 rounded border-2 flex items-center justify-center
+                                ${isSelected 
+                                  ? 'bg-white border-white' 
+                                  : 'border-gray-400'
+                                }
+                              `}>
+                                {isSelected && (
+                                  <Check className="w-3 h-3 text-blue-500" />
+                                )}
+                              </div>
+                            </div>
+                            <p className={`text-xs leading-relaxed ${isSelected ? 'text-white/90' : 'text-gray-600'}`}>
+                              {service.description}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {selectedIndividualServices.length > 0 && (
+                      <div className="mt-4 p-4 bg-white rounded-lg border border-blue-200">
+                        <h4 className="font-semibold text-gray-800 mb-2">Services sélectionnés:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedIndividualServices.map(serviceId => {
+                            const service = individualServices.find(s => s.id === serviceId);
+                            return (
+                              <span key={serviceId} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+                                {service?.name}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -671,16 +798,30 @@ ${bookingData.name}
                       
                       <div className="space-y-3 sm:space-y-4">
                         <div className="flex items-start justify-between p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-100">
-                          <span className="font-semibold text-gray-600 text-sm sm:text-base">Services:</span>
+                          <span className="font-semibold text-gray-600 text-sm sm:text-base">Pack:</span>
                           <div className="text-right">
-                            {selectedServices.map(serviceId => {
-                              const service = services.find(s => s.id === serviceId);
-                              return (
-                                <div key={serviceId} className="font-bold text-gray-800 text-xs sm:text-sm">
-                                  {service?.name}
-                                </div>
-                              );
-                            })}
+                            {selectedServices.includes('pack-personnalise') ? (
+                              <div className="font-bold text-gray-800 text-xs sm:text-sm">
+                                Pack Personnalisé
+                                {selectedIndividualServices.length > 0 && (
+                                  <div className="text-xs text-gray-600 mt-1">
+                                    {selectedIndividualServices.map(serviceId => {
+                                      const service = individualServices.find(s => s.id === serviceId);
+                                      return service?.name;
+                                    }).join(', ')}
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              selectedServices.map(serviceId => {
+                                const service = services.find(s => s.id === serviceId);
+                                return (
+                                  <div key={serviceId} className="font-bold text-gray-800 text-xs sm:text-sm">
+                                    {service?.name}
+                                  </div>
+                                );
+                              })
+                            )}
                           </div>
                         </div>
                         
