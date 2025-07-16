@@ -69,14 +69,14 @@ const Package = () => {
     },
     
     {
-      pack: "PACK PROFESSIONNEL",
+      pack: "PACK Pro",
       features: [
         "Enregistrement",
         "Mixage",
         "Mastering",
         "Shooting (Offert)",
         "Contenu vidéo pour réseaux sociaux",
-        "Instru exclusif",
+        "Instru non exclusif",
         "Tuning vocal avancé"
       ]
     },
@@ -88,8 +88,9 @@ const Package = () => {
         "Mastering",
         "Shooting (Offert)",
         "Contenu vidéo pour réseaux sociaux",
-        "Instru non exclusif",
+        "Instru exclusif",
         "Tuning vocal avancé"
+
       ]
     }
   ];
