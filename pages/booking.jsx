@@ -1,5 +1,4 @@
-// pages/booking.jsx
-import { Header, BookingSystem, Footer } from "@/components/index";
+import { Header, BookingSystem, Footer, WarddChatbot } from "@/components/index";
 
 export default function Booking() {
   return (
@@ -7,6 +6,7 @@ export default function Booking() {
       <Header />
       <BookingSystem />
       <Footer />
+      <WarddChatbot />
     </>
   );
 }
