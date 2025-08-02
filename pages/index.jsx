@@ -1,4 +1,4 @@
-import { Preloader, Header, Hero, About, Contact, Tracks, Clips, StudioLife, Artists, Team, Testimonial, Package, Services, Faqs, Footer, WarddChatbot } from "@/components/index";
+import { Preloader, Header, Hero, About, Contact, Tracks, Clips, StudioLife, Artists, Team, Testimonial, Package, Services, Faqs, Footer, WarddChatbot, BeatsShowcase } from "@/components/index";
 
 export default function Home() {
   return (
@@ -15,6 +15,7 @@ export default function Home() {
         <Artists />
         <Testimonial />
         <Team />
+        <BeatsShowcase/>
         <Contact />
         <Faqs />
       </main>
