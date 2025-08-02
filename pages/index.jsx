@@ -9,13 +9,13 @@ export default function Home() {
       <main>
         <About />
         <Package />
-        <Tracks />
+        {/* <Tracks /> */}
         <Clips />
         <StudioLife />
         <Artists />
         <Testimonial />
         <Team />
-        <BeatsShowcase/>
+        {/* <BeatsShowcase/> */}
         <Contact />
         <Faqs />
       </main>
