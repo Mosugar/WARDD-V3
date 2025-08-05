@@ -388,8 +388,8 @@ ${bookingData.name}
   return (
     <div className={`min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'rtl' : 'ltr'}`}>
       
-      {/* Language Switcher */}
-      <div className="fixed top-4 right-4 z-50">
+      {/* Language Switcher - Moved to bottom left */}
+      <div className="fixed bottom-4 left-4 z-50">
         <div className="relative">
           <button
             onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
@@ -413,7 +413,7 @@ ${bookingData.name}
           </button>
 
           {showLanguageDropdown && (
-            <div className="absolute top-full right-0 mt-2 w-48 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl shadow-xl overflow-hidden z-60">
+            <div className="absolute bottom-full left-0 mb-2 w-48 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl shadow-xl overflow-hidden z-60">
               {languages.map((language) => (
                 <button
                   key={language.code}
