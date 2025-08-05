@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 
+// Import JSON translations
+import bookingTranslations from '../data/bookingTranslations.json';
+
 // SVG Icons Components
 const Calendar = ({ size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -65,7 +68,19 @@ const ArrowRight = ({ size = 24 }) => (
   </svg>
 );
 
+const Globe = ({ size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="2" y1="12" x2="22" y2="12"/>
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+  </svg>
+);
+
 const BookingSystem = () => {
+  // Language state - default to French
+  const [currentLanguage, setCurrentLanguage] = useState('fr');
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
@@ -83,68 +98,15 @@ const BookingSystem = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const services = [
-    {
-      id: 'pack-etudiant',
-      name: 'PACK ÉTUDIANT',
-      duration: 'Session complète',
-      price: '700 DH',
-      description: 'Enregistrement, Mixage, Mastering, Shooting (Offert), Contenu vidéo pour réseaux sociaux'
-    },
-    {
-      id: 'pack-professionnel',
-      name: 'PACK PROFESSIONNEL',
-      duration: 'Session complète',
-      price: '1100 DH',
-      description: 'Enregistrement, Mixage, Mastering, Shooting (Offert), Contenu vidéo pour réseaux sociaux, Instru exclusif, Tuning vocal avancé'
-    },
-    {
-      id: 'pack-premium',
-      name: 'PACK PREMIUM',
-      duration: 'Session complète',
-      price: '1700 DH',
-      description: 'Enregistrement, Mixage, Mastering, Shooting (Offert), Contenu vidéo pour réseaux sociaux, Instru non exclusif, Tuning vocal avancé'
-    },
-    {
-      id: 'pack-personnalise',
-      name: 'PACK PERSONNALISÉ',
-      duration: 'Services à la carte',
-      price: 'Devis sur mesure',
-      description: 'Créez votre propre pack en sélectionnant les services qui vous intéressent'
-    }
-  ];
+  // Get current translations
+  const t = bookingTranslations[currentLanguage];
 
-  const individualServices = [
-    {
-      id: 'recording',
-      name: 'ENREGISTREMENT',
-      description: 'Enregistrement vocal professionnel avec équipement haut de gamme'
-    },
-    {
-      id: 'mixing',
-      name: 'MIXAGE',
-      description: 'Mixage expert pour donner vie à votre morceau'
-    },
-    {
-      id: 'mastering',
-      name: 'MASTERING',
-      description: 'Finalisation pour un son prêt pour la radio'
-    },
-    {
-      id: 'shooting',
-      name: 'SHOOTING PHOTO/VIDÉO',
-      description: 'Séance photo/vidéo professionnelle pour votre projet'
-    },
-    {
-      id: 'smm',
-      name: 'SMM (SOCIAL MEDIA MANAGING)',
-      description: 'Gestion complète de vos réseaux sociaux et stratégie digitale'
-    },
-    {
-      id: 'vocal-tuning',
-      name: 'TUNING VOCAL',
-      description: 'Correction et amélioration professionnelle de la voix'
-    }
+  // Language options with flags
+  const languages = [
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+    { code: 'darija', name: 'الدارجة', flag: '🇲🇦' }
   ];
 
   const timeSlots = [
@@ -161,12 +123,20 @@ const BookingSystem = () => {
   };
 
   const formatDate = (date) => {
-    return date.toLocaleDateString('fr-FR', { 
+    const options = { 
       weekday: 'long', 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
-    });
+    };
+    
+    if (currentLanguage === 'ar' || currentLanguage === 'darija') {
+      return date.toLocaleDateString('ar-MA', options);
+    } else if (currentLanguage === 'en') {
+      return date.toLocaleDateString('en-US', options);
+    } else {
+      return date.toLocaleDateString('fr-FR', options);
+    }
   };
 
   const nextMonth = () => {
@@ -218,16 +188,14 @@ const BookingSystem = () => {
   };
 
   const handleServiceToggle = (serviceId) => {
-    // Handle custom package selection
     if (serviceId === 'pack-personnalise') {
       setSelectedServices([serviceId]);
       setShowCustomServices(true);
-      setSelectedIndividualServices([]); // Reset individual services
+      setSelectedIndividualServices([]);
     } else {
-      // Handle predefined package selection
       setSelectedServices([serviceId]);
       setShowCustomServices(false);
-      setSelectedIndividualServices([]); // Reset individual services
+      setSelectedIndividualServices([]);
     }
   };
 
@@ -251,7 +219,6 @@ const BookingSystem = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      // If on first step, go back to packages section on main site
       window.location.href = '/#package';
     }
   };
@@ -262,13 +229,12 @@ const BookingSystem = () => {
     let finalServiceNames;
     if (selectedServices.includes('pack-personnalise')) {
       const customServices = selectedIndividualServices.map(serviceId => {
-        const service = individualServices.find(s => s.id === serviceId);
-        return service?.name;
+        return t.individualServices[serviceId]?.name;
       }).filter(Boolean);
-      finalServiceNames = `Pack Personnalisé (${customServices.join(', ')})`;
+      finalServiceNames = `${t.services['pack-personnalise'].name} (${customServices.join(', ')})`;
     } else {
-      const selectedServicesData = services.filter(s => selectedServices.includes(s.id));
-      finalServiceNames = selectedServicesData.map(s => s.name).join(', ');
+      const selectedServicesData = selectedServices.map(serviceId => t.services[serviceId]?.name).filter(Boolean);
+      finalServiceNames = selectedServicesData.join(', ');
     }
     
     const bookingData = {
@@ -278,6 +244,7 @@ const BookingSystem = () => {
       date: selectedDate,
       time: selectedTime,
       formattedDate: formatDate(new Date(selectedDate)),
+      language: currentLanguage,
       ...formData
     };
     
@@ -291,6 +258,7 @@ const BookingSystem = () => {
           subject: `Nouvelle réservation Wardd Music - ${finalServiceNames}`,
           message: `
 NOUVELLE RÉSERVATION WARDD MUSIC STUDIO
+Langue: ${languages.find(l => l.code === currentLanguage)?.name}
 
 DÉTAILS DE LA SESSION:
 Pack demandé: ${finalServiceNames}
@@ -324,7 +292,14 @@ Réservation effectuée le ${new Date().toLocaleDateString('fr-FR')}
       if (response.ok) {
         setCurrentStep(5);
         setTimeout(() => {
-          alert('Réservation envoyée avec succès!\n\nNous avons reçu votre demande\nVous recevrez une confirmation par email\nNous vous contacterons sous 24h\n\nMerci de faire confiance à Wardd Music!');
+          alert(currentLanguage === 'en' 
+            ? 'Booking sent successfully!\n\nWe received your request\nYou will receive a confirmation email\nWe will contact you within 24h\n\nThank you for trusting Wardd Music!'
+            : currentLanguage === 'ar'
+            ? 'تم إرسال الحجز بنجاح!\n\nلقد تلقينا طلبك\nستتلقى رسالة تأكيد عبر البريد الإلكتروني\nسنتواصل معك خلال 24 ساعة\n\nشكراً لثقتك في وارد ميوزيك!'
+            : currentLanguage === 'darija'
+            ? 'تسيفط الحجز بنجاح!\n\nوصلنا الطلب ديالك\nغاتوصلك رسالة تأكيد فالإيميل\nغانتواصلو معاك فـ 24 ساعة\n\nبركة لاعلى الثقة فـ وارد ميوزيك!'
+            : 'Réservation envoyée avec succès!\n\nNous avons reçu votre demande\nVous recevrez une confirmation par email\nNous vous contacterons sous 24h\n\nMerci de faire confiance à Wardd Music!'
+          );
         }, 1000);
       } else {
         throw new Error('Erreur lors de l\'envoi');
@@ -359,7 +334,14 @@ ${bookingData.name}
       `);
       
       window.location.href = `mailto:contact@warddstudio.com?subject=${subject}&body=${body}`;
-      alert('Erreur de connexion.\nVotre client email va s\'ouvrir avec toutes les informations pré-remplies!');
+      alert(currentLanguage === 'en' 
+        ? 'Connection error.\nYour email client will open with all the information pre-filled!'
+        : currentLanguage === 'ar'
+        ? 'خطأ في الاتصال.\nسيتم فتح عميل البريد الإلكتروني مع جميع المعلومات المعبأة مسبقاً!'
+        : currentLanguage === 'darija'
+        ? 'مشكل فالاتصال.\nغايتحل الإيميل ديالك مع كامل المعلومات!'
+        : 'Erreur de connexion.\nVotre client email va s\'ouvrir avec toutes les informations pré-remplies!'
+      );
     }
     
     setIsSubmitting(false);
@@ -397,21 +379,71 @@ ${bookingData.name}
   };
 
   const steps = [
-    { number: 1, title: 'Pack', icon: Music },
-    { number: 2, title: 'Date', icon: Calendar },
-    { number: 3, title: 'Heure', icon: Clock },
-    { number: 4, title: 'Détails', icon: User }
+    { number: 1, title: t.steps.pack, icon: Music },
+    { number: 2, title: t.steps.date, icon: Calendar },
+    { number: 3, title: t.steps.time, icon: Clock },
+    { number: 4, title: t.steps.details, icon: User }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <div className={`min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'rtl' : 'ltr'}`}>
+      
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <div className="relative">
+          <button
+            onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+            className="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          >
+            <Globe size={18} />
+            <span className="font-semibold text-gray-700">
+              {languages.find(l => l.code === currentLanguage)?.flag}
+            </span>
+            <span className="hidden sm:inline font-medium text-gray-600">
+              {languages.find(l => l.code === currentLanguage)?.name}
+            </span>
+            <svg
+              className={`w-4 h-4 transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {showLanguageDropdown && (
+            <div className="absolute top-full right-0 mt-2 w-48 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl shadow-xl overflow-hidden z-60">
+              {languages.map((language) => (
+                <button
+                  key={language.code}
+                  onClick={() => {
+                    setCurrentLanguage(language.code);
+                    setShowLanguageDropdown(false);
+                  }}
+                  className={`w-full px-4 py-3 text-left hover:bg-green-50 transition-colors flex items-center gap-3 ${
+                    currentLanguage === language.code ? 'bg-green-100 text-green-700 font-semibold' : 'text-gray-700'
+                  }`}
+                >
+                  <span className="text-lg">{language.flag}</span>
+                  <span className="font-medium">{language.name}</span>
+                  {currentLanguage === language.code && (
+                    <Check size={16} className="ml-auto text-green-600" />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Header */}
       <div className="text-center mb-6 sm:mb-12 pt-20 sm:pt-32 lg:pt-40 px-4">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-gray-800 via-gray-900 to-green-600 bg-clip-text text-transparent mb-4 sm:mb-6">
-          Réservez votre session
+          {t.title}
         </h1>
         <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-2">
-          Expérience professionnelle garantie dans notre studio d'enregistrement
+          {t.subtitle}
         </p>
       </div>
 
@@ -468,26 +500,27 @@ ${bookingData.name}
               <div className="space-y-6 sm:space-y-8 lg:space-y-10">
                 <div className="text-center">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
-                    Choisissez votre pack
+                    {t.step1.title}
                   </h2>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 px-2">Sélectionnez le pack qui correspond à vos besoins artistiques</p>
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 px-2">{t.step1.subtitle}</p>
                   {selectedServices.length > 0 && (
                     <div className="inline-flex items-center gap-2 mt-2 sm:mt-4 px-3 sm:px-4 py-1.5 sm:py-2 bg-green-100 text-green-700 rounded-full text-xs sm:text-sm font-semibold">
                       <Check size={14} />
-                      Pack sélectionné
+                      {t.step1.selected}
                     </div>
                   )}
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
-                  {services.map((service) => {
-                    const isSelected = selectedServices.includes(service.id);
+                  {Object.entries(t.services).map(([serviceId, service]) => {
+                    const isSelected = selectedServices.includes(serviceId);
                     return (
                       <div
-                        key={service.id}
-                        onClick={() => handleServiceToggle(service.id)}
+                        key={serviceId}
+                        onClick={() => handleServiceToggle(serviceId)}
                         className={`
                           relative p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl cursor-pointer transition-all duration-300 transform
+                          ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'pl-12 sm:pl-16 pr-4 sm:pr-5' : 'pr-12 sm:pr-16 pl-4 sm:pl-5'}
                           ${isSelected 
                             ? 'scale-102 sm:scale-105 shadow-xl sm:shadow-2xl ring-2 sm:ring-4 ring-green-200 bg-gradient-to-br from-green-400 to-emerald-500 text-white' 
                             : 'hover:scale-102 sm:hover:scale-105 hover:shadow-lg sm:hover:shadow-xl bg-white text-gray-700 shadow-md border-2 border-gray-200 hover:border-green-300'
@@ -506,7 +539,7 @@ ${bookingData.name}
                         </p>
                         
                         <div className={`
-                          absolute top-3 sm:top-4 right-3 sm:right-4 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300
+                          absolute top-3 sm:top-4 ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'left-3 sm:left-4' : 'right-3 sm:right-4'} w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300
                           ${isSelected 
                             ? 'bg-white shadow-lg scale-110' 
                             : 'bg-gray-200'
@@ -527,21 +560,22 @@ ${bookingData.name}
                 {showCustomServices && (
                   <div className="mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
                     <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                      Personnalisez votre pack
+                      {t.step1.customizeTitle}
                     </h3>
                     <p className="text-gray-600 text-center mb-6">
-                      Sélectionnez les services qui vous intéressent pour créer votre pack sur mesure
+                      {t.step1.customizeSubtitle}
                     </p>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {individualServices.map((service) => {
-                        const isSelected = selectedIndividualServices.includes(service.id);
+                      {Object.entries(t.individualServices).map(([serviceId, service]) => {
+                        const isSelected = selectedIndividualServices.includes(serviceId);
                         return (
                           <div
-                            key={service.id}
-                            onClick={() => handleIndividualServiceToggle(service.id)}
+                            key={serviceId}
+                            onClick={() => handleIndividualServiceToggle(serviceId)}
                             className={`
                               relative p-4 rounded-lg cursor-pointer transition-all duration-300 border-2
+                              ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'pl-12 pr-4' : 'pr-12 pl-4'}
                               ${isSelected 
                                 ? 'bg-blue-500 text-white border-blue-500 shadow-lg' 
                                 : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:shadow-md'
@@ -551,7 +585,7 @@ ${bookingData.name}
                             <div className="flex items-start justify-between mb-2">
                               <h4 className="font-semibold text-sm">{service.name}</h4>
                               <div className={`
-                                w-5 h-5 rounded border-2 flex items-center justify-center
+                                absolute top-4 ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'left-4' : 'right-4'} w-5 h-5 rounded border-2 flex items-center justify-center
                                 ${isSelected 
                                   ? 'bg-white border-white' 
                                   : 'border-gray-400'
@@ -572,10 +606,10 @@ ${bookingData.name}
 
                     {selectedIndividualServices.length > 0 && (
                       <div className="mt-4 p-4 bg-white rounded-lg border border-blue-200">
-                        <h4 className="font-semibold text-gray-800 mb-2">Services sélectionnés:</h4>
+                        <h4 className="font-semibold text-gray-800 mb-2">{t.step1.selectedServices}</h4>
                         <div className="flex flex-wrap gap-2">
                           {selectedIndividualServices.map(serviceId => {
-                            const service = individualServices.find(s => s.id === serviceId);
+                            const service = t.individualServices[serviceId];
                             return (
                               <span key={serviceId} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
                                 {service?.name}
@@ -595,9 +629,9 @@ ${bookingData.name}
               <div className="space-y-6 sm:space-y-8 lg:space-y-10">
                 <div className="text-center">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
-                    Sélectionnez une date
+                    {t.step2.title}
                   </h2>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">Choisissez le jour qui vous convient le mieux</p>
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">{t.step2.subtitle}</p>
                 </div>
                 
                 <div className="flex justify-between items-center mb-4 sm:mb-8 bg-gradient-to-r from-gray-50 to-white p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg">
@@ -609,7 +643,7 @@ ${bookingData.name}
                   </button>
                   
                   <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 text-center">
-                    {currentMonth.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                    {t.calendar.months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                   </h3>
                   
                   <button 
@@ -622,7 +656,7 @@ ${bookingData.name}
 
                 <div className="bg-gradient-to-br from-gray-50 to-white p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg">
                   <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
-                    {['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'].map(day => (
+                    {t.calendar.days.map(day => (
                       <div key={day} className="p-2 sm:p-4 text-center font-bold text-gray-600 text-xs sm:text-sm">
                         {day}
                       </div>
@@ -637,7 +671,7 @@ ${bookingData.name}
                   <div className="text-center p-3 sm:p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl border border-green-200">
                     <div className="inline-flex items-center gap-2 sm:gap-3 text-green-700 font-bold text-sm sm:text-base lg:text-lg">
                       <Calendar className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                      <span>Date sélectionnée: {formatDate(new Date(selectedDate))}</span>
+                      <span>{t.step2.selectedDate} {formatDate(new Date(selectedDate))}</span>
                     </div>
                   </div>
                 )}
@@ -649,9 +683,9 @@ ${bookingData.name}
               <div className="space-y-6 sm:space-y-8 lg:space-y-10">
                 <div className="text-center">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
-                    Choisissez l'heure
+                    {t.step3.title}
                   </h2>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">Sélectionnez le créneau horaire qui vous convient</p>
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">{t.step3.subtitle}</p>
                 </div>
                 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
@@ -679,7 +713,7 @@ ${bookingData.name}
                   <div className="text-center p-3 sm:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl border border-blue-200">
                     <div className="inline-flex items-center gap-2 sm:gap-3 text-blue-700 font-bold text-sm sm:text-base lg:text-lg">
                       <Clock className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                      <span className="break-words">Créneau: {selectedTime} - {formatDate(new Date(selectedDate))}</span>
+                      <span className="break-words">{t.step3.selectedTime} {selectedTime} - {formatDate(new Date(selectedDate))}</span>
                     </div>
                   </div>
                 )}
@@ -691,9 +725,9 @@ ${bookingData.name}
               <div className="space-y-6 sm:space-y-8 lg:space-y-10">
                 <div className="text-center">
                   <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
-                    Vos informations
+                    {t.step4.title}
                   </h2>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">Complétez vos détails pour finaliser la réservation</p>
+                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">{t.step4.subtitle}</p>
                 </div>
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
@@ -701,14 +735,14 @@ ${bookingData.name}
                     <div>
                       <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
                         <User className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                        Nom complet *
+                        {t.form.fullName} *
                       </label>
                       <input
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({...formData, name: e.target.value})}
                         className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
-                        placeholder="Votre nom"
+                        placeholder={t.form.placeholders.fullName}
                         required
                       />
                     </div>
@@ -716,14 +750,14 @@ ${bookingData.name}
                     <div>
                       <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
                         <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                        Email *
+                        {t.form.email} *
                       </label>
                       <input
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({...formData, email: e.target.value})}
                         className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
-                        placeholder="votre@email.com"
+                        placeholder={t.form.placeholders.email}
                         required
                       />
                     </div>
@@ -731,14 +765,14 @@ ${bookingData.name}
                     <div>
                       <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
                         <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                        Téléphone *
+                        {t.form.phone} *
                       </label>
                       <input
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
                         className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
-                        placeholder="+212 6XX XXX XXX"
+                        placeholder={t.form.placeholders.phone}
                         required
                       />
                     </div>
@@ -746,45 +780,45 @@ ${bookingData.name}
                     <div>
                       <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
                         <Music className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                        Nom d'artiste
+                        {t.form.artistName}
                       </label>
                       <input
                         type="text"
                         value={formData.artistName}
                         onChange={(e) => setFormData({...formData, artistName: e.target.value})}
                         className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
-                        placeholder="Votre nom de scène"
+                        placeholder={t.form.placeholders.artistName}
                       />
                     </div>
 
                     <div>
                       <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
-                        Type de projet
+                        {t.form.projectType}
                       </label>
                       <select
                         value={formData.projectType}
                         onChange={(e) => setFormData({...formData, projectType: e.target.value})}
                         className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
                       >
-                        <option value="">Sélectionnez...</option>
-                        <option value="single">Single</option>
-                        <option value="ep">EP</option>
-                        <option value="album">Album</option>
-                        <option value="demo">Demo</option>
-                        <option value="mixtape">Mixtape</option>
+                        <option value="">{t.form.projectTypes.select}</option>
+                        <option value="single">{t.form.projectTypes.single}</option>
+                        <option value="ep">{t.form.projectTypes.ep}</option>
+                        <option value="album">{t.form.projectTypes.album}</option>
+                        <option value="demo">{t.form.projectTypes.demo}</option>
+                        <option value="mixtape">{t.form.projectTypes.mixtape}</option>
                       </select>
                     </div>
 
                     <div>
                       <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
-                        Demandes spéciales
+                        {t.form.specialRequests}
                       </label>
                       <textarea
                         value={formData.specialRequests}
                         onChange={(e) => setFormData({...formData, specialRequests: e.target.value})}
                         rows={4}
                         className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur resize-none text-sm sm:text-base"
-                        placeholder="Décrivez votre projet, style musical, instruments nécessaires..."
+                        placeholder={t.form.placeholders.specialRequests}
                       />
                     </div>
                   </div>
@@ -793,28 +827,27 @@ ${bookingData.name}
                   <div className="lg:sticky lg:top-8">
                     <div className="bg-gradient-to-br from-gray-50 to-white p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200">
                       <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
-                        Récapitulatif
+                        {t.step4.summary}
                       </h3>
                       
                       <div className="space-y-3 sm:space-y-4">
                         <div className="flex items-start justify-between p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-100">
-                          <span className="font-semibold text-gray-600 text-sm sm:text-base">Pack:</span>
+                          <span className="font-semibold text-gray-600 text-sm sm:text-base">{t.step4.pack}</span>
                           <div className="text-right">
                             {selectedServices.includes('pack-personnalise') ? (
                               <div className="font-bold text-gray-800 text-xs sm:text-sm">
-                                Pack Personnalisé
+                                {t.services['pack-personnalise'].name}
                                 {selectedIndividualServices.length > 0 && (
                                   <div className="text-xs text-gray-600 mt-1">
                                     {selectedIndividualServices.map(serviceId => {
-                                      const service = individualServices.find(s => s.id === serviceId);
-                                      return service?.name;
+                                      return t.individualServices[serviceId]?.name;
                                     }).join(', ')}
                                   </div>
                                 )}
                               </div>
                             ) : (
                               selectedServices.map(serviceId => {
-                                const service = services.find(s => s.id === serviceId);
+                                const service = t.services[serviceId];
                                 return (
                                   <div key={serviceId} className="font-bold text-gray-800 text-xs sm:text-sm">
                                     {service?.name}
@@ -826,20 +859,20 @@ ${bookingData.name}
                         </div>
                         
                         <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-100">
-                          <span className="font-semibold text-gray-600 text-sm sm:text-base">Date:</span>
+                          <span className="font-semibold text-gray-600 text-sm sm:text-base">{t.step4.date}</span>
                           <span className="font-bold text-gray-800 text-xs sm:text-sm text-right">{selectedDate && formatDate(new Date(selectedDate))}</span>
                         </div>
                         
                         <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-100">
-                          <span className="font-semibold text-gray-600 text-sm sm:text-base">Heure:</span>
+                          <span className="font-semibold text-gray-600 text-sm sm:text-base">{t.step4.time}</span>
                           <span className="font-bold text-gray-800 text-xs sm:text-sm">{selectedTime}</span>
                         </div>
                         
                         <div className="flex items-start justify-between p-3 sm:p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg sm:rounded-xl border border-green-200">
-                          <span className="font-semibold text-green-700 text-sm sm:text-base">Prix:</span>
+                          <span className="font-semibold text-green-700 text-sm sm:text-base">{t.step4.price}</span>
                           <div className="text-right">
                             {selectedServices.map(serviceId => {
-                              const service = services.find(s => s.id === serviceId);
+                              const service = t.services[serviceId];
                               return (
                                 <div key={serviceId} className="font-bold text-green-800 text-xs sm:text-sm">
                                   {service?.price}
@@ -861,10 +894,10 @@ ${bookingData.name}
                 <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 lg:mb-8 animate-bounce">
                   <Check className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
                 </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-4">Réservation confirmée !</h2>
-                <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 lg:mb-8 px-4">Nous vous contacterons sous 24h pour confirmer votre session.</p>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-4">{t.success.title}</h2>
+                <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 lg:mb-8 px-4">{t.success.subtitle}</p>
                 <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full text-white font-bold text-sm sm:text-base">
-                  <span>Merci de votre confiance !</span>
+                  <span>{t.success.thanks}</span>
                 </div>
               </div>
             )}
@@ -877,7 +910,7 @@ ${bookingData.name}
                   className="w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300 bg-gray-600 text-white hover:bg-gray-700 hover:scale-105 shadow-lg hover:shadow-xl"
                 >
                   <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                  Retour
+                  {t.buttons.back}
                 </button>
 
                 {currentStep < 4 ? (
@@ -892,7 +925,7 @@ ${bookingData.name}
                       }
                     `}
                   >
-                    Suivant
+                    {t.buttons.next}
                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 ) : (
@@ -910,13 +943,13 @@ ${bookingData.name}
                     {isSubmitting ? (
                       <>
                         <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span className="hidden sm:inline">Envoi en cours...</span>
-                        <span className="sm:hidden">Envoi...</span>
+                        <span className="hidden sm:inline">{t.buttons.sending}</span>
+                        <span className="sm:hidden">{t.buttons.sendingShort}</span>
                       </>
                     ) : (
                       <>
-                        <span className="hidden sm:inline">Confirmer la réservation</span>
-                        <span className="sm:hidden">Confirmer</span>
+                        <span className="hidden sm:inline">{t.buttons.confirm}</span>
+                        <span className="sm:hidden">{t.buttons.confirmShort}</span>
                       </>
                     )}
                   </button>
@@ -930,7 +963,7 @@ ${bookingData.name}
       {/* Contact Info */}
       <div className="text-center mt-8 sm:mt-12 mx-3 sm:mx-4 p-4 sm:p-6 bg-white/60 backdrop-blur rounded-xl sm:rounded-2xl border border-gray-200/50 max-w-4xl lg:mx-auto">
         <p className="text-gray-600 font-medium text-sm sm:text-base">
-          Questions? Contactez-nous: 
+          {t.contact.questions}
           <a href="tel:+212617869001" className="text-green-600 font-bold hover:text-green-700 transition-colors mx-1 sm:mx-2 block sm:inline">
             +212-617-869001
           </a>
@@ -940,6 +973,14 @@ ${bookingData.name}
           </a>
         </p>
       </div>
+
+      {/* Click outside to close language dropdown */}
+      {showLanguageDropdown && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowLanguageDropdown(false)}
+        />
+      )}
     </div>
   );
 };
