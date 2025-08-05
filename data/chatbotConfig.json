@@ -1,0 +1,158 @@
+{
+    "studio": {
+      "name": "Wardd Music",
+      "location": {
+        "city": "Kénitra",
+        "country": "Maroc",
+        "coordinates": {
+          "lat": 34.261911,
+          "lng": -6.584118
+        }
+      },
+      "contact": {
+        "phone": "+212-617-869001",
+        "email": "contact@warddstudio.com",
+        "website": "warddstudio.com",
+        "whatsapp": "212617869001"
+      },
+      "hours": {
+        "weekdays": "Lundi au Samedi, 9h à 20h",
+        "sunday": "Fermé"
+      }
+    },
+    "team": [
+      {
+        "name": "Aziz El Asmai",
+        "role": "Sound Engineer",
+        "role_fr": "Ingénieur Son",
+        "role_ar": "مهندس صوت",
+        "role_darija": "مهندس صوت"
+      },
+      {
+        "name": "Imran El Fakyr",
+        "role": "Producer",
+        "role_fr": "Producteur",
+        "role_ar": "منتج",
+        "role_darija": "منتج"
+      }
+    ],
+    "artists": [
+      "Medii", "Youzar", "Icy", "Zhor", 
+      "Lord Mehdi", "Said Saviola", "Anas Fahassa"
+    ],
+    "packages": [
+      {
+        "name": "Pack Étudiant",
+        "name_en": "Student Pack",
+        "name_ar": "باقة الطلاب",
+        "name_darija": "باقة الطلبة",
+        "price": "700 DH",
+        "features": [
+          "Enregistrement + Mixage + Mastering",
+          "Shooting offert + Contenu réseaux sociaux"
+        ]
+      },
+      {
+        "name": "Pack Professionnel",
+        "name_en": "Professional Pack",
+        "name_ar": "الباقة المهنية",
+        "name_darija": "الباقة المهنية",
+        "price": "1100 DH",
+        "features": [
+          "Tout du pack étudiant",
+          "Instru exclusif + Tuning vocal avancé"
+        ]
+      },
+      {
+        "name": "Pack Premium",
+        "name_en": "Premium Pack",
+        "name_ar": "الباقة المميزة",
+        "name_darija": "الباقة المميزة",
+        "price": "1700 DH",
+        "features": [
+          "Service complet premium",
+          "Instru non exclusif + Services avancés"
+        ]
+      },
+      {
+        "name": "Pack Personnalisé",
+        "name_en": "Custom Pack",
+        "name_ar": "باقة مخصصة",
+        "name_darija": "باقة مخصصة",
+        "price": "Devis sur mesure",
+        "features": [
+          "Service sur mesure selon vos besoins"
+        ]
+      }
+    ],
+    "services": [
+      {
+        "name": "Enregistrement",
+        "name_en": "Recording",
+        "name_ar": "التسجيل",
+        "name_darija": "التسجيل",
+        "description": "Studio haute qualité"
+      },
+      {
+        "name": "Mixage",
+        "name_en": "Mixing",
+        "name_ar": "المكساج",
+        "name_darija": "المكساج",
+        "description": "Son professionnel"
+      },
+      {
+        "name": "Mastering",
+        "name_en": "Mastering",
+        "name_ar": "الماسترينغ",
+        "name_darija": "الماسترينغ",
+        "description": "Finalisation radio-ready"
+      },
+      {
+        "name": "Shooting Photo/Vidéo",
+        "name_en": "Photo/Video Shooting",
+        "name_ar": "التصوير الفوتوغرافي/الفيديو",
+        "name_darija": "التصوير",
+        "description": "Contenu professionnel"
+      },
+      {
+        "name": "Social Media Managing",
+        "name_en": "Social Media Managing",
+        "name_ar": "إدارة وسائل التواصل",
+        "name_darija": "إدارة وسائل التواصل",
+        "description": "Gestion réseaux sociaux"
+      },
+      {
+        "name": "Beatmaking",
+        "name_en": "Beatmaking",
+        "name_ar": "صناعة البيتس",
+        "name_darija": "صناعة البيتس",
+        "description": "Production originale"
+      },
+      {
+        "name": "Composition",
+        "name_en": "Composition",
+        "name_ar": "التأليف",
+        "name_darija": "التأليف",
+        "description": "Création sur mesure"
+      },
+      {
+        "name": "Movie Soundtracks",
+        "name_en": "Movie Soundtracks",
+        "name_ar": "موسيقى الأفلام",
+        "name_darija": "موسيقى الأفلام",
+        "description": "Musiques de films"
+      }
+    ],
+    "musicGenres": [
+      "Hip-Hop", "R&B", "Pop", "Afro", "Trap"
+    ],
+    "supportedLanguages": ["fr", "en", "darija", "ar"],
+    "booking": {
+      "website": "https://www.warddmusic.com/booking",
+      "methods": [
+        "Online",
+        "WhatsApp",
+        "Phone"
+      ]
+    }
+  }

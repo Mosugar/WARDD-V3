@@ -1,0 +1,530 @@
+{
+    "fr": {
+      "title": "Réservez votre session",
+      "subtitle": "Expérience professionnelle garantie dans notre studio d'enregistrement",
+      "steps": {
+        "pack": "Pack",
+        "date": "Date", 
+        "time": "Heure",
+        "details": "Détails"
+      },
+      "step1": {
+        "title": "Choisissez votre pack",
+        "subtitle": "Sélectionnez le pack qui correspond à vos besoins artistiques",
+        "selected": "Pack sélectionné",
+        "customizeTitle": "Personnalisez votre pack",
+        "customizeSubtitle": "Sélectionnez les services qui vous intéressent pour créer votre pack sur mesure",
+        "selectedServices": "Services sélectionnés:"
+      },
+      "step2": {
+        "title": "Sélectionnez une date",
+        "subtitle": "Choisissez le jour qui vous convient le mieux",
+        "selectedDate": "Date sélectionnée:"
+      },
+      "step3": {
+        "title": "Choisissez l'heure",
+        "subtitle": "Sélectionnez le créneau horaire qui vous convient",
+        "selectedTime": "Créneau:"
+      },
+      "step4": {
+        "title": "Vos informations",
+        "subtitle": "Complétez vos détails pour finaliser la réservation",
+        "summary": "Récapitulatif",
+        "pack": "Pack:",
+        "date": "Date:",
+        "time": "Heure:",
+        "price": "Prix:"
+      },
+      "success": {
+        "title": "Réservation confirmée !",
+        "subtitle": "Nous vous contacterons sous 24h pour confirmer votre session.",
+        "thanks": "Merci de votre confiance !"
+      },
+      "services": {
+        "pack-etudiant": {
+          "name": "PACK ÉTUDIANT",
+          "duration": "Session complète",
+          "price": "700 DH",
+          "description": "Enregistrement, Mixage, Mastering, Shooting (Offert), Contenu vidéo pour réseaux sociaux"
+        },
+        "pack-professionnel": {
+          "name": "PACK PROFESSIONNEL", 
+          "duration": "Session complète",
+          "price": "1100 DH",
+          "description": "Enregistrement, Mixage, Mastering, Shooting (Offert), Contenu vidéo pour réseaux sociaux, Instru exclusif, Tuning vocal avancé"
+        },
+        "pack-premium": {
+          "name": "PACK PREMIUM",
+          "duration": "Session complète", 
+          "price": "1700 DH",
+          "description": "Enregistrement, Mixage, Mastering, Shooting (Offert), Contenu vidéo pour réseaux sociaux, Instru non exclusif, Tuning vocal avancé"
+        },
+        "pack-personnalise": {
+          "name": "PACK PERSONNALISÉ",
+          "duration": "Services à la carte",
+          "price": "Devis sur mesure",
+          "description": "Créez votre propre pack en sélectionnant les services qui vous intéressent"
+        }
+      },
+      "individualServices": {
+        "recording": {
+          "name": "ENREGISTREMENT",
+          "description": "Enregistrement vocal professionnel avec équipement haut de gamme"
+        },
+        "mixing": {
+          "name": "MIXAGE", 
+          "description": "Mixage expert pour donner vie à votre morceau"
+        },
+        "mastering": {
+          "name": "MASTERING",
+          "description": "Finalisation pour un son prêt pour la radio"
+        },
+        "shooting": {
+          "name": "SHOOTING PHOTO/VIDÉO",
+          "description": "Séance photo/vidéo professionnelle pour votre projet"
+        },
+        "smm": {
+          "name": "SMM (SOCIAL MEDIA MANAGING)",
+          "description": "Gestion complète de vos réseaux sociaux et stratégie digitale"
+        },
+        "vocal-tuning": {
+          "name": "TUNING VOCAL",
+          "description": "Correction et amélioration professionnelle de la voix"
+        }
+      },
+      "form": {
+        "fullName": "Nom complet",
+        "email": "Email",
+        "phone": "Téléphone", 
+        "artistName": "Nom d'artiste",
+        "projectType": "Type de projet",
+        "specialRequests": "Demandes spéciales",
+        "placeholders": {
+          "fullName": "Votre nom",
+          "email": "votre@email.com",
+          "phone": "+212 6XX XXX XXX",
+          "artistName": "Votre nom de scène",
+          "specialRequests": "Décrivez votre projet, style musical, instruments nécessaires..."
+        },
+        "projectTypes": {
+          "select": "Sélectionnez...",
+          "single": "Single",
+          "ep": "EP", 
+          "album": "Album",
+          "demo": "Demo",
+          "mixtape": "Mixtape"
+        }
+      },
+      "buttons": {
+        "back": "Retour",
+        "next": "Suivant", 
+        "confirm": "Confirmer la réservation",
+        "confirmShort": "Confirmer",
+        "sending": "Envoi en cours...",
+        "sendingShort": "Envoi..."
+      },
+      "contact": {
+        "questions": "Questions? Contactez-nous:"
+      },
+      "calendar": {
+        "days": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+        "months": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
+      }
+    },
+    "en": {
+      "title": "Book your session",
+      "subtitle": "Professional experience guaranteed in our recording studio",
+      "steps": {
+        "pack": "Package",
+        "date": "Date",
+        "time": "Time", 
+        "details": "Details"
+      },
+      "step1": {
+        "title": "Choose your package",
+        "subtitle": "Select the package that fits your artistic needs",
+        "selected": "Package selected",
+        "customizeTitle": "Customize your package",
+        "customizeSubtitle": "Select the services you're interested in to create your custom package",
+        "selectedServices": "Selected services:"
+      },
+      "step2": {
+        "title": "Select a date",
+        "subtitle": "Choose the day that works best for you",
+        "selectedDate": "Selected date:"
+      },
+      "step3": {
+        "title": "Choose the time",
+        "subtitle": "Select the time slot that suits you",
+        "selectedTime": "Time slot:"
+      },
+      "step4": {
+        "title": "Your information",
+        "subtitle": "Complete your details to finalize the booking",
+        "summary": "Summary",
+        "pack": "Package:",
+        "date": "Date:",
+        "time": "Time:",
+        "price": "Price:"
+      },
+      "success": {
+        "title": "Booking confirmed!",
+        "subtitle": "We will contact you within 24h to confirm your session.",
+        "thanks": "Thank you for your trust!"
+      },
+      "services": {
+        "pack-etudiant": {
+          "name": "STUDENT PACKAGE",
+          "duration": "Complete session",
+          "price": "700 DH",
+          "description": "Recording, Mixing, Mastering, Shooting (Free), Social media video content"
+        },
+        "pack-professionnel": {
+          "name": "PROFESSIONAL PACKAGE",
+          "duration": "Complete session", 
+          "price": "1100 DH",
+          "description": "Recording, Mixing, Mastering, Shooting (Free), Social media video content, Exclusive beat, Advanced vocal tuning"
+        },
+        "pack-premium": {
+          "name": "PREMIUM PACKAGE",
+          "duration": "Complete session",
+          "price": "1700 DH", 
+          "description": "Recording, Mixing, Mastering, Shooting (Free), Social media video content, Non-exclusive beat, Advanced vocal tuning"
+        },
+        "pack-personnalise": {
+          "name": "CUSTOM PACKAGE",
+          "duration": "À la carte services",
+          "price": "Custom quote",
+          "description": "Create your own package by selecting the services that interest you"
+        }
+      },
+      "individualServices": {
+        "recording": {
+          "name": "RECORDING",
+          "description": "Professional vocal recording with high-end equipment"
+        },
+        "mixing": {
+          "name": "MIXING",
+          "description": "Expert mixing to bring your track to life"
+        },
+        "mastering": {
+          "name": "MASTERING", 
+          "description": "Finalization for radio-ready sound"
+        },
+        "shooting": {
+          "name": "PHOTO/VIDEO SHOOTING",
+          "description": "Professional photo/video session for your project"
+        },
+        "smm": {
+          "name": "SMM (SOCIAL MEDIA MANAGING)",
+          "description": "Complete management of your social networks and digital strategy"
+        },
+        "vocal-tuning": {
+          "name": "VOCAL TUNING",
+          "description": "Professional voice correction and enhancement"
+        }
+      },
+      "form": {
+        "fullName": "Full name",
+        "email": "Email",
+        "phone": "Phone",
+        "artistName": "Artist name", 
+        "projectType": "Project type",
+        "specialRequests": "Special requests",
+        "placeholders": {
+          "fullName": "Your name",
+          "email": "your@email.com",
+          "phone": "+212 6XX XXX XXX",
+          "artistName": "Your stage name",
+          "specialRequests": "Describe your project, musical style, required instruments..."
+        },
+        "projectTypes": {
+          "select": "Select...",
+          "single": "Single",
+          "ep": "EP",
+          "album": "Album", 
+          "demo": "Demo",
+          "mixtape": "Mixtape"
+        }
+      },
+      "buttons": {
+        "back": "Back",
+        "next": "Next",
+        "confirm": "Confirm booking",
+        "confirmShort": "Confirm", 
+        "sending": "Sending...",
+        "sendingShort": "Sending..."
+      },
+      "contact": {
+        "questions": "Questions? Contact us:"
+      },
+      "calendar": {
+        "days": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+      }
+    },
+    "ar": {
+      "title": "احجز جلستك",
+      "subtitle": "تجربة مهنية مضمونة في استوديو التسجيل الخاص بنا",
+      "steps": {
+        "pack": "الباقة",
+        "date": "التاريخ",
+        "time": "الوقت",
+        "details": "التفاصيل"
+      },
+      "step1": {
+        "title": "اختر باقتك",
+        "subtitle": "حدد الباقة التي تناسب احتياجاتك الفنية",
+        "selected": "تم اختيار الباقة",
+        "customizeTitle": "خصص باقتك",
+        "customizeSubtitle": "حدد الخدمات التي تهمك لإنشاء باقتك المخصصة",
+        "selectedServices": "الخدمات المختارة:"
+      },
+      "step2": {
+        "title": "حدد تاريخاً",
+        "subtitle": "اختر اليوم الذي يناسبك أكثر",
+        "selectedDate": "التاريخ المحدد:"
+      },
+      "step3": {
+        "title": "اختر الوقت",
+        "subtitle": "حدد الفترة الزمنية التي تناسبك",
+        "selectedTime": "الفترة الزمنية:"
+      },
+      "step4": {
+        "title": "معلوماتك",
+        "subtitle": "أكمل تفاصيلك لإنهاء الحجز",
+        "summary": "الملخص",
+        "pack": "الباقة:",
+        "date": "التاريخ:",
+        "time": "الوقت:",
+        "price": "السعر:"
+      },
+      "success": {
+        "title": "تم تأكيد الحجز!",
+        "subtitle": "سنتواصل معك خلال 24 ساعة لتأكيد جلستك.",
+        "thanks": "شكراً لثقتك!"
+      },
+      "services": {
+        "pack-etudiant": {
+          "name": "باقة الطلاب",
+          "duration": "جلسة كاملة",
+          "price": "700 درهم",
+          "description": "تسجيل، مكساج، ماسترينغ، تصوير (مجاني)، محتوى فيديو لوسائل التواصل الاجتماعي"
+        },
+        "pack-professionnel": {
+          "name": "الباقة المهنية",
+          "duration": "جلسة كاملة",
+          "price": "1100 درهم",
+          "description": "تسجيل، مكساج، ماسترينغ، تصوير (مجاني)، محتوى فيديو لوسائل التواصل الاجتماعي، بيت حصري، ضبط صوتي متقدم"
+        },
+        "pack-premium": {
+          "name": "الباقة المميزة",
+          "duration": "جلسة كاملة",
+          "price": "1700 درهم",
+          "description": "تسجيل، مكساج، ماسترينغ، تصوير (مجاني)، محتوى فيديو لوسائل التواصل الاجتماعي، بيت غير حصري، ضبط صوتي متقدم"
+        },
+        "pack-personnalise": {
+          "name": "باقة مخصصة",
+          "duration": "خدمات حسب الاختيار",
+          "price": "عرض سعر مخصص",
+          "description": "أنشئ باقتك الخاصة باختيار الخدمات التي تهمك"
+        }
+      },
+      "individualServices": {
+        "recording": {
+          "name": "التسجيل",
+          "description": "تسجيل صوتي مهني بمعدات عالية الجودة"
+        },
+        "mixing": {
+          "name": "المكساج",
+          "description": "مكساج خبير لإحياء مقطوعتك الموسيقية"
+        },
+        "mastering": {
+          "name": "الماسترينغ",
+          "description": "اللمسة الأخيرة لصوت جاهز للإذاعة"
+        },
+        "shooting": {
+          "name": "التصوير الفوتوغرافي/الفيديو",
+          "description": "جلسة تصوير مهنية لمشروعك"
+        },
+        "smm": {
+          "name": "إدارة وسائل التواصل الاجتماعي",
+          "description": "إدارة كاملة لشبكاتك الاجتماعية والاستراتيجية الرقمية"
+        },
+        "vocal-tuning": {
+          "name": "ضبط الصوت",
+          "description": "تصحيح وتحسين مهني للصوت"
+        }
+      },
+      "form": {
+        "fullName": "الاسم الكامل",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "artistName": "اسم الفنان",
+        "projectType": "نوع المشروع",
+        "specialRequests": "طلبات خاصة",
+        "placeholders": {
+          "fullName": "اسمك",
+          "email": "your@email.com",
+          "phone": "+212 6XX XXX XXX",
+          "artistName": "اسمك الفني",
+          "specialRequests": "اوصف مشروعك، النمط الموسيقي، الآلات المطلوبة..."
+        },
+        "projectTypes": {
+          "select": "اختر...",
+          "single": "أغنية منفردة",
+          "ep": "EP",
+          "album": "ألبوم",
+          "demo": "عينة",
+          "mixtape": "ميكستيب"
+        }
+      },
+      "buttons": {
+        "back": "رجوع",
+        "next": "التالي",
+        "confirm": "تأكيد الحجز",
+        "confirmShort": "تأكيد",
+        "sending": "جاري الإرسال...",
+        "sendingShort": "إرسال..."
+      },
+      "contact": {
+        "questions": "أسئلة؟ تواصل معنا:"
+      },
+      "calendar": {
+        "days": ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"],
+        "months": ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
+      }
+    },
+    "darija": {
+      "title": "احجز الجلسة ديالك",
+      "subtitle": "تجربة مهنية مضمونة فـ الاستوديو ديالنا",
+      "steps": {
+        "pack": "الباقة",
+        "date": "التاريخ", 
+        "time": "الوقت",
+        "details": "التفاصيل"
+      },
+      "step1": {
+        "title": "اختار الباقة ديالك",
+        "subtitle": "اختار الباقة لي كتناسب مع الاحتياجات الفنية ديالك",
+        "selected": "تم اختيار الباقة",
+        "customizeTitle": "خصص الباقة ديالك",
+        "customizeSubtitle": "اختار الخدمات لي كتهمك باش تصنع الباقة ديالك",
+        "selectedServices": "الخدمات لي اختريتي:"
+      },
+      "step2": {
+        "title": "اختار التاريخ",
+        "subtitle": "اختار النهار لي كيناسبك مزيان",
+        "selectedDate": "التاريخ لي اختريتي:"
+      },
+      "step3": {
+        "title": "اختار الوقت",
+        "subtitle": "اختار الوقت لي كيناسبك",
+        "selectedTime": "الوقت:"
+      },
+      "step4": {
+        "title": "المعلومات ديالك",
+        "subtitle": "كمل المعلومات ديالك باش تكمل الحجز",
+        "summary": "الملخص",
+        "pack": "الباقة:",
+        "date": "التاريخ:",
+        "time": "الوقت:",
+        "price": "الثمن:"
+      },
+      "success": {
+        "title": "تأكد الحجز!",
+        "subtitle": "غانتواصلو معاك فـ 24 ساعة باش نأكدو ليك الجلسة.",
+        "thanks": "بركة لاعلى الثقة!"
+      },
+      "services": {
+        "pack-etudiant": {
+          "name": "باقة الطلبة",
+          "duration": "جلسة كاملة",
+          "price": "700 درهم",
+          "description": "تسجيل، مكساج، ماسترينغ، تصوير (مجاني)، محتوى الفيديو للريزو"
+        },
+        "pack-professionnel": {
+          "name": "الباقة المهنية",
+          "duration": "جلسة كاملة",
+          "price": "1100 درهم", 
+          "description": "تسجيل، مكساج، ماسترينغ، تصوير (مجاني)، محتوى الفيديو للريزو، بيت حصري، تحسين الصوت"
+        },
+        "pack-premium": {
+          "name": "الباقة المميزة",
+          "duration": "جلسة كاملة",
+          "price": "1700 درهم",
+          "description": "تسجيل، مكساج، ماسترينغ، تصوير (مجاني)، محتوى الفيديو للريزو، بيت مش حصري، تحسين الصوت"
+        },
+        "pack-personnalise": {
+          "name": "باقة مخصصة", 
+          "duration": "خدمات حسب الاختيار",
+          "price": "عرض سعر مخصص",
+          "description": "صنع الباقة ديالك باختيار الخدمات لي كتهمك"
+        }
+      },
+      "individualServices": {
+        "recording": {
+          "name": "التسجيل",
+          "description": "تسجيل صوتي مهني بمعدات عالية الجودة"
+        },
+        "mixing": {
+          "name": "المكساج",
+          "description": "مكساج خبير باش يحيي المقطوعة ديالك"
+        },
+        "mastering": {
+          "name": "الماسترينغ",
+          "description": "اللمسة الأخيرة باش يولي الصوت جاهز للراديو"
+        },
+        "shooting": {
+          "name": "التصوير",
+          "description": "جلسة تصوير مهنية للمشروع ديالك"
+        },
+        "smm": {
+          "name": "إدارة الريزو",
+          "description": "إدارة كاملة للريزو ديالك والاستراتيجية الرقمية"
+        },
+        "vocal-tuning": {
+          "name": "تحسين الصوت",
+          "description": "تصحيح وتحسين مهني للصوت"
+        }
+      },
+      "form": {
+        "fullName": "الاسم الكامل",
+        "email": "الإيميل",
+        "phone": "التيليفون",
+        "artistName": "اسم الفنان",
+        "projectType": "نوع المشروع",
+        "specialRequests": "طلبات خاصة",
+        "placeholders": {
+          "fullName": "السمية ديالك",
+          "email": "your@email.com",
+          "phone": "+212 6XX XXX XXX",
+          "artistName": "الاسم الفني ديالك",
+          "specialRequests": "وصف المشروع ديالك، النوع الموسيقي، الآلات لي محتاجها..."
+        },
+        "projectTypes": {
+          "select": "اختار...",
+          "single": "أغنية واحدة",
+          "ep": "EP",
+          "album": "ألبوم",
+          "demo": "ديمو",
+          "mixtape": "ميكستيب"
+        }
+      },
+      "buttons": {
+        "back": "رجوع",
+        "next": "التالي",
+        "confirm": "أكد الحجز",
+        "confirmShort": "أكد",
+        "sending": "كيتسيفط...",
+        "sendingShort": "كيتسيفط..."
+      },
+      "contact": {
+        "questions": "عندك أسئلة؟ تواصل معانا:"
+      },
+      "calendar": {
+        "days": ["الحد", "التنين", "التلات", "الاربع", "الخميس", "الجمعة", "السبت"],
+        "months": ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "غشت", "شتنبر", "أكتوبر", "نونبر", "دجنبر"]
+      }
+    }
+  }

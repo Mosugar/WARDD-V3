@@ -1,0 +1,75 @@
+{
+    "location": {
+      "keywords": [
+        "où", "adresse", "localisation", "lieu", "situé", "studio", "position", "map", "carte",
+        "where", "address", "location", "place", "situated",
+        "أين", "عنوان", "موقع", "مكان", "استوديو",
+        "فين", "بلاصة", "وين"
+      ],
+      "hasWhatsApp": true,
+      "hasLocation": true
+    },
+    "pricing": {
+      "keywords": [
+        "prix", "tarif", "coût", "combien", "session", "pack", "étudiant", "professionnel", "premium",
+        "price", "cost", "how much", "package", "student", "professional",
+        "سعر", "تكلفة", "كم", "باقة", "طلاب", "مهني",
+        "شحال", "فلوس", "تمن"
+      ],
+      "hasWhatsApp": true
+    },
+    "beats": {
+      "keywords": [
+        "beat", "instru", "instrumental", "production", "beatmaking", "musique", "son",
+        "music", "sound",
+        "بيت", "موسيقى", "إنتاج", "صوت"
+      ],
+      "hasWhatsApp": true
+    },
+    "services": {
+      "keywords": [
+        "service", "enregistrement", "mixage", "mastering", "shooting", "que faites", "proposez",
+        "recording", "mixing", "what do you do",
+        "خدمة", "تسجيل", "مكساج", "ماذا تفعلون",
+        "خدمات", "اشنو كتديرو"
+      ],
+      "hasWhatsApp": true
+    },
+    "booking": {
+      "keywords": [
+        "réserver", "rendez-vous", "booking", "disponibilité", "réservation", "session",
+        "book", "appointment", "availability",
+        "حجز", "موعد", "توفر",
+        "نحجز", "موعد"
+      ],
+      "hasWhatsApp": true,
+      "hasBooking": true
+    },
+    "artists": {
+      "keywords": [
+        "artiste", "qui", "travaillé", "clients", "références", "collaboration",
+        "artist", "who", "worked", "clients", "references",
+        "فنان", "من", "عملتم", "عملاء",
+        "فنانين", "شكون"
+      ],
+      "hasWhatsApp": false
+    },
+    "team": {
+      "keywords": [
+        "équipe", "producteur", "ingénieur", "aziz", "imran", "qui travaille",
+        "team", "producer", "engineer", "who works",
+        "فريق", "منتج", "مهندس", "من يعمل",
+        "شكون كيخدم"
+      ],
+      "hasWhatsApp": false
+    },
+    "contact": {
+      "keywords": [
+        "contact", "téléphone", "numéro", "email", "joindre", "appeler",
+        "phone", "number", "call",
+        "تواصل", "هاتف", "رقم", "اتصال",
+        "كيفاش نتواصل", "تيليفون"
+      ],
+      "hasWhatsApp": true
+    }
+  }
