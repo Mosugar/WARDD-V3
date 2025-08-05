@@ -9,7 +9,7 @@ export default function Home() {
       <main>
         <About />
         <Package />
-        {/* <Tracks /> */}
+        <Tracks />
         <Clips />
         <StudioLife />
         <Artists />

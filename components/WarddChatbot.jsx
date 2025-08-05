@@ -1,45 +1,43 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 const WarddChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [showQuickReplies, setShowQuickReplies] = useState(true);
+  const [showQuickReplies, setShowQuickReplies] = useState(false);
   const [userLanguage, setUserLanguage] = useState('');
   const [userName, setUserName] = useState('');
-  const [conversationStep, setConversationStep] = useState('welcome'); // welcome, askName, askLanguage, chat
+  const [conversationStep, setConversationStep] = useState('welcome');
   const [awaitingName, setAwaitingName] = useState(false);
   const [showLanguageButtons, setShowLanguageButtons] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Translations object - this was missing in your code
+  // Enhanced translations with Moroccan Darija
   const translations = {
     fr: {
-      welcomeMessage: "🎵 Bienvenue chez Wardd Music!\n\nPour mieux vous aider, j'aimerais d'abord vous connaître.",
+      welcomeMessage: "🎵 Bienvenue chez Wardd Music!\n\nChoisissez votre langue préférée pour continuer:",
       askName: "Comment vous appelez-vous?",
-      askLanguage: "Dans quelle langue préférez-vous continuer notre conversation?",
       personalizedWelcome: "Parfait, {name}! Je suis votre assistant virtuel Wardd Music. Comment puis-je vous aider aujourd'hui?",
-      location: "📍 Wardd Music Studio est situé à **Kénitra, Maroc**. Notre studio professionnel est équipé des dernières technologies pour vos enregistrements.\n\n🗺️ **Localisation exacte :** [Voir sur Google Maps](https://www.google.com/maps?ll=34.261911,-6.584118&z=15&t=m&hl=en&gl=MA&mapclient=embed&cid=1333065819772539135)\n\nVenez nous rendre visite !",
-      pricing: "💰 **Nos Packs Studio :**\n\n🎓 **Pack Étudiant** - 700 DH\n• Enregistrement + Mixage + Mastering\n• Shooting offert + Contenu réseaux sociaux\n\n🎵 **Pack Professionnel** - 1100 DH\n• Tout du pack étudiant\n• Instru exclusif + Tuning vocal avancé\n\n⭐ **Pack Premium** - 1700 DH\n• Service complet premium\n• Instru non exclusif + Services avancés\n\n📋 **Pack Personnalisé** - Devis sur mesure",
-      beats: "🎶 **Oui, nous créons des beats !**\n\nNos services incluent :\n• 🎹 Beatmaking professionnel\n• 🎵 Production musicale complète\n• 🎧 Instrumentaux exclusifs et non-exclusifs\n• 🎤 Composition sur mesure\n• 🎼 Ghost production\n\nNous travaillons dans tous les styles : Hip-Hop, R&B, Pop, Afro, Trap, et plus !",
-      services: "🎯 **Nos Services Professionnels :**\n\n🎤 **Enregistrement** - Studio haute qualité\n🎛️ **Mixage** - Son professionnel\n🎵 **Mastering** - Finalisation radio-ready\n📸 **Shooting Photo/Vidéo** - Contenu pro\n📱 **Social Media Managing** - Gestion réseaux\n🎹 **Beatmaking** - Production originale\n🎼 **Composition** - Création sur mesure\n🎬 **Movie Soundtracks** - Musiques de films",
-      booking: "📅 **Réservation de Studio :**\n\nVous pouvez réserver facilement :\n• 💻 **En ligne :** [Réserver maintenant](https://www.warddmusic.com/booking)\n• 📱 Via WhatsApp directement\n• ☎️ Par téléphone au +212-617-869001\n\nNous sommes ouverts du lundi au samedi, de 9h à 20h. Dimanche fermé.",
-      artists: "🌟 **Nos Artistes :**\n\nNous avons travaillé avec de nombreux talents :\n• Medii, Youzar, Icy, Zhor\n• Lord Mehdi, Said Saviola, Anas Fahassa\n• Et bien d'autres artistes talentueux !\n\n🎵 Découvrez leurs créations sur nos réseaux sociaux et Spotify.",
-      team: "👥 **Notre Équipe :**\n\n🎛️ **Aziz El Asmai** - Sound Engineer\n🎵 **Imran El Fakyr** - Producer\n\nUne équipe passionnée et expérimentée pour donner vie à vos projets musicaux !",
-      contact: "📞 **Nous Contacter :**\n\n📱 **Téléphone :** +212-617-869001\n📧 **Email :** contact@warddstudio.com\n🌐 **Site Web :** warddstudio.com\n📍 **Localisation :** Kénitra, Maroc",
-      defaultResponse: "🤔 Je ne suis pas sûr de comprendre votre question. Voici ce que je peux vous aider :\n\n• 📍 Localisation du studio\n• 💰 Tarifs et packs\n• 🎵 Production de beats\n• 🎤 Nos services\n• 📅 Réservations\n\nOu contactez-nous directement via WhatsApp pour une réponse personnalisée !",
-      quickReplies: ["📍 Où êtes-vous ?", "💰 Tarifs ?", "🎵 Beats ?", "🎤 Services ?", "📅 Réserver ?"],
-      languageButtons: ["🇫🇷 Français", "🇬🇧 English", "🇸🇦 العربية"],
+      location: "📍 Wardd Music Studio est situé à **Kénitra, Maroc**. Notre studio professionnel est équipé des dernières technologies pour vos enregistrements.\n\n🗺️ **Localisation exacte:** [Voir sur Google Maps](https://maps.google.com)\n\nVenez nous rendre visite!",
+      pricing: "💰 **Nos Packs Studio:**\n\n🎓 **Pack Étudiant** - 700 DH\n• Enregistrement + Mixage + Mastering\n• Shooting offert + Contenu réseaux sociaux\n\n🎵 **Pack Professionnel** - 1100 DH\n• Tout du pack étudiant\n• Instru exclusif + Tuning vocal avancé\n\n⭐ **Pack Premium** - 1700 DH\n• Service complet premium\n• Instru non exclusif + Services avancés\n\n📋 **Pack Personnalisé** - Devis sur mesure",
+      beats: "🎶 **Oui, nous créons des beats!**\n\nNos services incluent:\n• 🎹 Beatmaking professionnel\n• 🎵 Production musicale complète\n• 🎧 Instrumentaux exclusifs et non-exclusifs\n• 🎤 Composition sur mesure\n• 🎼 Ghost production\n\nNous travaillons dans tous les styles: Hip-Hop, R&B, Pop, Afro, Trap, et plus!",
+      services: "🎯 **Nos Services Professionnels:**\n\n🎤 **Enregistrement** - Studio haute qualité\n🎛️ **Mixage** - Son professionnel\n🎵 **Mastering** - Finalisation radio-ready\n📸 **Shooting Photo/Vidéo** - Contenu pro\n📱 **Social Media Managing** - Gestion réseaux\n🎹 **Beatmaking** - Production originale\n🎼 **Composition** - Création sur mesure\n🎬 **Movie Soundtracks** - Musiques de films",
+      booking: "📅 **Réservation de Studio:**\n\nVous pouvez réserver facilement:\n• 💻 **En ligne:** [Réserver maintenant](https://www.warddmusic.com/booking)\n• 📱 Via WhatsApp directement\n• ☎️ Par téléphone au +212-617-869001\n\nNous sommes ouverts du lundi au samedi, de 9h à 20h. Dimanche fermé.",
+      artists: "🌟 **Nos Artistes:**\n\nNous avons travaillé avec de nombreux talents:\n• Medii, Youzar, Icy, Zhor\n• Lord Mehdi, Said Saviola, Anas Fahassa\n• Et bien d'autres artistes talentueux!\n\n🎵 Découvrez leurs créations sur nos réseaux sociaux et Spotify.",
+      team: "👥 **Notre Équipe:**\n\n🎛️ **Aziz El Asmai** - Sound Engineer\n🎵 **Imran El Fakyr** - Producer\n\nUne équipe passionnée et expérimentée pour donner vie à vos projets musicaux!",
+      contact: "📞 **Nous Contacter:**\n\n📱 **Téléphone:** +212-617-869001\n📧 **Email:** contact@warddstudio.com\n🌐 **Site Web:** warddstudio.com\n📍 **Localisation:** Kénitra, Maroc",
+      defaultResponse: "🤔 Je ne suis pas sûr de comprendre votre question. Voici ce que je peux vous aider:\n\n• 📍 Localisation du studio\n• 💰 Tarifs et packs\n• 🎵 Production de beats\n• 🎤 Nos services\n• 📅 Réservations\n\nOu contactez-nous directement via WhatsApp pour une réponse personnalisée!",
+      quickReplies: ["📍 Où êtes-vous?", "💰 Tarifs?", "🎵 Beats?", "🎤 Services?", "📅 Réserver?"],
+      languageButtons: ["🇫🇷 Français", "🇬🇧 English", "🏛️ الدارجة", "🇸🇦 العربية"],
       placeholder: "Tapez votre message..."
     },
     en: {
-      welcomeMessage: "🎵 Welcome to Wardd Music!\n\nTo better assist you, I'd like to get to know you first.",
+      welcomeMessage: "🎵 Welcome to Wardd Music!\n\nChoose your preferred language to continue:",
       askName: "What's your name?",
-      askLanguage: "In which language would you prefer to continue our conversation?",
       personalizedWelcome: "Perfect, {name}! I'm your Wardd Music virtual assistant. How can I help you today?",
-      location: "📍 Wardd Music Studio is located in **Kenitra, Morocco**. Our professional studio is equipped with the latest technology for your recordings.\n\n🗺️ **Exact location:** [See on Google Maps](https://www.google.com/maps?ll=34.261911,-6.584118&z=15&t=m&hl=en&gl=MA&mapclient=embed&cid=1333065819772539135)\n\nCome visit us!",
+      location: "📍 Wardd Music Studio is located in **Kenitra, Morocco**. Our professional studio is equipped with the latest technology for your recordings.\n\n🗺️ **Exact location:** [See on Google Maps](https://maps.google.com)\n\nCome visit us!",
       pricing: "💰 **Our Studio Packages:**\n\n🎓 **Student Pack** - 700 DH\n• Recording + Mixing + Mastering\n• Free Shooting + Social Media Content\n\n🎵 **Professional Pack** - 1100 DH\n• Everything from student pack\n• Exclusive beat + Advanced vocal tuning\n\n⭐ **Premium Pack** - 1700 DH\n• Complete premium service\n• Non-exclusive beat + Advanced services\n\n📋 **Custom Pack** - Custom quote",
       beats: "🎶 **Yes, we create beats!**\n\nOur services include:\n• 🎹 Professional beatmaking\n• 🎵 Complete music production\n• 🎧 Exclusive and non-exclusive instrumentals\n• 🎤 Custom composition\n• 🎼 Ghost production\n\nWe work in all styles: Hip-Hop, R&B, Pop, Afro, Trap, and more!",
       services: "🎯 **Our Professional Services:**\n\n🎤 **Recording** - High quality studio\n🎛️ **Mixing** - Professional sound\n🎵 **Mastering** - Radio-ready finalization\n📸 **Photo/Video Shooting** - Pro content\n📱 **Social Media Managing** - Network management\n🎹 **Beatmaking** - Original production\n🎼 **Composition** - Custom creation\n🎬 **Movie Soundtracks** - Film music",
@@ -49,15 +47,31 @@ const WarddChatbot = () => {
       contact: "📞 **Contact Us:**\n\n📱 **Phone:** +212-617-869001\n📧 **Email:** contact@warddstudio.com\n🌐 **Website:** warddstudio.com\n📍 **Location:** Kenitra, Morocco",
       defaultResponse: "🤔 I'm not sure I understand your question. Here's what I can help you with:\n\n• 📍 Studio location\n• 💰 Rates and packages\n• 🎵 Beat production\n• 🎤 Our services\n• 📅 Bookings\n\nOr contact us directly via WhatsApp for a personalized response!",
       quickReplies: ["📍 Where are you?", "💰 Pricing?", "🎵 Beats?", "🎤 Services?", "📅 Book?"],
-      languageButtons: ["🇫🇷 Français", "🇬🇧 English", "🇸🇦 العربية"],
+      languageButtons: ["🇫🇷 Français", "🇬🇧 English", "🏛️ الدارجة", "🇸🇦 العربية"],
       placeholder: "Type your message..."
     },
+    darija: {
+      welcomeMessage: "🎵 مرحبا بيك فـ وارد ميوزيك!\n\nاختار اللغة لي بغيتي تكمل بيها:",
+      askName: "شنو سميتك؟",
+      personalizedWelcome: "واخا، {name}! أنا المساعد ديالك فـ وارد ميوزيك. كيفاش نقدر نعاونك اليوم؟",
+      location: "📍 استوديو وارد ميوزيك كاين فـ **القنيطرة، المغرب**. الاستوديو ديالنا مجهز بأحدث التقنيات باش نسجلو ليك.\n\n🗺️ **البلاصة بالضبط:** [شوف فـ خرائط جوجل](https://maps.google.com)\n\nتعال زورنا!",
+      pricing: "💰 **الباقات ديالنا:**\n\n🎓 **باقة الطلبة** - 700 درهم\n• تسجيل + مكساج + ماسترينغ\n• تصوير مجاني + محتوى وسائل التواصل\n\n🎵 **الباقة المهنية** - 1100 درهم\n• كلشي من باقة الطلبة\n• بيت حصري + تحسين صوتي متقدم\n\n⭐ **الباقة المميزة** - 1700 درهم\n• خدمة مميزة كاملة\n• بيت مش حصري + خدمات متقدمة\n\n📋 **باقة مخصصة** - عرض سعر مخصص",
+      beats: "🎶 **أيوا، كنصنعو البيتس!**\n\nالخدمات ديالنا:\n• 🎹 صناعة بيتس مهنية\n• 🎵 إنتاج موسيقي كامل\n• 🎧 آلات موسيقية حصرية ومش حصرية\n• 🎤 تأليف على المقاس\n• 🎼 إنتاج خفي\n\nكنخدمو فـ جميع الأنماط: هيب هوب، آر أند بي، بوب، أفرو، تراب، وبزاف!",
+      services: "🎯 **الخدمات المهنية ديالنا:**\n\n🎤 **التسجيل** - استوديو عالي الجودة\n🎛️ **المكساج** - صوت مهني\n🎵 **الماسترينغ** - جاهز للإذاعة\n📸 **التصوير** - محتوى مهني\n📱 **إدارة وسائل التواصل** - إدارة الشبكات\n🎹 **صناعة البيتس** - إنتاج أصلي\n🎼 **التأليف** - إبداع مخصص\n🎬 **موسيقى الأفلام** - موسيقى سينمائية",
+      booking: "📅 **حجز الاستوديو:**\n\nتقدر تحجز بسهولة:\n• 💻 **عبر الإنترنت:** [احجز دابا](https://www.warddmusic.com/booking)\n• 📱 عبر واتساب مباشرة\n• ☎️ بالتيليفون على +212-617-869001\n\nحنا مفتوحين من الاثنين للسبت، من 9 الصباح لـ 8 المساء. الأحد مسدود.",
+      artists: "🌟 **الفنانين ديالنا:**\n\nخدمنا مع بزاف د المواهب:\n• مدي، يوزار، آيسي، زهور\n• لورد مهدي، سعيد سافيولا، أنس فحاصة\n• وبزاف د الفنانين الموهوبين!\n\n🎵 اكتشف الإبداعات ديالهم فـ وسائل التواصل وسبوتيفاي.",
+      team: "👥 **الفريق ديالنا:**\n\n🎛️ **عزيز العصماي** - مهندس صوت\n🎵 **عمران الفقير** - منتج\n\nفريق شغوف وعندو خبرة باش يحيي المشاريع الموسيقية ديالك!",
+      contact: "📞 **تواصل معانا:**\n\n📱 **التيليفون:** +212-617-869001\n📧 **الإيميل:** contact@warddstudio.com\n🌐 **الموقع:** warddstudio.com\n📍 **البلاصة:** القنيطرة، المغرب",
+      defaultResponse: "🤔 ماشي متأكد فهمت السؤال ديالك. هاشنو نقدر نعاونك فيه:\n\n• 📍 بلاصة الاستوديو\n• 💰 الأسعار والباقات\n• 🎵 صناعة البيتس\n• 🎤 الخدمات ديالنا\n• 📅 الحجوزات\n\nأولا تواصل معانا مباشرة عبر واتساب باش نجاوبك شخصيا!",
+      quickReplies: ["📍 فين نتوما؟", "💰 الأسعار؟", "🎵 البيتس؟", "🎤 الخدمات؟", "📅 حجز؟"],
+      languageButtons: ["🇫🇷 Français", "🇬🇧 English", "🏛️ الدارجة", "🇸🇦 العربية"],
+      placeholder: "كتب الرسالة ديالك..."
+    },
     ar: {
-      welcomeMessage: "🎵 أهلاً بك في وارد ميوزيك!\n\nلمساعدتك بشكل أفضل، أود التعرف عليك أولاً.",
+      welcomeMessage: "🎵 أهلاً بك في وارد ميوزيك!\n\nاختر لغتك المفضلة للمتابعة:",
       askName: "ما اسمك؟",
-      askLanguage: "بأي لغة تفضل أن نكمل محادثتنا؟",
       personalizedWelcome: "ممتاز، {name}! أنا مساعدك الافتراضي في وارد ميوزيك. كيف يمكنني مساعدتك اليوم؟",
-      location: "📍 استوديو وارد ميوزيك يقع في **القنيطرة، المغرب**. استوديونا المهني مجهز بأحدث التقنيات لتسجيلاتك.\n\n🗺️ **الموقع الدقيق:** [شاهد على خرائط جوجل](https://www.google.com/maps?ll=34.261911,-6.584118&z=15&t=m&hl=en&gl=MA&mapclient=embed&cid=1333065819772539135)\n\nتعال لزيارتنا!",
+      location: "📍 استوديو وارد ميوزيك يقع في **القنيطرة، المغرب**. استوديونا المهني مجهز بأحدث التقنيات لتسجيلاتك.\n\n🗺️ **الموقع الدقيق:** [شاهد على خرائط جوجل](https://maps.google.com)\n\nتعال لزيارتنا!",
       pricing: "💰 **باقات الاستوديو:**\n\n🎓 **باقة الطلاب** - 700 درهم\n• تسجيل + مكساج + ماسترينغ\n• تصوير مجاني + محتوى وسائل التواصل\n\n🎵 **الباقة المهنية** - 1100 درهم\n• كل شيء من باقة الطلاب\n• بيت حصري + ضبط صوتي متقدم\n\n⭐ **الباقة المميزة** - 1700 درهم\n• خدمة مميزة كاملة\n• بيت غير حصري + خدمات متقدمة\n\n📋 **باقة مخصصة** - عرض سعر مخصص",
       beats: "🎶 **نعم، نحن ننتج البيتس!**\n\nخدماتنا تشمل:\n• 🎹 إنتاج بيتس مهني\n• 🎵 إنتاج موسيقي كامل\n• 🎧 آلات موسيقية حصرية وغير حصرية\n• 🎤 تأليف مخصص\n• 🎼 إنتاج خفي\n\nنعمل في جميع الأنماط: هيب هوب، آر أند بي، بوب، أفرو، تراب، والمزيد!",
       services: "🎯 **خدماتنا المهنية:**\n\n🎤 **التسجيل** - استوديو عالي الجودة\n🎛️ **المكساج** - صوت مهني\n🎵 **الماسترينغ** - الانتهاء جاهز للإذاعة\n📸 **التصوير الفوتوغرافي/الفيديو** - محتوى مهني\n📱 **إدارة وسائل التواصل** - إدارة الشبكات\n🎹 **صناعة البيتس** - إنتاج أصلي\n🎼 **التأليف** - إبداع مخصص\n🎬 **موسيقى الأفلام** - موسيقى سينمائية",
@@ -67,88 +81,80 @@ const WarddChatbot = () => {
       contact: "📞 **اتصل بنا:**\n\n📱 **الهاتف:** +212-617-869001\n📧 **البريد الإلكتروني:** contact@warddstudio.com\n🌐 **الموقع:** warddstudio.com\n📍 **الموقع:** القنيطرة، المغرب",
       defaultResponse: "🤔 لست متأكداً من فهم سؤالك. إليك ما يمكنني مساعدتك فيه:\n\n• 📍 موقع الاستوديو\n• 💰 الأسعار والباقات\n• 🎵 إنتاج البيتس\n• 🎤 خدماتنا\n• 📅 الحجوزات\n\nأو تواصل معنا مباشرة عبر واتساب للحصول على رد شخصي!",
       quickReplies: ["📍 أين أنتم؟", "💰 الأسعار؟", "🎵 البيتس؟", "🎤 الخدمات؟", "📅 حجز؟"],
-      languageButtons: ["🇫🇷 Français", "🇬🇧 English", "🇸🇦 العربية"],
+      languageButtons: ["🇫🇷 Français", "🇬🇧 English", "🏛️ الدارجة", "🇸🇦 العربية"],
       placeholder: "اكتب رسالتك..."
     }
   };
 
-  // Knowledge base for the AI agent
+  // Optimized knowledge base with multi-language keywords
   const knowledgeBase = {
     location: {
-      keywords: ['où', 'adresse', 'localisation', 'lieu', 'situé', 'studio', 'position', 'map', 'carte', 'where', 'address', 'location', 'place', 'situated', 'أين', 'عنوان', 'موقع', 'مكان', 'استوديو'],
+      keywords: ['où', 'adresse', 'localisation', 'lieu', 'situé', 'studio', 'position', 'map', 'carte', 
+                'where', 'address', 'location', 'place', 'situated', 
+                'أين', 'عنوان', 'موقع', 'مكان', 'استوديو',
+                'فين', 'بلاصة', 'وين'],
       hasWhatsApp: true,
       hasLocation: true
     },
     pricing: {
-      keywords: ['prix', 'tarif', 'coût', 'combien', 'session', 'pack', 'étudiant', 'professionnel', 'premium', 'price', 'cost', 'how much', 'package', 'student', 'professional', 'سعر', 'تكلفة', 'كم', 'باقة', 'طلاب', 'مهني'],
+      keywords: ['prix', 'tarif', 'coût', 'combien', 'session', 'pack', 'étudiant', 'professionnel', 'premium',
+                'price', 'cost', 'how much', 'package', 'student', 'professional',
+                'سعر', 'تكلفة', 'كم', 'باقة', 'طلاب', 'مهني',
+                'شحال', 'فلوس', 'تمن'],
       hasWhatsApp: true
     },
     beats: {
-      keywords: ['beat', 'instru', 'instrumental', 'production', 'beatmaking', 'musique', 'son', 'music', 'sound', 'بيت', 'موسيقى', 'إنتاج', 'صوت'],
+      keywords: ['beat', 'instru', 'instrumental', 'production', 'beatmaking', 'musique', 'son',
+                'music', 'sound',
+                'بيت', 'موسيقى', 'إنتاج', 'صوت'],
       hasWhatsApp: true
     },
     services: {
-      keywords: ['service', 'enregistrement', 'mixage', 'mastering', 'shooting', 'que faites', 'proposez', 'recording', 'mixing', 'what do you do', 'خدمة', 'تسجيل', 'مكساج', 'ماذا تفعلون'],
+      keywords: ['service', 'enregistrement', 'mixage', 'mastering', 'shooting', 'que faites', 'proposez',
+                'recording', 'mixing', 'what do you do',
+                'خدمة', 'تسجيل', 'مكساج', 'ماذا تفعلون',
+                'خدمات', 'اشنو كتديرو'],
       hasWhatsApp: true
     },
     booking: {
-      keywords: ['réserver', 'rendez-vous', 'booking', 'disponibilité', 'réservation', 'session', 'book', 'appointment', 'availability', 'حجز', 'موعد', 'توفر'],
+      keywords: ['réserver', 'rendez-vous', 'booking', 'disponibilité', 'réservation', 'session',
+                'book', 'appointment', 'availability',
+                'حجز', 'موعد', 'توفر',
+                'نحجز', 'موعد'],
       hasWhatsApp: true,
       hasBooking: true
     },
     artists: {
-      keywords: ['artiste', 'qui', 'travaillé', 'clients', 'références', 'collaboration', 'artist', 'who', 'worked', 'clients', 'references', 'فنان', 'من', 'عملتم', 'عملاء'],
+      keywords: ['artiste', 'qui', 'travaillé', 'clients', 'références', 'collaboration',
+                'artist', 'who', 'worked', 'clients', 'references',
+                'فنان', 'من', 'عملتم', 'عملاء',
+                'فنانين', 'شكون'],
       hasWhatsApp: false
     },
     team: {
-      keywords: ['équipe', 'producteur', 'ingénieur', 'aziz', 'imran', 'qui travaille', 'team', 'producer', 'engineer', 'who works', 'فريق', 'منتج', 'مهندس', 'من يعمل'],
+      keywords: ['équipe', 'producteur', 'ingénieur', 'aziz', 'imran', 'qui travaille',
+                'team', 'producer', 'engineer', 'who works',
+                'فريق', 'منتج', 'مهندس', 'من يعمل',
+                'شكون كيخدم'],
       hasWhatsApp: false
     },
     contact: {
-      keywords: ['contact', 'téléphone', 'numéro', 'email', 'joindre', 'appeler', 'phone', 'number', 'call', 'تواصل', 'هاتف', 'رقم', 'اتصال'],
+      keywords: ['contact', 'téléphone', 'numéro', 'email', 'joindre', 'appeler',
+                'phone', 'number', 'call',
+                'تواصل', 'هاتف', 'رقم', 'اتصال',
+                'كيفاش نتواصل', 'تيليفون'],
       hasWhatsApp: true
     }
   };
 
-  // Scroll to bottom when new messages arrive
-  const scrollToBottom = () => {
+  // Memoized functions for better performance
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // Welcome message when chat opens
-  useEffect(() => {
-    if (isOpen && messages.length === 0 && conversationStep === 'welcome') {
-      setTimeout(() => {
-        addBotMessage(translations.fr.welcomeMessage, false, false, false, false);
-        setTimeout(() => {
-          addBotMessage(translations.fr.askName);
-          setConversationStep('askName');
-          setAwaitingName(true);
-        }, 1000);
-      }, 500);
-    }
-  }, [isOpen, messages.length, conversationStep]);
-
-  // Quick reply buttons - now dynamic based on language
-  const getQuickReplies = () => {
-    const lang = userLanguage || 'fr';
-    return [
-      { text: translations[lang].quickReplies[0], key: "location" },
-      { text: translations[lang].quickReplies[1], key: "pricing" },
-      { text: translations[lang].quickReplies[2], key: "beats" },
-      { text: translations[lang].quickReplies[3], key: "services" },
-      { text: translations[lang].quickReplies[4], key: "booking" }
-    ];
-  };
-
-  // Fixed addBotMessage function
-  const addBotMessage = (text, hasWhatsApp = false, hasLocation = false, hasBooking = false, showLanguageSelect = false) => {
+  const addBotMessage = useCallback((text, hasWhatsApp = false, hasLocation = false, hasBooking = false, showLanguageSelect = false) => {
     const newMessage = {
-      id: Date.now(),
+      id: Date.now() + Math.random(),
       text,
       isBot: true,
       timestamp: new Date(),
@@ -158,19 +164,19 @@ const WarddChatbot = () => {
       showLanguageSelect
     };
     setMessages(prev => [...prev, newMessage]);
-  };
+  }, []);
 
-  const addUserMessage = (text) => {
+  const addUserMessage = useCallback((text) => {
     const newMessage = {
-      id: Date.now(),
+      id: Date.now() + Math.random(),
       text,
       isBot: false,
       timestamp: new Date()
     };
     setMessages(prev => [...prev, newMessage]);
-  };
+  }, []);
 
-  const findBestMatch = (userInput) => {
+  const findBestMatch = useCallback((userInput) => {
     const input = userInput.toLowerCase();
     let bestMatch = null;
     let maxMatches = 0;
@@ -187,24 +193,52 @@ const WarddChatbot = () => {
     });
 
     return bestMatch;
-  };
+  }, []);
 
-  const handleLanguageSelection = (language) => {
-    const langCode = language.includes('Français') ? 'fr' : language.includes('English') ? 'en' : 'ar';
-    setUserLanguage(langCode);
-    setConversationStep('chat');
-    setShowLanguageButtons(false);
-    setShowQuickReplies(true);
+  const getQuickReplies = useCallback(() => {
+    const lang = userLanguage || 'fr';
+    return [
+      { text: translations[lang].quickReplies[0], key: "location" },
+      { text: translations[lang].quickReplies[1], key: "pricing" },
+      { text: translations[lang].quickReplies[2], key: "beats" },
+      { text: translations[lang].quickReplies[3], key: "services" },
+      { text: translations[lang].quickReplies[4], key: "booking" }
+    ];
+  }, [userLanguage]);
+
+  // Effects
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
+  // Modified welcome message to start with language selection
+  useEffect(() => {
+    if (isOpen && messages.length === 0 && conversationStep === 'welcome') {
+      setTimeout(() => {
+        addBotMessage(translations.fr.welcomeMessage, false, false, false, true);
+        setShowLanguageButtons(true);
+        setConversationStep('selectLanguage');
+      }, 500);
+    }
+  }, [isOpen, messages.length, conversationStep, addBotMessage]);
+
+  const handleLanguageSelection = useCallback((language) => {
+    const langCode = language.includes('Français') ? 'fr' : 
+                    language.includes('English') ? 'en' : 
+                    language.includes('الدارجة') ? 'darija' : 'ar';
     
+    setUserLanguage(langCode);
+    setShowLanguageButtons(false);
     addUserMessage(language);
     
     setTimeout(() => {
-      const welcomeMsg = translations[langCode].personalizedWelcome.replace('{name}', userName);
-      addBotMessage(welcomeMsg);
+      addBotMessage(translations[langCode].askName);
+      setConversationStep('askName');
+      setAwaitingName(true);
     }, 500);
-  };
+  }, [addUserMessage, addBotMessage]);
 
-  const handleSendMessage = (text = inputText) => {
+  const handleSendMessage = useCallback((text = inputText) => {
     if (!text.trim()) return;
 
     // Handle name input
@@ -216,9 +250,10 @@ const WarddChatbot = () => {
       setIsTyping(true);
 
       setTimeout(() => {
-        addBotMessage(translations.fr.askLanguage, false, false, false, true);
-        setShowLanguageButtons(true);
-        setConversationStep('askLanguage');
+        const welcomeMsg = translations[userLanguage].personalizedWelcome.replace('{name}', text.trim());
+        addBotMessage(welcomeMsg);
+        setConversationStep('chat');
+        setShowQuickReplies(true);
         setIsTyping(false);
       }, 1000);
       return;
@@ -245,39 +280,50 @@ const WarddChatbot = () => {
         setShowQuickReplies(true);
       }, 1500);
     }
-  };
+  }, [inputText, awaitingName, conversationStep, userLanguage, addUserMessage, addBotMessage, findBestMatch]);
 
-  const handleQuickReply = (reply) => {
+  const handleQuickReply = useCallback((reply) => {
     handleSendMessage(reply.text);
-  };
+  }, [handleSendMessage]);
 
-  const openWhatsApp = () => {
+  const openWhatsApp = useCallback(() => {
     const phoneNumber = "212617869001";
-    const message = "Salut Wardd Music! J'aimerais avoir plus d'informations sur vos services.";
+    const message = userLanguage === 'darija' ? 
+      "السلام! بغيت نعرف أكثر على الخدمات ديالكم فـ وارد ميوزيك." :
+      userLanguage === 'ar' ? 
+      "السلام عليكم! أريد معرفة المزيد عن خدماتكم في وارد ميوزيك." :
+      userLanguage === 'en' ?
+      "Hi Wardd Music! I'd like to know more about your services." :
+      "Salut Wardd Music! J'aimerais avoir plus d'informations sur vos services.";
+    
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
-  };
+  }, [userLanguage]);
 
-  const openGoogleMaps = () => {
+  const openGoogleMaps = useCallback(() => {
     const mapsUrl = "https://www.google.com/maps?ll=34.261911,-6.584118&z=15&t=m&hl=en&gl=MA&mapclient=embed&cid=1333065819772539135";
     window.open(mapsUrl, '_blank');
-  };
+  }, []);
 
-  const openBookingPage = () => {
+  const openBookingPage = useCallback(() => {
     const bookingUrl = "https://www.warddmusic.com/booking";
     window.open(bookingUrl, '_blank');
-  };
+  }, []);
 
-  const formatTime = (date) => {
+  const formatTime = useCallback((date) => {
     return date.toLocaleTimeString('fr-FR', { 
       hour: '2-digit', 
       minute: '2-digit' 
     });
-  };
+  }, []);
+
+  const toggleChat = useCallback(() => {
+    setIsOpen(prev => !prev);
+  }, []);
 
   return (
     <>
-      {/* Overlay to block interactions with background when chat is open */}
+      {/* Overlay */}
       {isOpen && (
         <div className="fixed inset-0 z-[9997] bg-black/10 backdrop-blur-sm"></div>
       )}
@@ -285,7 +331,7 @@ const WarddChatbot = () => {
       {/* Chat Button */}
       <div 
         className={`fixed bottom-6 right-6 z-[9999] ${isOpen ? 'scale-95' : 'scale-100'} transition-all duration-300 ease-out`}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleChat}
       >
         <div className="relative">
           {/* Main Button */}
@@ -314,21 +360,9 @@ const WarddChatbot = () => {
                   <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"/>
                 </svg>
               ) : (
-                <div className="w-8 h-8 rounded-lg overflow-hidden">
-                  <img 
-                    src="/icons/ai-assistant.png" 
-                    alt="AI Assistant" 
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      // Fallback to SVG icon if image fails to load
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'block';
-                    }}
-                  />
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="white" style={{display: 'none'}}>
-                    <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V19C3 20.1 3.9 21 5 21H11V19H5V3H13V9H21ZM17 13C15.34 13 14 14.34 14 16S15.34 19 17 19 20 17.66 20 16 18.66 13 17 13ZM17 14.38C18.16 14.38 19.12 15.34 19.12 16.5S18.16 18.62 17 18.62 14.88 17.66 14.88 16.5 15.84 14.38 17 14.38Z"/>
-                  </svg>
-                </div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                  <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12 8C9.79 8 8 9.79 8 12S9.79 16 12 16 16 14.21 16 12 14.21 8 12 8Z"/>
+                </svg>
               )}
             </div>
 
@@ -360,43 +394,31 @@ const WarddChatbot = () => {
         <div className="fixed bottom-24 right-6 w-96 h-[650px] bg-white rounded-3xl shadow-2xl z-[9998] overflow-hidden transform transition-all duration-500 ease-out scale-100 opacity-100 border border-gray-200 flex flex-col">
           {/* Header */}
           <div className="relative h-20 bg-gradient-to-r from-gray-900 via-gray-800 to-emerald-900 flex items-center px-6">
-            {/* Animated Background */}
             <div className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-emerald-600/10 animate-pulse"></div>
             
             <div className="relative z-10 flex items-center space-x-4">
-              {/* Avatar */}
               <div className="relative">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-lg overflow-hidden">
-                  <img 
-                    src="/icons/ai-assistant.png" 
-                    alt="AI Assistant" 
-                    className="w-10 h-10 object-cover rounded-lg"
-                    onError={(e) => {
-                      // Fallback to SVG icon if image fails to load
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'block';
-                    }}
-                  />
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="white" style={{display: 'none'}}>
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-lg">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
                     <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"/>
                   </svg>
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
               </div>
 
-              {/* Info */}
               <div>
                 <h3 className="text-white font-bold text-lg">Wardd AI</h3>
                 <p className="text-green-300 text-sm flex items-center">
                   <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                  En ligne
+                  {userLanguage === 'darija' ? 'متصل' : 
+                   userLanguage === 'ar' ? 'متصل' : 
+                   userLanguage === 'en' ? 'Online' : 'En ligne'}
                 </p>
               </div>
             </div>
 
-            {/* Close Button */}
             <button 
-              onClick={() => setIsOpen(false)}
+              onClick={toggleChat}
               className="absolute top-1/2 right-4 transform -translate-y-1/2 w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex items-center justify-center"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
@@ -412,18 +434,8 @@ const WarddChatbot = () => {
                 <div className={`max-w-xs lg:max-w-md ${message.isBot ? 'order-2' : 'order-1'}`}>
                   {message.isBot && (
                     <div className="flex items-center space-x-2 mb-2">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center overflow-hidden">
-                        <img 
-                          src="/icons/ai-assistant.png" 
-                          alt="AI Assistant" 
-                          className="w-6 h-6 object-cover rounded"
-                          onError={(e) => {
-                            // Fallback to SVG icon if image fails to load
-                            e.target.style.display = 'none';
-                            e.target.nextSibling.style.display = 'block';
-                          }}
-                        />
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="white" style={{display: 'none'}}>
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
                           <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
                         </svg>
                       </div>
@@ -446,7 +458,7 @@ const WarddChatbot = () => {
                     </div>
 
                     {/* Language Selection Buttons */}
-                    {showLanguageButtons && conversationStep === 'askLanguage' && (
+                    {showLanguageButtons && conversationStep === 'selectLanguage' && message.isBot && (
                       <div className="flex flex-col gap-2 mt-3">
                         {translations.fr.languageButtons.map((language, index) => (
                           <button
@@ -482,7 +494,9 @@ const WarddChatbot = () => {
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="mr-1">
                               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                             </svg>
-                            Maps
+                            {userLanguage === 'darija' ? 'الخريطة' : 
+                             userLanguage === 'ar' ? 'الخريطة' : 
+                             userLanguage === 'en' ? 'Maps' : 'Maps'}
                           </button>
                         )}
                         {message.hasBooking && (
@@ -493,13 +507,14 @@ const WarddChatbot = () => {
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="mr-1">
                               <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
                             </svg>
-                            Réserver
+                            {userLanguage === 'darija' ? 'حجز' : 
+                             userLanguage === 'ar' ? 'حجز' : 
+                             userLanguage === 'en' ? 'Book' : 'Réserver'}
                           </button>
                         )}
                       </div>
                     )}
 
-                    {/* Timestamp */}
                     <div className={`text-xs mt-2 ${message.isBot ? 'text-gray-400' : 'text-green-100'}`}>
                       {formatTime(message.timestamp)}
                     </div>
@@ -512,18 +527,8 @@ const WarddChatbot = () => {
             {isTyping && (
               <div className="flex justify-start animate-fadeIn">
                 <div className="flex items-center space-x-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center overflow-hidden">
-                    <img 
-                      src="/icons/ai-assistant.png" 
-                      alt="AI Assistant" 
-                      className="w-6 h-6 object-cover rounded"
-                      onError={(e) => {
-                        // Fallback to SVG icon if image fails to load
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'block';
-                      }}
-                    />
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white" style={{display: 'none'}}>
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
                       <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
                     </svg>
                   </div>
@@ -545,7 +550,7 @@ const WarddChatbot = () => {
           </div>
 
           {/* Quick Replies */}
-          {showQuickReplies && messages.length > 0 && conversationStep === 'chat' && (
+          {showQuickReplies && conversationStep === 'chat' && (
             <div className="px-4 py-3 border-t border-gray-200 bg-gray-50 flex-shrink-0">
               <div className="flex flex-wrap gap-2">
                 {getQuickReplies().map((reply, index) => (
@@ -623,30 +628,15 @@ const WarddChatbot = () => {
           animation: fadeIn 0.3s ease-out;
         }
 
-        /* Custom scrollbar - hide it completely */
         .overflow-y-auto::-webkit-scrollbar {
           width: 0px;
           background: transparent;
         }
 
-        .overflow-y-auto::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar-thumb {
-          background: transparent;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-          background: transparent;
-        }
-
-        /* For Firefox */
         .overflow-y-auto {
           scrollbar-width: none;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 640px) {
           .fixed.bottom-24.right-6 {
             bottom: 90px;
