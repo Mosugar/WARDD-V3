@@ -234,12 +234,12 @@ const WarddChatbot = () => {
                 </svg>
               ) : (
                 <img 
-                  src="/icons/icon ai wardd.svg" 
-                  alt="Wardd AI Assistant" 
-                  width="24" 
-                  height="24" 
-                  className="w-6 h-6"
-                />
+                src="/icons/icon ai wardd.svg" 
+                alt="Wardd AI Assistant" 
+                width="32" 
+                height="32" 
+                className="w-8 h-8"
+              />
               )}
             </div>
 
@@ -250,11 +250,11 @@ const WarddChatbot = () => {
           </div>
 
           {/* Notification Badge */}
-          {!isOpen && (
+          {/* {!isOpen && (
             <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center animate-bounce">
               <span className="text-white text-xs font-bold">AI</span>
             </div>
-          )}
+          )} */}
 
           {/* Floating Label */}
           {!isOpen && (
@@ -276,12 +276,12 @@ const WarddChatbot = () => {
             <div className="relative z-10 flex items-center space-x-4">
               <div className="relative">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-lg">
-                  <img 
-                    src="/icons/icon ai wardd.svg" 
-                    alt="Wardd AI Assistant" 
-                    width="24" 
-                    height="24" 
-                    className="w-6 h-6"
+                <img 
+                  src="/icons/icon ai wardd.svg" 
+                  alt="Wardd AI Assistant" 
+                  width="28" 
+                  height="28" 
+                  className="w-7 h-7"
                   />
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
