@@ -1,13 +1,31 @@
-import { Preloader, Header, Hero, About, Contact, Tracks, Clips, StudioLife, Artists, Team, Testimonial, Package, Services, Faqs, Footer, WarddChatbot, BeatsShowcase } from "@/components/index";
+import {
+  Header,
+  Hero,
+  About,
+  Expertise,
+  Package,
+  Tracks,
+  Clips,
+  StudioLife,
+  Artists,
+  Testimonial,
+  Team,
+  Contact,
+  Faqs,
+  Footer,
+  WarddChatbot,
+} from "@/components/index";
+import TargetCursor from "@/components/ui/TargetCursor";
 
 export default function Home() {
   return (
     <>
-      {/* <Preloader /> */}
+      <TargetCursor />
       <Header />
       <Hero />
       <main>
         <About />
+        <Expertise />
         <Package />
         <Tracks />
         <Clips />
@@ -15,7 +33,6 @@ export default function Home() {
         <Artists />
         <Testimonial />
         <Team />
-        {/* <BeatsShowcase/> */}
         <Contact />
         <Faqs />
       </main>
