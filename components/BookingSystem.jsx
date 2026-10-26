@@ -1,986 +1,672 @@
-import React, { useState } from 'react';
+"use client";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import bookingTranslations from "../data/bookingTranslations.json";
 
-// Import JSON translations
-import bookingTranslations from '../data/bookingTranslations.json';
+/*
+  Booking flow: Pack → Date → Heure → Détails → Confirmation.
+  Texts live in data/bookingTranslations.json (fr / en / ar / darija).
+  Requests are sent to Formspree; if that fails, the visitor can send the
+  same request by email or WhatsApp.
+*/
 
-// SVG Icons Components
-const Calendar = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-    <line x1="16" y1="2" x2="16" y2="6"/>
-    <line x1="8" y1="2" x2="8" y2="6"/>
-    <line x1="3" y1="10" x2="21" y2="10"/>
-  </svg>
-);
+const FORMSPREE_URL = "https://formspree.io/f/xkgbdwbw";
+const STUDIO_EMAIL = "contact@warddstudio.com";
+const WHATSAPP = "212617869001";
 
-const Clock = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <polyline points="12,6 12,12 16,14"/>
-  </svg>
-);
+const LANGS = [
+  { code: "fr", label: "FR" },
+  { code: "en", label: "EN" },
+  { code: "darija", label: "الدارجة" },
+  { code: "ar", label: "العربية" },
+];
 
-const User = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-    <circle cx="12" cy="7" r="4"/>
-  </svg>
-);
+const PACK_IDS = ["pack-etudiant", "pack-professionnel", "pack-premium", "pack-personnalise"];
+// /booking?pack=pro coming from the tickets on the home page
+const QUERY_TO_PACK = { etudiant: "pack-etudiant", pro: "pack-professionnel", premium: "pack-premium", personnalise: "pack-personnalise" };
 
-const Mail = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-    <polyline points="22,6 12,13 2,6"/>
-  </svg>
-);
+const SLOTS = {
+  morning: ["09:00", "10:00", "11:00"],
+  afternoon: ["14:00", "15:00", "16:00", "17:00"],
+  evening: ["18:00", "19:00", "20:00"],
+};
 
-const Phone = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-  </svg>
-);
+// Strings that are not in bookingTranslations.json
+const UI = {
+  fr: { label: "Réservation", summary: "Ta réservation", empty: "Choisis un pack pour commencer.", morning: "Matin", afternoon: "Après-midi", evening: "Soir", today: "Aujourd'hui", closed: "Fermé le dimanche", help: "Une question avant de réserver ?", required: "obligatoire", successCta: "Retour à l'accueil", again: "Nouvelle réservation", errorTitle: "L'envoi n'a pas abouti", errorText: "Pas de souci : envoie-nous la même demande par email ou WhatsApp, tout est déjà rempli.", byEmail: "Envoyer par email", byWhatsapp: "Envoyer sur WhatsApp", popular: "Populaire", choose: "Choisir", chosen: "Choisi", step: "Étape" },
+  en: { label: "Booking", summary: "Your booking", empty: "Pick a package to start.", morning: "Morning", afternoon: "Afternoon", evening: "Evening", today: "Today", closed: "Closed on Sundays", help: "A question before booking?", required: "required", successCta: "Back to home", again: "New booking", errorTitle: "Sending failed", errorText: "No worries: send us the same request by email or WhatsApp, it's all filled in.", byEmail: "Send by email", byWhatsapp: "Send on WhatsApp", popular: "Popular", choose: "Choose", chosen: "Selected", step: "Step" },
+  ar: { label: "الحجز", summary: "حجزك", empty: "اختر باقة للبدء.", morning: "صباحاً", afternoon: "بعد الظهر", evening: "مساءً", today: "اليوم", closed: "مغلق يوم الأحد", help: "لديك سؤال قبل الحجز؟", required: "إجباري", successCta: "العودة للرئيسية", again: "حجز جديد", errorTitle: "لم يتم الإرسال", errorText: "لا مشكلة: أرسل نفس الطلب عبر البريد أو واتساب، كل المعلومات جاهزة.", byEmail: "إرسال بالبريد", byWhatsapp: "إرسال عبر واتساب", popular: "الأكثر طلباً", choose: "اختيار", chosen: "تم الاختيار", step: "خطوة" },
+  darija: { label: "الحجز", summary: "الحجز ديالك", empty: "ختار باقة باش تبدا.", morning: "الصباح", afternoon: "العشية", evening: "الليل", today: "اليوم", closed: "مسدود نهار الحد", help: "عندك شي سؤال قبل ما تحجز؟", required: "ضروري", successCta: "رجع للصفحة الرئيسية", again: "حجز جديد", errorTitle: "ماتسيفطش الطلب", errorText: "ماشي مشكل: صيفط نفس الطلب فالإيميل ولا الواتساب، كلشي معمر.", byEmail: "صيفط فالإيميل", byWhatsapp: "صيفط فالواتساب", popular: "الأكثر طلبا", choose: "ختار", chosen: "مختار", step: "مرحلة" },
+};
 
-const Music = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M9 18V5l12-2v13"/>
-    <circle cx="6" cy="18" r="3"/>
-    <circle cx="18" cy="16" r="3"/>
-  </svg>
-);
+const pad2 = (n) => String(n).padStart(2, "0");
+// "PACK ÉTUDIANT" → "Pack Étudiant" (Arabic is left as is)
+const nice = (s = "") => (/[A-ZÀ-Ý]{2}/.test(s) ? s.toLowerCase().replace(/(^|[\s(/-])([^\s(/-])/g, (m, a, c) => a + c.toUpperCase()).replace(/\bSmm\b/, "SMM") : s);
+const toKey = (d) => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 
-const Check = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="20,6 9,17 4,12"/>
-  </svg>
-);
+const Icon = {
+  check: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+  arrow: (
+    <svg width="16" height="12" viewBox="0 0 22 12" fill="none" aria-hidden="true" className="rtl:rotate-180">
+      <path d="M1 6h19m0 0l-5-5m5 5l-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+  back: (
+    <svg width="16" height="12" viewBox="0 0 22 12" fill="none" aria-hidden="true" className="rotate-180 rtl:rotate-0">
+      <path d="M1 6h19m0 0l-5-5m5 5l-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+  chevron: (dir) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className={dir === "prev" ? "rtl:rotate-180" : "rotate-180 rtl:rotate-0"}>
+      <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+};
 
-const ArrowLeft = ({ size = 24 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="19" y1="12" x2="5" y2="12"/>
-    <polyline points="12,19 5,12 12,5"/>
-  </svg>
-);
-
-const ArrowRight = ({ size = 24 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="5" y1="12" x2="19" y2="12"/>
-    <polyline points="12,5 19,12 12,19"/>
-  </svg>
-);
-
-const Globe = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="2" y1="12" x2="22" y2="12"/>
-    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-  </svg>
-);
+const inputCls =
+  "w-full rounded-2xl border border-transparent bg-surface px-4 py-3.5 text-[15px] text-ink outline-none transition-colors placeholder:text-subtle focus:border-ink/30 focus:bg-paper";
 
 const BookingSystem = () => {
-  // Language state - default to French
-  const [currentLanguage, setCurrentLanguage] = useState('fr');
-  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
-  
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [selectedIndividualServices, setSelectedIndividualServices] = useState([]);
-  const [showCustomServices, setShowCustomServices] = useState(false);
-  const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    artistName: '',
-    projectType: '',
-    specialRequests: ''
+  const router = useRouter();
+  const [lang, setLang] = useState("fr");
+  const [step, setStep] = useState(1); // 1..4, 5 = success
+  const [pack, setPack] = useState("");
+  const [extras, setExtras] = useState([]); // individual services for the custom pack
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [month, setMonth] = useState(() => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), 1);
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", artistName: "", projectType: "", specialRequests: "" });
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(false);
 
-  // Get current translations
-  const t = bookingTranslations[currentLanguage];
+  const t = bookingTranslations[lang];
+  const ui = UI[lang];
+  const rtl = lang === "ar" || lang === "darija";
 
-  // Language options with flags
-  const languages = [
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-    { code: 'darija', name: 'الدارجة', flag: '🇲🇦' }
-  ];
+  // Preselect the pack torn on the home page
+  useEffect(() => {
+    if (!router.isReady) return;
+    const id = QUERY_TO_PACK[router.query.pack];
+    if (id) {
+      setPack(id);
+      if (id !== "pack-personnalise") setStep(2);
+    }
+  }, [router.isReady, router.query.pack]);
 
-  const timeSlots = [
-    '09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
-  ];
+  const today = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }, []);
 
-  const daysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-  const firstDayOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+  const locale = lang === "en" ? "en-GB" : rtl ? "ar-MA" : "fr-FR";
+  const formatDate = (key) =>
+    key ? new Date(`${key}T12:00:00`).toLocaleDateString(locale, { weekday: "long", day: "numeric", month: "long" }) : "";
 
-  const isDateAvailable = (day) => {
-    const today = new Date();
-    const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    return checkDate >= today && checkDate.getDay() !== 0;
+  const packName = () => {
+    if (!pack) return "";
+    if (pack === "pack-personnalise") {
+      const names = extras.map((id) => t.individualServices[id]?.name).filter(Boolean);
+      return `${nice(t.services[pack].name)}${names.length ? ` (${names.map(nice).join(", ")})` : ""}`;
+    }
+    return nice(t.services[pack].name);
   };
 
-  const formatDate = (date) => {
-    const options = { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    };
-    
-    if (currentLanguage === 'ar' || currentLanguage === 'darija') {
-      return date.toLocaleDateString('ar-MA', options);
-    } else if (currentLanguage === 'en') {
-      return date.toLocaleDateString('en-US', options);
-    } else {
-      return date.toLocaleDateString('fr-FR', options);
+  const stepDone = (n) => {
+    if (n === 1) return pack && (pack !== "pack-personnalise" || extras.length > 0);
+    if (n === 2) return !!date;
+    if (n === 3) return !!time;
+    if (n === 4) return form.name.trim() && form.email.trim() && form.phone.trim();
+    return false;
+  };
+  const canOpen = (n) => n === 1 || [...Array(n - 1)].every((_, i) => stepDone(i + 1));
+
+  const message = () =>
+    [
+      "NOUVELLE RÉSERVATION — WARDD STUDIO",
+      `Langue : ${LANGS.find((l) => l.code === lang)?.label}`,
+      "",
+      `Pack : ${packName()}`,
+      `Date : ${formatDate(date)}`,
+      `Heure : ${time}`,
+      "",
+      `Nom : ${form.name}`,
+      `Email : ${form.email}`,
+      `Téléphone : ${form.phone}`,
+      `Nom d'artiste : ${form.artistName || "—"}`,
+      `Type de projet : ${form.projectType || "—"}`,
+      "",
+      `Demandes : ${form.specialRequests || "—"}`,
+    ].join("\n");
+
+  const submit = async () => {
+    if (!stepDone(4) || sending) return;
+    setSending(true);
+    setFailed(false);
+    try {
+      const r = await fetch(FORMSPREE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          _subject: `Nouvelle réservation Wardd Studio — ${packName()}`,
+          _replyto: form.email,
+          message: message(),
+          client_name: form.name,
+          client_email: form.email,
+          client_phone: form.phone,
+          pack_requested: packName(),
+          booking_date: formatDate(date),
+          booking_time: time,
+        }),
+      });
+      if (!r.ok) throw new Error(String(r.status));
+      setStep(5);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (e) {
+      console.error("booking error", e);
+      setFailed(true);
+    }
+    setSending(false);
+  };
+
+  const reset = () => {
+    setStep(1);
+    setPack("");
+    setExtras([]);
+    setDate("");
+    setTime("");
+    setFailed(false);
+    setForm({ name: "", email: "", phone: "", artistName: "", projectType: "", specialRequests: "" });
+  };
+
+  const next = () => {
+    if (stepDone(step) && step < 4) {
+      setStep(step + 1);
+      if (window.scrollY > 300) window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
-  const nextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
-  };
-
-  const prevMonth = () => {
-    const today = new Date();
-    const prevMonthDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1);
-    if (prevMonthDate >= new Date(today.getFullYear(), today.getMonth())) {
-      setCurrentMonth(prevMonthDate);
-    }
-  };
-
-  const renderCalendar = () => {
-    const days = daysInMonth(currentMonth);
-    const firstDay = firstDayOfMonth(currentMonth);
-    const monthDays = [];
-    
-    for (let i = 0; i < firstDay; i++) {
-      monthDays.push(<div key={`empty-${i}`} className="p-2 sm:p-4"></div>);
-    }
-    
-    for (let day = 1; day <= days; day++) {
-      const isAvailable = isDateAvailable(day);
-      const isSelected = selectedDate === `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      
-      monthDays.push(
+  // ── Calendar ──────────────────────────────────────────────────────────
+  const calendar = () => {
+    const first = new Date(month.getFullYear(), month.getMonth(), 1);
+    const days = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+    const offset = first.getDay(); // 0 = Sunday, matches t.calendar.days
+    const cells = [];
+    for (let i = 0; i < offset; i++) cells.push(<div key={`e${i}`} />);
+    for (let d = 1; d <= days; d++) {
+      const day = new Date(month.getFullYear(), month.getMonth(), d);
+      const key = toKey(day);
+      const sunday = day.getDay() === 0;
+      const past = day < today;
+      const off = sunday || past;
+      const selected = date === key;
+      const isToday = day.getTime() === today.getTime();
+      cells.push(
         <button
-          key={day}
-          onClick={() => isAvailable && setSelectedDate(`${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`)}
-          disabled={!isAvailable}
-          className={`
-            p-2 sm:p-4 text-center rounded-lg sm:rounded-xl font-medium transition-all duration-300 text-sm sm:text-base
-            ${isSelected 
-              ? 'bg-green-500 text-white shadow-lg scale-105' 
-              : isAvailable 
-                ? 'bg-white hover:bg-green-50 text-gray-800 hover:text-green-600 hover:scale-105 shadow-sm hover:shadow-md border border-gray-200 hover:border-green-300' 
-                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-            }
-          `}
+          key={key}
+          type="button"
+          disabled={off}
+          onClick={() => {
+            setDate(key);
+            setTime("");
+          }}
+          aria-pressed={selected}
+          aria-label={formatDate(key)}
+          className={`relative flex h-11 items-center justify-center rounded-2xl text-[15px] transition-all duration-200 sm:h-14 ${
+            selected
+              ? "bg-ink font-medium text-white"
+              : off
+              ? "cursor-not-allowed text-subtle/50"
+              : "text-ink hover:bg-surface"
+          }`}
         >
-          {day}
+          {d}
+          {isToday && !selected && <span className="absolute bottom-1.5 h-1 w-1 rounded-full bg-ink" />}
         </button>
       );
     }
-    
-    return monthDays;
+    return cells;
   };
 
-  const handleServiceToggle = (serviceId) => {
-    if (serviceId === 'pack-personnalise') {
-      setSelectedServices([serviceId]);
-      setShowCustomServices(true);
-      setSelectedIndividualServices([]);
-    } else {
-      setSelectedServices([serviceId]);
-      setShowCustomServices(false);
-      setSelectedIndividualServices([]);
-    }
+  const canGoPrevMonth = month > new Date(today.getFullYear(), today.getMonth(), 1);
+
+  const slotTaken = (slot) => {
+    // Past hours today are not bookable
+    if (date !== toKey(today)) return false;
+    const [h] = slot.split(":").map(Number);
+    return h <= new Date().getHours();
   };
 
-  const handleIndividualServiceToggle = (serviceId) => {
-    setSelectedIndividualServices(prev => {
-      if (prev.includes(serviceId)) {
-        return prev.filter(id => id !== serviceId);
-      } else {
-        return [...prev, serviceId];
-      }
-    });
-  };
-
-  const handleNext = () => {
-    if (currentStep < 4) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    } else {
-      window.location.href = '/#package';
-    }
-  };
-
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    
-    let finalServiceNames;
-    if (selectedServices.includes('pack-personnalise')) {
-      const customServices = selectedIndividualServices.map(serviceId => {
-        return t.individualServices[serviceId]?.name;
-      }).filter(Boolean);
-      finalServiceNames = `${t.services['pack-personnalise'].name} (${customServices.join(', ')})`;
-    } else {
-      const selectedServicesData = selectedServices.map(serviceId => t.services[serviceId]?.name).filter(Boolean);
-      finalServiceNames = selectedServicesData.join(', ');
-    }
-    
-    const bookingData = {
-      services: selectedServices,
-      individualServices: selectedIndividualServices,
-      serviceNames: finalServiceNames,
-      date: selectedDate,
-      time: selectedTime,
-      formattedDate: formatDate(new Date(selectedDate)),
-      language: currentLanguage,
-      ...formData
-    };
-    
-    try {
-      const response = await fetch('https://formspree.io/f/xkgbdwbw', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          subject: `Nouvelle réservation Wardd Music - ${finalServiceNames}`,
-          message: `
-NOUVELLE RÉSERVATION WARDD MUSIC STUDIO
-Langue: ${languages.find(l => l.code === currentLanguage)?.name}
-
-DÉTAILS DE LA SESSION:
-Pack demandé: ${finalServiceNames}
-Date: ${bookingData.formattedDate}
-Heure: ${bookingData.time}
-
-INFORMATIONS CLIENT:
-Nom complet: ${bookingData.name}
-Email: ${bookingData.email}
-Téléphone: ${bookingData.phone}
-Nom d'artiste: ${bookingData.artistName || 'Non spécifié'}
-Type de projet: ${bookingData.projectType || 'Non spécifié'}
-
-DEMANDES SPÉCIALES:
-${bookingData.specialRequests || 'Aucune demande spéciale'}
-
----
-Réservation effectuée le ${new Date().toLocaleDateString('fr-FR')}
-          `,
-          _replyto: bookingData.email,
-          _subject: `Nouvelle réservation Wardd Music - ${finalServiceNames}`,
-          client_name: bookingData.name,
-          client_email: bookingData.email,
-          client_phone: bookingData.phone,
-          pack_requested: finalServiceNames,
-          booking_date: bookingData.formattedDate,
-          booking_time: bookingData.time
-        })
-      });
-
-      if (response.ok) {
-        setCurrentStep(5);
-        setTimeout(() => {
-          alert(currentLanguage === 'en' 
-            ? 'Booking sent successfully!\n\nWe received your request\nYou will receive a confirmation email\nWe will contact you within 24h\n\nThank you for trusting Wardd Music!'
-            : currentLanguage === 'ar'
-            ? 'تم إرسال الحجز بنجاح!\n\nلقد تلقينا طلبك\nستتلقى رسالة تأكيد عبر البريد الإلكتروني\nسنتواصل معك خلال 24 ساعة\n\nشكراً لثقتك في وارد ميوزيك!'
-            : currentLanguage === 'darija'
-            ? 'تسيفط الحجز بنجاح!\n\nوصلنا الطلب ديالك\nغاتوصلك رسالة تأكيد فالإيميل\nغانتواصلو معاك فـ 24 ساعة\n\nبركة لاعلى الثقة فـ وارد ميوزيك!'
-            : 'Réservation envoyée avec succès!\n\nNous avons reçu votre demande\nVous recevrez une confirmation par email\nNous vous contacterons sous 24h\n\nMerci de faire confiance à Wardd Music!'
-          );
-        }, 1000);
-      } else {
-        throw new Error('Erreur lors de l\'envoi');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      
-      const subject = encodeURIComponent(`Réservation ${finalServiceNames} - ${bookingData.formattedDate}`);
-      const body = encodeURIComponent(`
-Bonjour l'équipe Wardd Music,
-
-Je souhaite réserver une session au studio:
-
-Pack: ${finalServiceNames}
-Date: ${bookingData.formattedDate}
-Heure: ${bookingData.time}
-
-Mes informations:
-Nom: ${bookingData.name}
-Email: ${bookingData.email}
-Téléphone: ${bookingData.phone}
-Nom d'artiste: ${bookingData.artistName || 'Non spécifié'}
-Type de projet: ${bookingData.projectType || 'Non spécifié'}
-
-Demandes spéciales:
-${bookingData.specialRequests || 'Aucune'}
-
-Merci de me confirmer la disponibilité!
-
-Cordialement,
-${bookingData.name}
-      `);
-      
-      window.location.href = `mailto:contact@warddstudio.com?subject=${subject}&body=${body}`;
-      alert(currentLanguage === 'en' 
-        ? 'Connection error.\nYour email client will open with all the information pre-filled!'
-        : currentLanguage === 'ar'
-        ? 'خطأ في الاتصال.\nسيتم فتح عميل البريد الإلكتروني مع جميع المعلومات المعبأة مسبقاً!'
-        : currentLanguage === 'darija'
-        ? 'مشكل فالاتصال.\nغايتحل الإيميل ديالك مع كامل المعلومات!'
-        : 'Erreur de connexion.\nVotre client email va s\'ouvrir avec toutes les informations pré-remplies!'
-      );
-    }
-    
-    setIsSubmitting(false);
-    
-    setTimeout(() => {
-      setCurrentStep(1);
-      setSelectedDate('');
-      setSelectedTime('');
-      setSelectedServices([]);
-      setSelectedIndividualServices([]);
-      setShowCustomServices(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        artistName: '',
-        projectType: '',
-        specialRequests: ''
-      });
-    }, 3000);
-  };
-
-  const isStepComplete = (step) => {
-    switch (step) {
-      case 1: 
-        if (selectedServices.includes('pack-personnalise')) {
-          return selectedIndividualServices.length > 0;
-        }
-        return selectedServices.length > 0;
-      case 2: return selectedDate !== '';
-      case 3: return selectedTime !== '';
-      case 4: return formData.name && formData.email && formData.phone;
-      default: return false;
-    }
-  };
-
-  const steps = [
-    { number: 1, title: t.steps.pack, icon: Music },
-    { number: 2, title: t.steps.date, icon: Calendar },
-    { number: 3, title: t.steps.time, icon: Clock },
-    { number: 4, title: t.steps.details, icon: User }
+  const steps = [t.steps.pack, t.steps.date, t.steps.time, t.steps.details];
+  const titles = [
+    [t.step1.title, t.step1.subtitle],
+    [t.step2.title, t.step2.subtitle],
+    [t.step3.title, t.step3.subtitle],
+    [t.step4.title, t.step4.subtitle],
   ];
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'rtl' : 'ltr'}`}>
-      
-      {/* Language Switcher - Moved to bottom left */}
-      <div className="fixed bottom-4 left-4 z-50">
-        <div className="relative">
-          <button
-            onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-            className="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-          >
-            <Globe size={18} />
-            <span className="font-semibold text-gray-700">
-              {languages.find(l => l.code === currentLanguage)?.flag}
-            </span>
-            <span className="hidden sm:inline font-medium text-gray-600">
-              {languages.find(l => l.code === currentLanguage)?.name}
-            </span>
-            <svg
-              className={`w-4 h-4 transition-transform duration-200 ${showLanguageDropdown ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+    <div dir={rtl ? "rtl" : "ltr"} className="container-x min-h-screen pb-24 pt-28 sm:pt-36">
+      {/* Heading */}
+      <div className="mb-10 flex flex-col gap-6 lg:mb-14 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <span className="label">{ui.label}</span>
+          <h1 className="mt-5 text-[clamp(2.4rem,5.4vw,4.6rem)] font-medium leading-[0.98] tracking-display text-ink">
+            {step === 5 ? t.success.title : t.title}
+          </h1>
+          <p className="mt-4 max-w-[46ch] text-[15px] leading-relaxed sm:text-base">{step === 5 ? t.success.subtitle : t.subtitle}</p>
+        </div>
+        <div className="inline-flex w-fit rounded-full border border-line p-1" role="group" aria-label="Langue">
+          {LANGS.map((l) => (
+            <button
+              key={l.code}
+              type="button"
+              onClick={() => setLang(l.code)}
+              aria-pressed={lang === l.code}
+              className={`rounded-full px-3.5 py-1.5 text-[13px] transition-colors ${lang === l.code ? "bg-ink text-white" : "text-muted hover:text-ink"}`}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {showLanguageDropdown && (
-            <div className="absolute bottom-full left-0 mb-2 w-48 bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl shadow-xl overflow-hidden z-60">
-              {languages.map((language) => (
-                <button
-                  key={language.code}
-                  onClick={() => {
-                    setCurrentLanguage(language.code);
-                    setShowLanguageDropdown(false);
-                  }}
-                  className={`w-full px-4 py-3 text-left hover:bg-green-50 transition-colors flex items-center gap-3 ${
-                    currentLanguage === language.code ? 'bg-green-100 text-green-700 font-semibold' : 'text-gray-700'
-                  }`}
-                >
-                  <span className="text-lg">{language.flag}</span>
-                  <span className="font-medium">{language.name}</span>
-                  {currentLanguage === language.code && (
-                    <Check size={16} className="ml-auto text-green-600" />
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
+              {l.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Header */}
-      <div className="text-center mb-6 sm:mb-12 pt-20 sm:pt-32 lg:pt-40 px-4">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-gray-800 via-gray-900 to-green-600 bg-clip-text text-transparent mb-4 sm:mb-6">
-          {t.title}
-        </h1>
-        <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-2xl mx-auto px-2">
-          {t.subtitle}
-        </p>
-      </div>
-
-      {/* Progress Bar */}
-      <div className="mb-8 sm:mb-16 px-4">
-        <div className="flex justify-center items-center max-w-4xl mx-auto">
-          <div className="flex items-center w-full">
-            {steps.map((step, index) => (
-              <React.Fragment key={step.number}>
-                <div className="flex flex-col items-center">
-                  <div className={`
-                    w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center font-bold text-sm sm:text-base lg:text-lg transition-all duration-500
-                    ${currentStep >= step.number 
-                      ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-lg scale-110' 
-                      : 'bg-white text-gray-400 shadow-md'
-                    }
-                    ${currentStep === step.number ? 'animate-pulse ring-2 sm:ring-4 ring-green-200' : ''}
-                  `}>
-                    {isStepComplete(step.number) && step.number < currentStep ? (
-                      <Check className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                    ) : (
-                      <step.icon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                    )}
-                  </div>
-                  <span className={`
-                    mt-1 sm:mt-2 font-semibold text-xs sm:text-sm transition-colors duration-300 text-center
-                    ${currentStep >= step.number ? 'text-green-600' : 'text-gray-500'}
-                  `}>
-                    {step.title}
-                  </span>
-                </div>
-                {index < steps.length - 1 && (
-                  <div className={`
-                    flex-1 h-0.5 sm:h-1 mx-1 sm:mx-2 lg:mx-4 rounded-full transition-all duration-500
-                    ${currentStep > step.number 
-                      ? 'bg-gradient-to-r from-green-400 to-emerald-500' 
-                      : 'bg-gray-200'
-                    }
-                  `} />
-                )}
-              </React.Fragment>
-            ))}
+      {step === 5 ? (
+        /* ── Success ─────────────────────────────────────────────────── */
+        <div className="booking-in mx-auto max-w-2xl rounded-[32px] bg-ink px-7 py-14 text-center text-white sm:px-14">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#0dff88] text-ink">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <p className="mt-7 text-2xl font-medium tracking-heading">{t.success.thanks}</p>
+          <div className="mx-auto mt-6 max-w-sm space-y-1 font-mono text-[13px] text-white/60">
+            <p>{packName()}</p>
+            <p>
+              {formatDate(date)} · {time}
+            </p>
+          </div>
+          <div className="mt-9 flex flex-wrap justify-center gap-3">
+            <a href="/" className="btn-pill !bg-white !text-ink">
+              {ui.successCta}
+            </a>
+            <button type="button" onClick={reset} className="btn-ghost !border-white/25 !text-white hover:!bg-white/10">
+              {ui.again}
+            </button>
           </div>
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-8">
-        <div className="bg-white/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-200/50 overflow-hidden">
-          <div className="p-4 sm:p-6 lg:p-8 xl:p-16">
-            
-            {/* Step 1: Service Selection */}
-            {currentStep === 1 && (
-              <div className="space-y-6 sm:space-y-8 lg:space-y-10">
-                <div className="text-center">
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
-                    {t.step1.title}
-                  </h2>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-6 px-2">{t.step1.subtitle}</p>
-                  {selectedServices.length > 0 && (
-                    <div className="inline-flex items-center gap-2 mt-2 sm:mt-4 px-3 sm:px-4 py-1.5 sm:py-2 bg-green-100 text-green-700 rounded-full text-xs sm:text-sm font-semibold">
-                      <Check size={14} />
-                      {t.step1.selected}
-                    </div>
-                  )}
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
-                  {Object.entries(t.services).map(([serviceId, service]) => {
-                    const isSelected = selectedServices.includes(serviceId);
-                    return (
-                      <div
-                        key={serviceId}
-                        onClick={() => handleServiceToggle(serviceId)}
-                        className={`
-                          relative p-4 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl cursor-pointer transition-all duration-300 transform
-                          ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'pl-12 sm:pl-16 pr-4 sm:pr-5' : 'pr-12 sm:pr-16 pl-4 sm:pl-5'}
-                          ${isSelected 
-                            ? 'scale-102 sm:scale-105 shadow-xl sm:shadow-2xl ring-2 sm:ring-4 ring-green-200 bg-gradient-to-br from-green-400 to-emerald-500 text-white' 
-                            : 'hover:scale-102 sm:hover:scale-105 hover:shadow-lg sm:hover:shadow-xl bg-white text-gray-700 shadow-md border-2 border-gray-200 hover:border-green-300'
-                          }
-                        `}
-                      >
-                        <h3 className="font-bold text-lg sm:text-xl mb-2">{service.name}</h3>
-                        <p className={`${isSelected ? 'text-white' : 'text-green-600'} font-semibold mb-1 sm:mb-2 text-sm sm:text-base`}>
-                          {service.price}
-                        </p>
-                        <p className={`${isSelected ? 'text-white/90' : 'text-gray-500'} text-xs sm:text-sm mb-2 sm:mb-3`}>
-                          {service.duration}
-                        </p>
-                        <p className={`${isSelected ? 'text-white/90' : 'text-gray-600'} text-xs sm:text-sm leading-relaxed`}>
-                          {service.description}
-                        </p>
-                        
-                        <div className={`
-                          absolute top-3 sm:top-4 ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'left-3 sm:left-4' : 'right-3 sm:right-4'} w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300
-                          ${isSelected 
-                            ? 'bg-white shadow-lg scale-110' 
-                            : 'bg-gray-200'
-                          }
-                        `}>
-                          {isSelected ? (
-                            <Check className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
-                          ) : (
-                            <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-gray-400 rounded-full"></div>
-                          )}
-                        </div>
+      ) : (
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-12">
+          {/* ── Main column ───────────────────────────────────────────── */}
+          <div>
+            {/* Stepper */}
+            <ol className="mb-10 grid grid-cols-4 gap-2">
+              {steps.map((label, i) => {
+                const n = i + 1;
+                const active = step === n;
+                const done = stepDone(n) && step > n;
+                return (
+                  <li key={label}>
+                    <button
+                      type="button"
+                      disabled={!canOpen(n)}
+                      onClick={() => setStep(n)}
+                      className="group w-full text-start disabled:cursor-not-allowed"
+                    >
+                      <div className="h-[3px] overflow-hidden rounded-full bg-line">
+                        <div className={`h-full rounded-full bg-ink transition-all duration-500 ${active || done ? "w-full" : "w-0"}`} />
                       </div>
-                    );
-                  })}
-                </div>
+                      <div className={`mt-3 flex items-center gap-2 text-[13px] sm:text-sm ${active ? "text-ink" : done ? "text-ink/70" : "text-subtle"}`}>
+                        <span className="font-mono text-[11px]">{pad2(n)}</span>
+                        <span className="truncate">{label}</span>
+                        {done && <span className="hidden text-ink sm:inline">{Icon.check}</span>}
+                      </div>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
 
-                {/* Custom Services Selection */}
-                {showCustomServices && (
-                  <div className="mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                      {t.step1.customizeTitle}
-                    </h3>
-                    <p className="text-gray-600 text-center mb-6">
-                      {t.step1.customizeSubtitle}
-                    </p>
-                    
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {Object.entries(t.individualServices).map(([serviceId, service]) => {
-                        const isSelected = selectedIndividualServices.includes(serviceId);
+            <div key={step} className="booking-in">
+              <h2 className="text-[clamp(1.6rem,2.6vw,2.2rem)] font-medium leading-tight tracking-heading text-ink">{titles[step - 1][0]}</h2>
+              <p className="mt-2 text-[15px]">{titles[step - 1][1]}</p>
+
+              <div className="mt-8">
+                {/* Step 1 — Pack */}
+                {step === 1 && (
+                  <>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {PACK_IDS.map((id) => {
+                        const s = t.services[id];
+                        const selected = pack === id;
+                        const dark = id === "pack-professionnel";
                         return (
-                          <div
-                            key={serviceId}
-                            onClick={() => handleIndividualServiceToggle(serviceId)}
-                            className={`
-                              relative p-4 rounded-lg cursor-pointer transition-all duration-300 border-2
-                              ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'pl-12 pr-4' : 'pr-12 pl-4'}
-                              ${isSelected 
-                                ? 'bg-blue-500 text-white border-blue-500 shadow-lg' 
-                                : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300 hover:shadow-md'
-                              }
-                            `}
+                          <button
+                            key={id}
+                            type="button"
+                            onClick={() => {
+                              setPack(id);
+                              if (id !== "pack-personnalise") setExtras([]);
+                            }}
+                            aria-pressed={selected}
+                            className={`group relative flex flex-col rounded-[26px] border p-6 text-start transition-all duration-300 hover:-translate-y-0.5 ${
+                              dark ? "bg-ink text-white" : "bg-surface text-ink"
+                            } ${selected ? "border-ink ring-2 ring-ink ring-offset-2 ring-offset-paper" : "border-transparent"}`}
                           >
-                            <div className="flex items-start justify-between mb-2">
-                              <h4 className="font-semibold text-sm">{service.name}</h4>
-                              <div className={`
-                                absolute top-4 ${currentLanguage === 'ar' || currentLanguage === 'darija' ? 'left-4' : 'right-4'} w-5 h-5 rounded border-2 flex items-center justify-center
-                                ${isSelected 
-                                  ? 'bg-white border-white' 
-                                  : 'border-gray-400'
-                                }
-                              `}>
-                                {isSelected && (
-                                  <Check className="w-3 h-3 text-blue-500" />
-                                )}
-                              </div>
+                            <div className="flex items-center justify-between">
+                              <span className={`font-mono text-[11px] uppercase tracking-[0.06em] ${dark ? "text-white/50" : "text-subtle"}`}>{s.duration}</span>
+                              {dark ? (
+                                <span className="rounded-full bg-[#0dff88] px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.06em] text-ink">{ui.popular}</span>
+                              ) : null}
                             </div>
-                            <p className={`text-xs leading-relaxed ${isSelected ? 'text-white/90' : 'text-gray-600'}`}>
-                              {service.description}
-                            </p>
-                          </div>
+                            <h3 className={`mt-6 text-[1.6rem] font-medium leading-none tracking-heading ${dark ? "text-white" : "text-ink"}`}>{nice(s.name.replace(/^PACK\s+/i, "").replace(/\s+PACKAGE$/i, ""))}</h3>
+                            <div className="mt-3 text-[1.25rem] font-medium tracking-heading">{s.price}</div>
+                            <p className={`mt-4 text-[14px] leading-relaxed ${dark ? "!text-white/60" : ""}`}>{s.description}</p>
+                            <span
+                              className={`mt-6 inline-flex w-fit items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium transition-colors ${
+                                selected ? (dark ? "bg-white text-ink" : "bg-ink text-white") : dark ? "border border-white/25" : "border border-line"
+                              }`}
+                            >
+                              {selected ? (
+                                <>
+                                  {Icon.check} {ui.chosen}
+                                </>
+                              ) : (
+                                ui.choose
+                              )}
+                            </span>
+                          </button>
                         );
                       })}
                     </div>
 
-                    {selectedIndividualServices.length > 0 && (
-                      <div className="mt-4 p-4 bg-white rounded-lg border border-blue-200">
-                        <h4 className="font-semibold text-gray-800 mb-2">{t.step1.selectedServices}</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {selectedIndividualServices.map(serviceId => {
-                            const service = t.individualServices[serviceId];
+                    {pack === "pack-personnalise" && (
+                      <div className="booking-in mt-8 rounded-[26px] border border-line p-6">
+                        <h3 className="text-lg font-medium tracking-heading text-ink">{t.step1.customizeTitle}</h3>
+                        <p className="mt-1 text-[14px]">{t.step1.customizeSubtitle}</p>
+                        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                          {Object.entries(t.individualServices).map(([id, s]) => {
+                            const on = extras.includes(id);
                             return (
-                              <span key={serviceId} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
-                                {service?.name}
-                              </span>
+                              <button
+                                key={id}
+                                type="button"
+                                aria-pressed={on}
+                                onClick={() => setExtras((x) => (on ? x.filter((v) => v !== id) : [...x, id]))}
+                                className={`flex items-start gap-3 rounded-2xl border p-4 text-start transition-colors ${on ? "border-ink bg-ink text-white" : "border-line hover:border-ink/40"}`}
+                              >
+                                <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${on ? "border-white bg-white text-ink" : "border-line"}`}>
+                                  {on && Icon.check}
+                                </span>
+                                <span>
+                                  <span className="block text-[14px] font-medium">{nice(s.name)}</span>
+                                  <span className={`mt-0.5 block text-[13px] leading-snug ${on ? "text-white/60" : "text-muted"}`}>{s.description}</span>
+                                </span>
+                              </button>
                             );
                           })}
                         </div>
                       </div>
                     )}
+                  </>
+                )}
+
+                {/* Step 2 — Date */}
+                {step === 2 && (
+                  <div className="rounded-[26px] border border-line p-5 sm:p-7">
+                    <div className="mb-5 flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => canGoPrevMonth && setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))}
+                        disabled={!canGoPrevMonth}
+                        aria-label="Mois précédent"
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-line transition-colors hover:border-ink disabled:opacity-30"
+                      >
+                        {Icon.chevron("prev")}
+                      </button>
+                      <div className="text-lg font-medium tracking-heading text-ink">
+                        {t.calendar.months[month.getMonth()]} {month.getFullYear()}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))}
+                        aria-label="Mois suivant"
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-line transition-colors hover:border-ink"
+                      >
+                        {Icon.chevron("next")}
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-7 gap-1 text-center font-mono text-[11px] uppercase tracking-[0.04em] text-subtle">
+                      {t.calendar.days.map((d) => (
+                        <div key={d} className="py-2">
+                          {d}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-7 gap-1">{calendar()}</div>
+                    <p className="mt-4 font-mono text-[11px] text-subtle">{ui.closed}</p>
                   </div>
                 )}
-              </div>
-            )}
 
-            {/* Step 2: Date Selection */}
-            {currentStep === 2 && (
-              <div className="space-y-6 sm:space-y-8 lg:space-y-10">
-                <div className="text-center">
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
-                    {t.step2.title}
-                  </h2>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">{t.step2.subtitle}</p>
-                </div>
-                
-                <div className="flex justify-between items-center mb-4 sm:mb-8 bg-gradient-to-r from-gray-50 to-white p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg">
-                  <button 
-                    onClick={prevMonth}
-                    className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 text-gray-600 hover:text-green-600"
-                  >
-                    <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </button>
-                  
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 text-center">
-                    {t.calendar.months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-                  </h3>
-                  
-                  <button 
-                    onClick={nextMonth}
-                    className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 text-gray-600 hover:text-green-600"
-                  >
-                    <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </button>
-                </div>
-
-                <div className="bg-gradient-to-br from-gray-50 to-white p-3 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg">
-                  <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
-                    {t.calendar.days.map(day => (
-                      <div key={day} className="p-2 sm:p-4 text-center font-bold text-gray-600 text-xs sm:text-sm">
-                        {day}
+                {/* Step 3 — Time */}
+                {step === 3 && (
+                  <div className="space-y-7">
+                    {Object.entries(SLOTS).map(([part, slots]) => (
+                      <div key={part}>
+                        <div className="mb-3 font-mono text-[11px] uppercase tracking-[0.06em] text-subtle">{ui[part]}</div>
+                        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+                          {slots.map((slot) => {
+                            const taken = slotTaken(slot);
+                            const on = time === slot;
+                            return (
+                              <button
+                                key={slot}
+                                type="button"
+                                disabled={taken}
+                                onClick={() => setTime(slot)}
+                                aria-pressed={on}
+                                className={`rounded-2xl border py-4 text-[15px] font-medium transition-all ${
+                                  on ? "border-ink bg-ink text-white" : taken ? "cursor-not-allowed border-line text-subtle/50 line-through" : "border-line text-ink hover:border-ink"
+                                }`}
+                              >
+                                {slot}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     ))}
                   </div>
-                  <div className="grid grid-cols-7 gap-1 sm:gap-2">
-                    {renderCalendar()}
-                  </div>
-                </div>
-
-                {selectedDate && (
-                  <div className="text-center p-3 sm:p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl border border-green-200">
-                    <div className="inline-flex items-center gap-2 sm:gap-3 text-green-700 font-bold text-sm sm:text-base lg:text-lg">
-                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                      <span>{t.step2.selectedDate} {formatDate(new Date(selectedDate))}</span>
-                    </div>
-                  </div>
                 )}
-              </div>
-            )}
 
-            {/* Step 3: Time Selection */}
-            {currentStep === 3 && (
-              <div className="space-y-6 sm:space-y-8 lg:space-y-10">
-                <div className="text-center">
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
-                    {t.step3.title}
-                  </h2>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">{t.step3.subtitle}</p>
-                </div>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
-                  {timeSlots.map((time) => (
-                    <button
-                      key={time}
-                      onClick={() => setSelectedTime(time)}
-                      className={`
-                        relative p-3 sm:p-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300 transform
-                        ${selectedTime === time 
-                          ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-lg sm:shadow-xl scale-105 ring-2 sm:ring-4 ring-green-200' 
-                          : 'bg-white text-gray-700 shadow-md hover:shadow-lg sm:hover:shadow-xl hover:scale-105 border border-gray-200 hover:border-green-300'
-                        }
-                      `}
-                    >
-                      <div className="flex items-center justify-center gap-1 sm:gap-2">
-                        <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
-                        <span>{time}</span>
+                {/* Step 4 — Details */}
+                {step === 4 && (
+                  <form
+                    className="grid gap-4 sm:grid-cols-2"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      submit();
+                    }}
+                  >
+                    {[
+                      ["name", t.form.fullName, t.form.placeholders.fullName, "text", true, "name"],
+                      ["email", t.form.email, t.form.placeholders.email, "email", true, "email"],
+                      ["phone", t.form.phone, t.form.placeholders.phone, "tel", true, "tel"],
+                      ["artistName", t.form.artistName, t.form.placeholders.artistName, "text", false, "off"],
+                    ].map(([k, label, ph, type, req, ac]) => (
+                      <label key={k} className="block">
+                        <span className="mb-2 flex items-center gap-2 text-[13px] font-medium text-ink">
+                          {label}
+                          {req && <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-subtle">{ui.required}</span>}
+                        </span>
+                        <input
+                          type={type}
+                          required={req}
+                          autoComplete={ac}
+                          dir={type === "email" || type === "tel" ? "ltr" : "auto"}
+                          value={form[k]}
+                          placeholder={ph}
+                          onChange={(e) => setForm({ ...form, [k]: e.target.value })}
+                          className={inputCls}
+                        />
+                      </label>
+                    ))}
+                    <label className="block sm:col-span-2">
+                      <span className="mb-2 block text-[13px] font-medium text-ink">{t.form.projectType}</span>
+                      <div className="flex flex-wrap gap-2">
+                        {["single", "ep", "album", "demo", "mixtape"].map((p) => {
+                          const v = t.form.projectTypes[p];
+                          const on = form.projectType === v;
+                          return (
+                            <button
+                              key={p}
+                              type="button"
+                              onClick={() => setForm({ ...form, projectType: on ? "" : v })}
+                              aria-pressed={on}
+                              className={`rounded-full border px-4 py-2 text-[14px] transition-colors ${on ? "border-ink bg-ink text-white" : "border-line text-ink hover:border-ink"}`}
+                            >
+                              {v}
+                            </button>
+                          );
+                        })}
                       </div>
-                    </button>
-                  ))}
-                </div>
-                
-                {selectedTime && (
-                  <div className="text-center p-3 sm:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl sm:rounded-2xl border border-blue-200">
-                    <div className="inline-flex items-center gap-2 sm:gap-3 text-blue-700 font-bold text-sm sm:text-base lg:text-lg">
-                      <Clock className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
-                      <span className="break-words">{t.step3.selectedTime} {selectedTime} - {formatDate(new Date(selectedDate))}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Step 4: Contact Information */}
-            {currentStep === 4 && (
-              <div className="space-y-6 sm:space-y-8 lg:space-y-10">
-                <div className="text-center">
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-6">
-                    {t.step4.title}
-                  </h2>
-                  <p className="text-gray-600 text-sm sm:text-base lg:text-lg mb-4 sm:mb-8 px-2">{t.step4.subtitle}</p>
-                </div>
-                
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-                  <div className="space-y-4 sm:space-y-6">
-                    <div>
-                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
-                        <User className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                        {t.form.fullName} *
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
-                        placeholder={t.form.placeholders.fullName}
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
-                        <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                        {t.form.email} *
-                      </label>
-                      <input
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
-                        placeholder={t.form.placeholders.email}
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
-                        <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                        {t.form.phone} *
-                      </label>
-                      <input
-                        type="tel"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
-                        placeholder={t.form.placeholders.phone}
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
-                        <Music className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-                        {t.form.artistName}
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.artistName}
-                        onChange={(e) => setFormData({...formData, artistName: e.target.value})}
-                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
-                        placeholder={t.form.placeholders.artistName}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
-                        {t.form.projectType}
-                      </label>
-                      <select
-                        value={formData.projectType}
-                        onChange={(e) => setFormData({...formData, projectType: e.target.value})}
-                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur text-sm sm:text-base"
-                      >
-                        <option value="">{t.form.projectTypes.select}</option>
-                        <option value="single">{t.form.projectTypes.single}</option>
-                        <option value="ep">{t.form.projectTypes.ep}</option>
-                        <option value="album">{t.form.projectTypes.album}</option>
-                        <option value="demo">{t.form.projectTypes.demo}</option>
-                        <option value="mixtape">{t.form.projectTypes.mixtape}</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="flex items-center gap-2 sm:gap-3 text-gray-700 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">
-                        {t.form.specialRequests}
-                      </label>
+                    </label>
+                    <label className="block sm:col-span-2">
+                      <span className="mb-2 block text-[13px] font-medium text-ink">{t.form.specialRequests}</span>
                       <textarea
-                        value={formData.specialRequests}
-                        onChange={(e) => setFormData({...formData, specialRequests: e.target.value})}
                         rows={4}
-                        className="w-full p-3 sm:p-4 border-2 border-gray-200 rounded-lg sm:rounded-xl focus:border-green-400 focus:ring-2 sm:focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-white/80 backdrop-blur resize-none text-sm sm:text-base"
+                        dir="auto"
+                        value={form.specialRequests}
                         placeholder={t.form.placeholders.specialRequests}
+                        onChange={(e) => setForm({ ...form, specialRequests: e.target.value })}
+                        className={`${inputCls} resize-none`}
                       />
+                    </label>
+                    <button type="submit" className="hidden" aria-hidden="true" tabIndex={-1} />
+                  </form>
+                )}
+
+                {failed && step === 4 && (
+                  <div className="booking-in mt-6 rounded-[22px] border border-line bg-surface p-5">
+                    <p className="font-medium text-ink">{ui.errorTitle}</p>
+                    <p className="mt-1 text-[14px]">{ui.errorText}</p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <a
+                        href={`mailto:${STUDIO_EMAIL}?subject=${encodeURIComponent(`Réservation — ${packName()}`)}&body=${encodeURIComponent(message())}`}
+                        className="btn-pill"
+                      >
+                        {ui.byEmail}
+                      </a>
+                      <a href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message())}`} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+                        {ui.byWhatsapp}
+                      </a>
                     </div>
                   </div>
-
-                  {/* Booking Summary */}
-                  <div className="lg:sticky lg:top-8">
-                    <div className="bg-gradient-to-br from-gray-50 to-white p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-lg border border-gray-200">
-                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-4 sm:mb-6">
-                        {t.step4.summary}
-                      </h3>
-                      
-                      <div className="space-y-3 sm:space-y-4">
-                        <div className="flex items-start justify-between p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-100">
-                          <span className="font-semibold text-gray-600 text-sm sm:text-base">{t.step4.pack}</span>
-                          <div className="text-right">
-                            {selectedServices.includes('pack-personnalise') ? (
-                              <div className="font-bold text-gray-800 text-xs sm:text-sm">
-                                {t.services['pack-personnalise'].name}
-                                {selectedIndividualServices.length > 0 && (
-                                  <div className="text-xs text-gray-600 mt-1">
-                                    {selectedIndividualServices.map(serviceId => {
-                                      return t.individualServices[serviceId]?.name;
-                                    }).join(', ')}
-                                  </div>
-                                )}
-                              </div>
-                            ) : (
-                              selectedServices.map(serviceId => {
-                                const service = t.services[serviceId];
-                                return (
-                                  <div key={serviceId} className="font-bold text-gray-800 text-xs sm:text-sm">
-                                    {service?.name}
-                                  </div>
-                                );
-                              })
-                            )}
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-100">
-                          <span className="font-semibold text-gray-600 text-sm sm:text-base">{t.step4.date}</span>
-                          <span className="font-bold text-gray-800 text-xs sm:text-sm text-right">{selectedDate && formatDate(new Date(selectedDate))}</span>
-                        </div>
-                        
-                        <div className="flex items-center justify-between p-3 sm:p-4 bg-white rounded-lg sm:rounded-xl border border-gray-100">
-                          <span className="font-semibold text-gray-600 text-sm sm:text-base">{t.step4.time}</span>
-                          <span className="font-bold text-gray-800 text-xs sm:text-sm">{selectedTime}</span>
-                        </div>
-                        
-                        <div className="flex items-start justify-between p-3 sm:p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg sm:rounded-xl border border-green-200">
-                          <span className="font-semibold text-green-700 text-sm sm:text-base">{t.step4.price}</span>
-                          <div className="text-right">
-                            {selectedServices.map(serviceId => {
-                              const service = t.services[serviceId];
-                              return (
-                                <div key={serviceId} className="font-bold text-green-800 text-xs sm:text-sm">
-                                  {service?.price}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Success Step */}
-            {currentStep === 5 && (
-              <div className="text-center py-8 sm:py-12">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 lg:mb-8 animate-bounce">
-                  <Check className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
-                </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-800 mb-3 sm:mb-4">{t.success.title}</h2>
-                <p className="text-base sm:text-lg lg:text-xl text-gray-600 mb-4 sm:mb-6 lg:mb-8 px-4">{t.success.subtitle}</p>
-                <div className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full text-white font-bold text-sm sm:text-base">
-                  <span>{t.success.thanks}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Navigation Buttons */}
-            {currentStep < 5 && (
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-0 mt-12 sm:mt-16 pt-8 sm:pt-12 border-t border-gray-200" style={{ marginTop: '12%' }}>
-                <button
-                  onClick={handleBack}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300 bg-gray-600 text-white hover:bg-gray-700 hover:scale-105 shadow-lg hover:shadow-xl"
-                >
-                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                  {t.buttons.back}
-                </button>
-
-                {currentStep < 4 ? (
-                  <button
-                    onClick={handleNext}
-                    disabled={!isStepComplete(currentStep)}
-                    className={`
-                      w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300
-                      ${!isStepComplete(currentStep) 
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                        : 'bg-gradient-to-r from-green-400 to-emerald-500 text-white hover:from-green-500 hover:to-emerald-600 hover:scale-105 shadow-lg hover:shadow-xl'
-                      }
-                    `}
-                  >
-                    {t.buttons.next}
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleSubmit}
-                    disabled={!isStepComplete(currentStep) || isSubmitting}
-                    className={`
-                      w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base lg:text-lg transition-all duration-300
-                      ${!isStepComplete(currentStep) || isSubmitting
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                        : 'bg-gradient-to-r from-green-400 to-emerald-500 text-white hover:from-green-500 hover:to-emerald-600 hover:scale-105 shadow-lg hover:shadow-xl'
-                      }
-                    `}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span className="hidden sm:inline">{t.buttons.sending}</span>
-                        <span className="sm:hidden">{t.buttons.sendingShort}</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="hidden sm:inline">{t.buttons.confirm}</span>
-                        <span className="sm:hidden">{t.buttons.confirmShort}</span>
-                      </>
-                    )}
-                  </button>
                 )}
               </div>
-            )}
+            </div>
+
+            {/* Navigation */}
+            <div className="mt-10 flex items-center justify-between gap-3 border-t border-line pt-6">
+              <button
+                type="button"
+                onClick={() => (step > 1 ? setStep(step - 1) : router.push("/#package"))}
+                className="inline-flex items-center gap-2 rounded-full px-4 py-3 text-[14px] text-muted transition-colors hover:text-ink"
+              >
+                {Icon.back} {t.buttons.back}
+              </button>
+              {step < 4 ? (
+                <button type="button" onClick={next} disabled={!stepDone(step)} className="btn-pill disabled:pointer-events-none disabled:opacity-30">
+                  {t.buttons.next} {Icon.arrow}
+                </button>
+              ) : (
+                <button type="button" onClick={submit} disabled={!stepDone(4) || sending} className="btn-pill disabled:pointer-events-none disabled:opacity-30">
+                  {sending ? t.buttons.sending : t.buttons.confirm} {!sending && Icon.arrow}
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* ── Summary ───────────────────────────────────────────────── */}
+          <aside className="lg:sticky lg:top-28 lg:self-start">
+            <div className="relative overflow-hidden rounded-[30px] bg-ink p-7 text-white">
+              <div
+                className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full opacity-40 blur-3xl"
+                style={{ background: "radial-gradient(circle, #0dff88 0%, rgba(13,255,136,0) 70%)" }}
+              />
+              <div className="relative">
+                <div className="font-mono text-[11px] uppercase tracking-[0.08em] text-white/50">{ui.summary}</div>
+                {!pack ? (
+                  <p className="mt-6 text-[15px] !text-white/60">{ui.empty}</p>
+                ) : (
+                  <dl className="mt-6 space-y-5">
+                    {[
+                      [t.step4.pack, packName(), 1],
+                      [t.step4.date, formatDate(date), 2],
+                      [t.step4.time, time, 3],
+                    ].map(([k, v, n]) => (
+                      <div key={k} className="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
+                        <dt className="text-[13px] text-white/50">{k.replace(/:$/, "")}</dt>
+                        <dd className="text-end text-[15px] font-medium">
+                          {v || (
+                            <button type="button" disabled={!canOpen(n)} onClick={() => setStep(n)} className="text-white/35 underline-offset-4 enabled:hover:underline">
+                              —
+                            </button>
+                          )}
+                        </dd>
+                      </div>
+                    ))}
+                    <div className="flex items-end justify-between gap-4 pt-1">
+                      <dt className="text-[13px] text-white/50">{t.step4.price.replace(/:$/, "")}</dt>
+                      <dd className="text-[1.9rem] font-medium leading-none tracking-heading">{t.services[pack].price}</dd>
+                    </div>
+                  </dl>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-[24px] border border-line p-5">
+              <p className="text-[14px] font-medium text-ink">{ui.help}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <a
+                  href={`https://wa.me/${WHATSAPP}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-line px-4 py-2 text-[13px] text-ink transition-colors hover:border-ink"
+                >
+                  WhatsApp
+                </a>
+                <a href={`mailto:${STUDIO_EMAIL}`} dir="ltr" className="rounded-full border border-line px-4 py-2 text-[13px] text-ink transition-colors hover:border-ink">
+                  {STUDIO_EMAIL}
+                </a>
+              </div>
+            </div>
+          </aside>
         </div>
-      </div>
-
-      {/* Contact Info */}
-      <div className="text-center mt-8 sm:mt-12 mx-3 sm:mx-4 p-4 sm:p-6 bg-white/60 backdrop-blur rounded-xl sm:rounded-2xl border border-gray-200/50 max-w-4xl lg:mx-auto">
-        <p className="text-gray-600 font-medium text-sm sm:text-base">
-          {t.contact.questions}
-          <a href="tel:+212617869001" className="text-green-600 font-bold hover:text-green-700 transition-colors mx-1 sm:mx-2 block sm:inline">
-            +212-617-869001
-          </a>
-          <span className="hidden sm:inline">|</span>
-          <a href="mailto:contact@warddstudio.com" className="text-green-600 font-bold hover:text-green-700 transition-colors mx-1 sm:mx-2 block sm:inline">
-            contact@warddstudio.com
-          </a>
-        </p>
-      </div>
-
-      {/* Click outside to close language dropdown */}
-      {showLanguageDropdown && (
-        <div 
-          className="fixed inset-0 z-40" 
-          onClick={() => setShowLanguageDropdown(false)}
-        />
       )}
+
+      <style jsx global>{`
+        .booking-in {
+          animation: bookingIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        @keyframes bookingIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: none;
+          }
+        }
+      `}</style>
     </div>
   );
 };

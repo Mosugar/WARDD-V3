@@ -263,6 +263,14 @@ html {
     padding-inline: var(--gutter);
   }
 
+  /* Wide wrapper for full-bleed cards (hero, studio life, contact banner) */
+  .container-wide {
+    width: 100%;
+    max-width: 1760px;
+    margin-inline: auto;
+    padding-inline: clamp(12px, 2vw, 32px);
+  }
+
   /* Vertical rhythm between sections */
   .section-y {
     padding-block: var(--section-y);
