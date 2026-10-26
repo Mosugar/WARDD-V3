@@ -7,6 +7,7 @@ import Magnet from "@/components/ui/Magnet";
 const BAR_LINKS = [
   { label: "À propos", href: "#about" },
   { label: "Services", href: "#services" },
+  { label: "Studio", href: "#studio" },
   { label: "Packs", href: "#package" },
   { label: "Sons", href: "#tracks" },
   { label: "Artistes", href: "#artists" },
@@ -17,6 +18,7 @@ const BAR_LINKS = [
 const ALL_LINKS = [
   { label: "À propos", href: "#about" },
   { label: "Services", href: "#services" },
+  { label: "Studio", href: "#studio" },
   { label: "Sons", href: "#tracks" },
   { label: "Clips", href: "#clips" },
   { label: "Vie du studio", href: "#studio-life" },

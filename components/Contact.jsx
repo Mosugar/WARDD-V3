@@ -7,9 +7,6 @@ import Magnet from "@/components/ui/Magnet";
 const Threads = dynamic(() => import("@/components/ui/Threads"), { ssr: false });
 
 /* ── Edit contact details here ─────────────────────────────────────────── */
-const EMAIL = "contact@warddstudio.com";
-const PHONE_DISPLAY = "+212 617 869 001";
-const PHONE_LINK = "+212617869001";
 const WHATSAPP_URL = "https://wa.me/212617869001";
 const SOCIALS = [
   {
@@ -29,7 +26,7 @@ const ArrowUpRight = ({ size = 12 }) => (
 
 const Contact = () => {
   return (
-    <section id="contact" className="container-x pb-6 pt-6 sm:pb-10">
+    <section id="contact" className="mx-auto w-full max-w-[1760px] px-3 pb-6 pt-6 sm:px-5 sm:pb-10 lg:px-8">
       <div className="relative isolate overflow-hidden rounded-[28px] bg-[#111112] text-white sm:rounded-[36px]">
         {/* Light flowing lines on black, fading out toward the text */}
         <div
@@ -57,7 +54,7 @@ const Contact = () => {
           />
         </div>
 
-        <div className="flex min-h-[600px] flex-col justify-between gap-12 p-7 sm:min-h-[640px] sm:p-12 lg:p-16">
+        <div className="flex min-h-[480px] flex-col justify-between gap-12 p-7 sm:min-h-[520px] sm:p-12 lg:min-h-[560px] lg:px-20 lg:py-16">
           {/* Top: pitch */}
           <div>
             <span className="inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.08em] text-white/80 sm:text-xs">
@@ -68,7 +65,7 @@ const Contact = () => {
               Idée → Réalité
             </span>
 
-            <h2 className="mt-8 max-w-[15em] text-[clamp(2.4rem,5.4vw,5rem)] leading-[0.98] tracking-display text-white">
+            <h2 className="mt-7 max-w-[13em] text-[clamp(2rem,4.2vw,4.25rem)] font-medium leading-[1.02] tracking-display text-white">
               <BlurText
                 text="Nous pouvons tirer le meilleur parti de ton potentiel."
                 delay={70}
@@ -79,11 +76,6 @@ const Contact = () => {
                 color="#ffffff"
               />
             </h2>
-
-            <p className="mt-6 max-w-[44ch] text-[15px] leading-relaxed !text-white/65 sm:text-base">
-              Nous sommes déterminés à t&apos;offrir un résultat exceptionnel
-              avec une qualité irréprochable.
-            </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <Magnet padding={80} magnetStrength={3}>
@@ -107,14 +99,6 @@ const Contact = () => {
               </a>
             </div>
 
-            <div className="mt-8 flex flex-col gap-2 font-mono text-[11px] uppercase tracking-[0.06em] text-white/55 sm:flex-row sm:gap-8 sm:text-xs">
-              <a href={`mailto:${EMAIL}`} className="cursor-target transition-colors hover:text-white">
-                {EMAIL}
-              </a>
-              <a href={`tel:${PHONE_LINK}`} className="cursor-target transition-colors hover:text-white">
-                {PHONE_DISPLAY}
-              </a>
-            </div>
           </div>
 
           {/* Bottom: socials */}
