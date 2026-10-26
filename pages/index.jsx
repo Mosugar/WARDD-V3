@@ -6,10 +6,11 @@ import {
   Package,
   Tracks,
   Clips,
+  Studio,
   StudioLife,
   Artists,
   Contact,
-  Faqs,
+  // Faqs, // FAQ section hidden for now
   Footer,
   WarddChatbot,
 } from "@/components/index";
@@ -40,12 +41,13 @@ export default function Home({ tracks, clips }) {
       <main>
         <About />
         <Expertise />
+        <Studio />
         <Package />
         <Tracks tracks={tracks} />
         <Clips clips={clips} />
         <StudioLife />
         <Artists />
-        <Faqs />
+        {/* <Faqs /> */}
         <Contact />
       </main>
       <Footer />

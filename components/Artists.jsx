@@ -1,162 +1,208 @@
-import style from "@/styles/artists.module.css";
+"use client";
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import BlurText from "@/components/ui/BlurText";
+
+/* ── Edit artists here ───────────────────────────────────────────────────
+   src:  photo in /public/art
+   name: the artist's name (leave "" to show the photo only)
+   ────────────────────────────────────────────────────────────────────── */
+const ARTISTS = [
+  { src: "/art/1.JPG", name: "" },
+  { src: "/art/2.JPG", name: "" },
+  { src: "/art/3.JPG", name: "" },
+  { src: "/art/4.JPG", name: "" },
+  { src: "/art/5.JPG", name: "" },
+  { src: "/art/6.JPG", name: "" },
+  { src: "/art/7.jpg", name: "" },
+  { src: "/art/8.jpg", name: "" },
+  { src: "/art/9.jpg", name: "" },
+  { src: "/art/10.jpg", name: "" },
+  { src: "/art/11.jpg", name: "" },
+  { src: "/art/12.jpg", name: "" },
+  { src: "/art/13.jpg", name: "" },
+  { src: "/art/14.jpg", name: "" },
+  { src: "/art/15.jpg", name: "" },
+  { src: "/art/16.jpg", name: "" },
+  { src: "/art/17.jpg", name: "" },
+  { src: "/art/18.jpg", name: "" },
+  { src: "/art/19.jpg", name: "" },
+];
+
+const pad = (n) => String(n).padStart(2, "0");
+
+const ArrowBtn = ({ dir, onClick, disabled }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    disabled={disabled}
+    aria-label={dir === "prev" ? "Artistes précédents" : "Artistes suivants"}
+    data-cursor-label={dir === "prev" ? "Précédent" : "Suivant"}
+    className="cursor-target flex h-12 w-12 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white disabled:pointer-events-none disabled:opacity-30"
+  >
+    <svg width="18" height="12" viewBox="0 0 22 12" fill="none" aria-hidden="true" className={dir === "prev" ? "rotate-180" : ""}>
+      <path d="M1 6h19m0 0l-5-5m5 5l-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  </button>
+);
 
 const Artists = () => {
-  const [currentIndex, setCurrentIndex] = useState(4); // Start in the middle
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [currentTranslate, setCurrentTranslate] = useState(0);
-  const sliderRef = useRef(null);
+  const railRef = useRef(null);
+  const [progress, setProgress] = useState(0);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
 
-  const artists = [
-    { id: "1", name: "ARTIST 1", image: "JPG", genre: "Hip Hop" },
-    { id: "2", name: "ARTIST 2", image: "JPG", genre: "Pop" },
-    { id: "3", name: "ARTIST 3", image: "JPG", genre: "Electronic" },
-    { id: "4", name: "ARTIST 4", image: "JPG", genre: "R&B" },
-    { id: "5", name: "ARTIST 5", image: "JPG", genre: "Rock" },
-    { id: "6", name: "ARTIST 6", image: "JPG", genre: "Indie" },
-    { id: "7", name: "ARTIST 7", image: "jpg", genre: "Jazz" },
-    { id: "8", name: "ARTIST 8", image: "jpg", genre: "Trap" },
-    { id: "9", name: "ARTIST 9", image: "jpg", genre: "Soul" },
-    { id: "18", name: "ARTIST 10", image: "jpg", genre: "Afro" },
-    { id: "11", name: "ARTIST 11", image: "jpg", genre: "Afro" },
-    { id: "12", name: "ARTIST 11", image: "jpg", genre: "Afro" },
-    { id: "13", name: "ARTIST 11", image: "jpg", genre: "Afro" },
-    { id: "14", name: "ARTIST 11", image: "jpg", genre: "rap" },
-    { id: "15", name: "ARTIST 11", image: "jpg", genre: "Afro" },
-    { id: "16", name: "ARTIST 11", image: "jpg", genre: "Afro" },
-    { id: "17", name: "ARTIST 11", image: "jpg", genre: "Afro" },
-    { id: "18", name: "ARTIST 11", image: "jpg", genre: "Afro" },
-    { id: "19", name: "ARTIST 11", image: "jpg", genre: "Afro" },
-  ];
-
-  const getImageStyle = (index) => {
-    const distance = index - currentIndex;
-    const absDistance = Math.abs(distance);
-
-    let transform = `translateX(${distance * 160}px)`;
-    let scale = 1;
-    let opacity = 1;
-    let zIndex = 10;
-
-    if (absDistance === 0) {
-      scale = 1.6;
-      zIndex = 30;
-    } else if (absDistance === 1) {
-      scale = 1;
-      zIndex = 20;
-    } else if (absDistance === 2) {
-      scale = 0.9;
-      zIndex = 15;
-    } else if (absDistance === 3) {
-      scale = 0.8;
-      zIndex = 10;
-    } else {
-      scale = 0.7;
-      opacity = 0.5;
-      zIndex = 5;
-    }
-
-    return {
-      transform: `${transform} scale(${scale})`,
-      opacity,
-      zIndex,
+  // Track scroll position for the progress bar and arrow states
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return undefined;
+    const update = () => {
+      const max = rail.scrollWidth - rail.clientWidth;
+      const p = max > 0 ? rail.scrollLeft / max : 0;
+      setProgress(p);
+      setAtStart(rail.scrollLeft < 4);
+      setAtEnd(rail.scrollLeft > max - 4);
     };
+    update();
+    rail.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      rail.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  // Drag to scroll with the mouse (touch already scrolls natively)
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return undefined;
+    let down = false, startX = 0, startLeft = 0, moved = false;
+    const onDown = (e) => {
+      if (e.pointerType !== "mouse") return;
+      down = true; moved = false;
+      startX = e.clientX; startLeft = rail.scrollLeft;
+      rail.style.scrollSnapType = "none";
+    };
+    const onMove = (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4) moved = true;
+      rail.scrollLeft = startLeft - dx;
+    };
+    const onUp = () => {
+      if (!down) return;
+      down = false;
+      rail.style.scrollSnapType = "";
+    };
+    const onClick = (e) => { if (moved) e.preventDefault(); };
+    rail.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    rail.addEventListener("click", onClick, true);
+    return () => {
+      rail.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      rail.removeEventListener("click", onClick, true);
+    };
+  }, []);
+
+  const scrollByCards = (dir) => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const card = rail.querySelector("li");
+    const step = card ? card.getBoundingClientRect().width + 16 : 300;
+    rail.scrollBy({ left: dir * step * 2, behavior: "smooth" });
   };
-
-  const handleDragStart = (x) => {
-    setIsDragging(true);
-    setStartX(x);
-    setCurrentTranslate(0);
-  };
-
-  const handleDragMove = (x) => {
-    if (!isDragging) return;
-    setCurrentTranslate(x - startX);
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(false);
-    const threshold = 100;
-    if (Math.abs(currentTranslate) > threshold) {
-      if (currentTranslate > 0) {
-        setCurrentIndex((prev) => Math.max(0, prev - 1));
-      } else {
-        setCurrentIndex((prev) => Math.min(artists.length - 1, prev + 1));
-      }
-    }
-    setCurrentTranslate(0);
-  };
-
-  const visibleRange = 4; // 4 left, 1 center, 4 right
-
-  const progress = (currentIndex / (artists.length - 1)) * 100;
 
   return (
-    <div className={style.content} id="artists">
-      <div className={style.container}>
-        <div className={style.heading}>
-          <h1>ARTISTS</h1>
-        </div>
-
-        <div
-          className={style.artistsSlider}
-          ref={sliderRef}
-          onMouseDown={(e) => handleDragStart(e.clientX)}
-          onMouseMove={(e) => handleDragMove(e.clientX)}
-          onMouseUp={handleDragEnd}
-          onMouseLeave={handleDragEnd}
-          onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
-          onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
-          onTouchEnd={handleDragEnd}
-        >
-          <div className={style.artistsTrack}>
-            {artists.map((artist, index) => {
-              if (Math.abs(index - currentIndex) > visibleRange) return null;
-              return (
-                <div
-                  key={artist.id + index}
-                  className={style.artistCard}
-                  style={{
-                    ...getImageStyle(index),
-                    transform: `${getImageStyle(index).transform} translateX(${
-                      isDragging ? currentTranslate * 0.3 : 0
-                    }px)`,
-                    transition: isDragging ? "none" : "all 0.5s ease",
-                  }}
-                >
-                  <div className={style.imageContainer}>
-                    <Image
-                      src={`/art/${artist.id}.${artist.image}`}
-                      alt={artist.name}
-                      width={300}
-                      height={300}
-                      className={style.artistImage}
-                      draggable={false}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className={style.progressContainer}>
-          <div className={style.progressBar}>
-            <div
-              className={style.progressFill}
-              style={{ width: `${progress}%` }}
+    <section id="artists" className="section-y overflow-hidden">
+      {/* Heading */}
+      <div className="container-x mb-12 flex flex-col gap-6 lg:mb-16 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <span className="label">Artistes</span>
+          <h2 className="mt-5 text-[clamp(2.6rem,6vw,5.4rem)] leading-[0.98] tracking-display">
+            <BlurText
+              text="Ils sont passés en cabine"
+              delay={90}
+              stepDuration={0.35}
+              direction="bottom"
+              blur={10}
+              distance={28}
+              color="#0a0a0a"
             />
-          </div>
+          </h2>
         </div>
-
-        <div className={style.subtitle}>
-          <p>Those, who bring art to people</p>
-          <p>with both open eyes and open ears</p>
+        <div className="flex flex-col gap-6 lg:items-end">
+          <p className="max-w-[36ch] text-[15px] leading-relaxed sm:text-base lg:text-right">
+            Plus de 350 artistes, autant d&apos;univers. Ceux qui portent l&apos;art
+            aux gens, les yeux et les oreilles grands ouverts.
+          </p>
+          <div className="flex gap-3">
+            <ArrowBtn dir="prev" onClick={() => scrollByCards(-1)} disabled={atStart} />
+            <ArrowBtn dir="next" onClick={() => scrollByCards(1)} disabled={atEnd} />
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Rail */}
+      <ul
+        ref={railRef}
+        className="artists-rail flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto pb-2 active:cursor-grabbing"
+      >
+        {ARTISTS.map((a, i) => (
+          <li
+            key={a.src}
+            className="group relative w-[68vw] shrink-0 snap-start sm:w-[40vw] md:w-[30vw] lg:w-[22vw] xl:w-[19vw]"
+          >
+            <div className="relative aspect-[3/4] overflow-hidden rounded-media bg-surface-2">
+              <Image
+                src={a.src}
+                alt={a.name || `Artiste Wardd ${i + 1}`}
+                fill
+                draggable={false}
+                sizes="(max-width: 640px) 68vw, (max-width: 1024px) 30vw, 20vw"
+                className="select-none object-cover grayscale transition-[filter,transform] duration-700 ease-out group-hover:scale-[1.04] group-hover:grayscale-0"
+              />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/55 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <span className="absolute left-4 top-4 rounded-full bg-white/85 px-2.5 py-1 font-mono text-[11px] text-ink backdrop-blur">
+                {pad(i + 1)}
+              </span>
+              {a.name && (
+                <span className="absolute bottom-4 left-4 text-lg font-medium tracking-heading text-white opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                  {a.name}
+                </span>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      {/* Progress */}
+      <div className="container-x mt-8 flex items-center gap-5">
+        <span className="font-mono text-xs text-muted">{pad(1)}</span>
+        <div className="h-[2px] flex-1 overflow-hidden rounded-full bg-line">
+          <div
+            className="h-full rounded-full bg-ink transition-[width] duration-300 ease-out"
+            style={{ width: `${Math.max(6, progress * 100)}%` }}
+          />
+        </div>
+        <span className="font-mono text-xs text-muted">{pad(ARTISTS.length)}</span>
+      </div>
+
+      <style jsx>{`
+        .artists-rail {
+          scrollbar-width: none;
+          /* line the first card up with the page content, even on wide screens */
+          --rail-pad: max(var(--gutter), calc((100vw - var(--max-w)) / 2 + var(--gutter)));
+          padding-inline: var(--rail-pad);
+          scroll-padding-inline: var(--rail-pad);
+        }
+        .artists-rail::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+    </section>
   );
 };
 
