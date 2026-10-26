@@ -6,11 +6,14 @@ import bookingTranslations from "../data/bookingTranslations.json";
 /*
   Booking flow: Pack → Date → Heure → Détails → Confirmation.
   Texts live in data/bookingTranslations.json (fr / en / ar / darija).
-  Requests are sent to Formspree; if that fails, the visitor can send the
-  same request by email or WhatsApp.
+  Requests are emailed to BOOKING_EMAIL through FormSubmit (formsubmit.co,
+  free, no account). The very first booking triggers an "Activate form" email
+  to that address: open it and click Activate once. If sending fails, the
+  visitor can send the same request by email or WhatsApp.
 */
 
-const FORMSPREE_URL = "https://formspree.io/f/xkgbdwbw";
+const BOOKING_EMAIL = "warddstudio@gmail.com";
+const FORMSUBMIT_URL = `https://formsubmit.co/ajax/${BOOKING_EMAIL}`;
 const STUDIO_EMAIL = "contact@warddstudio.com";
 const WHATSAPP = "212617869001";
 
@@ -151,22 +154,29 @@ const BookingSystem = () => {
     setSending(true);
     setFailed(false);
     try {
-      const r = await fetch(FORMSPREE_URL, {
+      const r = await fetch(FORMSUBMIT_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          _subject: `Nouvelle réservation Wardd Studio — ${packName()}`,
+          _subject: `Nouvelle réservation — ${packName()} — ${formatDate(date)} à ${time}`,
           _replyto: form.email,
-          message: message(),
-          client_name: form.name,
-          client_email: form.email,
-          client_phone: form.phone,
-          pack_requested: packName(),
-          booking_date: formatDate(date),
-          booking_time: time,
+          _template: "table",
+          _captcha: "false",
+          Pack: packName(),
+          Prix: t.services[pack]?.price || "",
+          Date: formatDate(date),
+          Heure: time,
+          Nom: form.name,
+          Email: form.email,
+          Téléphone: form.phone,
+          "Nom d'artiste": form.artistName || "—",
+          "Type de projet": form.projectType || "—",
+          "Demandes spéciales": form.specialRequests || "—",
+          Langue: LANGS.find((l) => l.code === lang)?.label,
         }),
       });
-      if (!r.ok) throw new Error(String(r.status));
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok || String(data.success) !== "true") throw new Error(data.message || String(r.status));
       setStep(5);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
@@ -559,7 +569,7 @@ const BookingSystem = () => {
                     <p className="mt-1 text-[14px]">{ui.errorText}</p>
                     <div className="mt-4 flex flex-wrap gap-2">
                       <a
-                        href={`mailto:${STUDIO_EMAIL}?subject=${encodeURIComponent(`Réservation — ${packName()}`)}&body=${encodeURIComponent(message())}`}
+                        href={`mailto:${BOOKING_EMAIL}?subject=${encodeURIComponent(`Réservation — ${packName()}`)}&body=${encodeURIComponent(message())}`}
                         className="btn-pill"
                       >
                         {ui.byEmail}
