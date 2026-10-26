@@ -22,7 +22,7 @@ const StudioLife = () => {
     <section id="studio-life" className="container-wide section-y">
       <div className="relative overflow-hidden rounded-[28px] bg-[#0a0a0b] sm:rounded-[36px]">
         {/* Photo wall */}
-        <div className="relative h-[520px] overflow-hidden sm:h-[620px] lg:h-[720px]">
+        <div className="relative h-[460px] overflow-hidden sm:h-[540px] lg:h-[min(640px,82svh)]">
           <div className="grid h-full grid-cols-2 gap-3 px-3 sm:gap-4 sm:px-4 md:grid-cols-4">
             {columns.map((col, c) => (
               <div key={c} className={`relative h-full overflow-hidden ${c > 1 ? "hidden md:block" : ""}`}>
@@ -54,19 +54,13 @@ const StudioLife = () => {
 
           {/* Fades into the card at top and bottom */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#0a0a0b] to-transparent" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0a0a0b] via-[#0a0a0b]/70 to-transparent" />
-        </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#0a0a0b] from-[18%] via-[#0a0a0b]/75 to-transparent" />
 
-        {/* Caption bar */}
-        <div className="relative flex flex-col gap-8 border-t border-white/10 px-6 pb-8 pt-8 sm:px-10 sm:pb-10 lg:flex-row lg:items-end lg:justify-between lg:px-14 lg:pb-14">
-          <div>
-            <h2 className="text-[clamp(2.6rem,6vw,5.4rem)] font-medium leading-[0.95] tracking-display text-white">
+        {/* Caption, sitting on the dark fade (no separator line) */}
+        <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-5 px-6 pb-7 sm:flex-row sm:items-end sm:justify-between sm:px-10 sm:pb-9 lg:px-14 lg:pb-11">
+            <h2 className="text-[clamp(2rem,3.6vw,3.4rem)] font-bold leading-none tracking-[-0.04em] text-white">
               Studio Life
             </h2>
-            <p className="mt-4 max-w-[36ch] text-[15px] leading-relaxed !text-white/60 sm:text-lg">
-              Le son, la vibe, le style. Vis l&apos;expérience Wardd Studio.
-            </p>
-          </div>
 
           <a
             href={INSTAGRAM_URL}
@@ -82,6 +76,7 @@ const StudioLife = () => {
               </svg>
             </span>
           </a>
+        </div>
         </div>
       </div>
 
