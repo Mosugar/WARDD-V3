@@ -9,9 +9,9 @@ const ShaderWaves = dynamic(() => import("@/components/ui/ShaderWaves"), {
 
 const Hero = () => {
   return (
-    <section id="hero" className="container-wide relative pb-3 pt-3 sm:pb-4 sm:pt-4">
+    <section id="hero" className="container-wide relative pb-4 pt-[84px] sm:pb-6 sm:pt-[104px]">
       <div
-        className="media relative flex h-[86svh] min-h-[560px] flex-col justify-end"
+        className="media relative flex h-[calc(100svh-108px)] min-h-[520px] flex-col justify-end sm:h-[calc(100svh-136px)]"
         style={{ background: "#0a0a0a" }}
       >
         {/* Liquid green waves */}
