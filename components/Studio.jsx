@@ -6,12 +6,11 @@ import BlurText from "@/components/ui/BlurText";
 /* ── Edit photos and captions here (files live in /public/studio) ────── */
 const PHOTOS = [
   { src: "/studio/regie.jpg", label: "La régie", text: "Le cœur du studio : écoute précise, lumière chaude.", alt: "Régie du studio Wardd : bureau, écrans, enceintes et éclairage chaud" },
-  { src: "/studio/cabine.jpg", label: "Cabine vocale", text: "Une prise de voix propre, sans bruit parasite.", alt: "Micro de studio avec filtre anti-pop et panneau acoustique" },
   { src: "/studio/monitoring.jpg", label: "Monitoring", text: "Des enceintes ADAM Audio pour entendre chaque détail.", alt: "Enceinte de monitoring ADAM Audio" },
+  { src: "/studio/cabine.jpg", label: "Cabine vocale", text: "Une prise de voix propre, sans bruit parasite.", alt: "Micro de studio avec filtre anti-pop et panneau acoustique" },
   { src: "/studio/poste.jpg", label: "Poste de production", text: "Clavier, interface et casque, prêts pour la session.", alt: "Clavier maître, interface audio et casque sur le bureau" },
-  { src: "/studio/regie-2.jpg", label: "Acoustique", text: "Traitement complet, du sol au plafond.", alt: "Vue large du studio avec traitement acoustique au plafond" },
+  { src: "/studio/regie-3.jpg", label: "Vue d'ensemble", text: "Un espace traité du sol au plafond, pensé pour créer.", alt: "Régie vue depuis l'entrée du studio" },
   { src: "/studio/lounge.jpg", label: "Le lounge", text: "Un espace pour souffler entre deux prises.", alt: "Coin lounge avec fauteuil et logo Wardd en néon" },
-  { src: "/studio/regie-3.jpg", label: "Bienvenue", text: "Réserve ta session, on s'occupe du reste.", alt: "Régie vue depuis l'entrée du studio" },
 ];
 
 const pad = (n) => String(n).padStart(2, "0");

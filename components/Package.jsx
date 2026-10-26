@@ -185,7 +185,7 @@ const Package = () => {
                     <span className="font-mono text-[11px] uppercase tracking-[0.06em] opacity-60">
                       Déchire pour réserver
                     </span>
-                    <span className="text-[1.7rem] font-medium leading-none tracking-heading">
+                    <span className="text-[1.7rem] font-bold leading-none tracking-heading">
                       Réserver
                     </span>
                   </div>
@@ -234,11 +234,11 @@ const Package = () => {
                 </div>
 
                 {/* Name + price */}
-                <h3 className="absolute inset-x-7 top-[84px] text-[2.6rem] font-medium leading-none tracking-display text-inherit">
+                <h3 className="absolute inset-x-7 top-[80px] text-[2.9rem] font-extrabold uppercase leading-none tracking-[-0.04em] text-inherit">
                   {pack.name}
                 </h3>
                 <div className="absolute inset-x-7 top-[140px] flex items-baseline gap-2">
-                  <span className="text-[1.5rem] font-medium tracking-heading">{pack.price}</span>
+                  <span className="text-[1.5rem] font-bold tracking-heading">{pack.price}</span>
                   <span className="font-mono text-[11px] uppercase tracking-[0.06em] opacity-60">/ projet</span>
                 </div>
 
