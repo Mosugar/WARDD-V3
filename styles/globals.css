@@ -622,3 +622,27 @@ svg.active {
 .anim-nudge {
   animation: nudge-down 1.6s var(--easing) infinite;
 }
+
+/* Horizontal scroll areas without the scrollbar (cover rail, etc.) */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tiny equalizer bars (active release tile) */
+@keyframes eq {
+  0%,
+  100% {
+    height: 4px;
+  }
+  50% {
+    height: 12px;
+  }
+}
+.eq-bar {
+  height: 4px;
+  animation: eq 0.9s ease-in-out infinite;
+}
