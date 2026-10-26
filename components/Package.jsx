@@ -24,9 +24,9 @@ const PACKS = [
       "Enregistrement",
       "Mixage",
       "Mastering",
-      "Tuning vocal avancé",
       "Shooting offert",
     ],
+    note: "* Session limitée à 5 heures (chaque heure supplémentaire : 100 DH)",
     theme: {
       background: "#e9edf2",
       stubBackground: "#f6f8fa",
@@ -47,10 +47,10 @@ const PACKS = [
       "Enregistrement",
       "Mixage",
       "Mastering",
-      "Tuning vocal avancé",
       "Instrumentale non exclusive",
       "Shooting offert",
       "Vidéo des coulisses de ta session pour tes réseaux sociaux",
+      { text: "Double session de 5 heures", detail: "Chaque heure supplémentaire : 100 DH" },
     ],
     theme: {
       background: "#0a0a0a",
@@ -77,6 +77,7 @@ const PACKS = [
       "Shooting offert",
       "Vidéo des coulisses de ta session pour tes réseaux sociaux",
     ],
+    highlight: { title: "Full session", detail: "Sans limite d'heures. Prends tout ton temps." },
     theme: {
       background: "#dde5ee",
       stubBackground: "#eef2f7",
@@ -87,7 +88,7 @@ const PACKS = [
 ];
 
 // Ticket design size (scales down automatically on small screens)
-const TICKET = { width: 360, height: 580, stub: 120 };
+const TICKET = { width: 360, height: 650, stub: 120 };
 const BODY_H = TICKET.height - TICKET.stub; // 460
 
 const Check = () => (
@@ -251,15 +252,36 @@ const Package = () => {
                   style={{ background: "color-mix(in srgb, currentColor 15%, transparent)" }}
                 />
 
-                {/* Features */}
-                <ul className="absolute inset-x-7 top-[214px] flex flex-col gap-[9px] text-[14.5px] leading-tight">
-                  {pack.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3">
-                      <Check />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                {/* Features (+ optional note / highlight) */}
+                <div className="absolute inset-x-7 bottom-5 top-[206px] flex flex-col">
+                  <ul className="flex flex-col gap-[9px] text-[14.5px] leading-tight">
+                    {pack.features.map((feature) => {
+                      const f = typeof feature === "string" ? { text: feature } : feature;
+                      return (
+                        <li key={f.text} className="flex items-start gap-3">
+                          <Check />
+                          <span>
+                            {f.text}
+                            {f.detail && <span className="mt-0.5 block text-[12px] opacity-60">{f.detail}</span>}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {pack.note && <p className="mt-auto text-[12px] leading-snug !text-current opacity-60">{pack.note}</p>}
+                  {pack.highlight && (
+                    <div className="relative mt-auto overflow-hidden rounded-2xl bg-ink px-4 py-3 text-white">
+                      <div
+                        className="pointer-events-none absolute -right-6 -top-10 h-24 w-24 rounded-full opacity-70 blur-xl"
+                        style={{ background: "radial-gradient(circle, #0dff88 0%, rgba(13,255,136,0) 70%)" }}
+                      />
+                      <div className="relative flex items-center gap-2 text-[15px] font-extrabold uppercase tracking-[-0.01em]">
+                        <span className="text-[#0dff88]">∞</span> {pack.highlight.title}
+                      </div>
+                      <div className="relative mt-0.5 text-[12px] text-white/70">{pack.highlight.detail}</div>
+                    </div>
+                  )}
+                </div>
               </div>
             </TearTicket>
           </div>
