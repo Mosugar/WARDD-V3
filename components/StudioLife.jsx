@@ -2,7 +2,7 @@
 import Image from "next/image";
 
 /* ── Edit photos and link here ───────────────────────────────────────── */
-const INSTAGRAM_URL = "https://www.instagram.com/warddmusic_/";
+const INSTAGRAM_URL = "https://www.instagram.com/warddstudio/";
 const PHOTOS = [
   "/studiolife/1.jpg", "/studiolife/2.jpg", "/studiolife/3.JPG", "/studiolife/4.JPG",
   "/studiolife/5.JPG", "/studiolife/6.JPG", "/studiolife/7.JPG", "/studiolife/8.JPG",

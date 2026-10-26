@@ -12,7 +12,7 @@ export const STUDIO = {
   whatsapp: "212617869001",
   bookingUrl: "/booking",
   hours: "du lundi au samedi, de 9h à 20h (fermé le dimanche)",
-  instagram: "https://www.instagram.com/warddmusic_/",
+  instagram: "https://www.instagram.com/warddstudio/",
   youtube: "https://www.youtube.com/@warddmusic",
 };
 
