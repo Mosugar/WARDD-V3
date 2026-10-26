@@ -17,9 +17,9 @@ export const STUDIO = {
 };
 
 export const PACKS = [
-  { name: "Pack Étudiant", price: "900 DH (800 DH avec carte étudiant)", features: ["Enregistrement", "Mixage", "Mastering", "Tuning vocal avancé", "Shooting offert"] },
-  { name: "Pack Pro", price: "1100 DH", features: ["Enregistrement", "Mixage", "Mastering", "Tuning vocal avancé", "Instrumentale non exclusive", "Shooting offert", "Vidéo des coulisses de la session pour les réseaux sociaux"] },
-  { name: "Pack Premium", price: "à partir de 2500 DH", features: ["Enregistrement", "Mixage", "Mastering", "Tuning vocal avancé +", "Instrumentale exclusive", "Shooting offert", "Vidéo des coulisses de la session pour les réseaux sociaux"] },
+  { name: "Pack Étudiant", price: "900 DH (800 DH avec carte étudiant)", features: ["Enregistrement", "Mixage", "Mastering", "Shooting offert", "Session limitée à 5 heures (chaque heure supplémentaire : 100 DH)"] },
+  { name: "Pack Pro", price: "1100 DH", features: ["Enregistrement", "Mixage", "Mastering", "Instrumentale non exclusive", "Shooting offert", "Vidéo des coulisses de la session pour les réseaux sociaux", "Double session de 5 heures (chaque heure supplémentaire : 100 DH)"] },
+  { name: "Pack Premium", price: "à partir de 2500 DH", features: ["Enregistrement", "Mixage", "Mastering", "Tuning vocal avancé +", "Instrumentale exclusive", "Shooting offert", "Vidéo des coulisses de la session pour les réseaux sociaux", "Full session sans limite d'heures"] },
   { name: "Pack Personnalisé", price: "sur devis", features: ["Services à la carte selon ton projet"] },
 ];
 

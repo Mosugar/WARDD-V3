@@ -45,19 +45,19 @@
         "name": "PACK ÉTUDIANT",
         "duration": "Session complète",
         "price": "900 DH (800 DH avec carte étudiant)",
-        "description": "Enregistrement, Mixage, Mastering, Tuning vocal avancé, Shooting offert"
+        "description": "Enregistrement, Mixage, Mastering, Shooting offert. Session limitée à 5 heures (chaque heure supplémentaire : 100 DH)"
       },
       "pack-professionnel": {
         "name": "PACK PROFESSIONNEL",
         "duration": "Session complète",
         "price": "1100 DH",
-        "description": "Enregistrement, Mixage, Mastering, Tuning vocal avancé, Instrumentale non exclusive, Shooting offert, Vidéo des coulisses de ta session pour tes réseaux sociaux"
+        "description": "Enregistrement, Mixage, Mastering, Instrumentale non exclusive, Shooting offert, Vidéo des coulisses de ta session pour tes réseaux sociaux, Double session de 5 heures (chaque heure supplémentaire : 100 DH)"
       },
       "pack-premium": {
         "name": "PACK PREMIUM",
         "duration": "Session complète",
         "price": "À partir de 2500 DH",
-        "description": "Enregistrement, Mixage, Mastering, Tuning vocal avancé +, Instrumentale exclusive, Shooting offert, Vidéo des coulisses de ta session pour tes réseaux sociaux"
+        "description": "Enregistrement, Mixage, Mastering, Tuning vocal avancé +, Instrumentale exclusive, Shooting offert, Vidéo des coulisses de ta session pour tes réseaux sociaux, Full session sans limite d'heures"
       },
       "pack-personnalise": {
         "name": "PACK PERSONNALISÉ",
@@ -198,19 +198,19 @@
         "name": "STUDENT PACKAGE",
         "duration": "Complete session",
         "price": "900 DH (800 DH with a student card)",
-        "description": "Recording, Mixing, Mastering, Advanced vocal tuning, Free photo shoot"
+        "description": "Recording, Mixing, Mastering, Free photo shoot. Session limited to 5 hours (each extra hour: 100 DH)"
       },
       "pack-professionnel": {
         "name": "PROFESSIONAL PACKAGE",
         "duration": "Complete session",
         "price": "1100 DH",
-        "description": "Recording, Mixing, Mastering, Advanced vocal tuning, Non-exclusive beat, Free photo shoot, Behind-the-scenes video of your session for social media"
+        "description": "Recording, Mixing, Mastering, Non-exclusive beat, Free photo shoot, Behind-the-scenes video of your session for social media, Double 5-hour session (each extra hour: 100 DH)"
       },
       "pack-premium": {
         "name": "PREMIUM PACKAGE",
         "duration": "Complete session",
         "price": "From 2500 DH",
-        "description": "Recording, Mixing, Mastering, Advanced vocal tuning +, Exclusive beat, Free photo shoot, Behind-the-scenes video of your session for social media"
+        "description": "Recording, Mixing, Mastering, Advanced vocal tuning +, Exclusive beat, Free photo shoot, Behind-the-scenes video of your session for social media, Full session with no time limit"
       },
       "pack-personnalise": {
         "name": "CUSTOM PACKAGE",
@@ -351,19 +351,19 @@
         "name": "باقة الطلاب",
         "duration": "جلسة كاملة",
         "price": "900 درهم (800 درهم مع بطاقة الطالب)",
-        "description": "التسجيل، المكساج، الماسترينغ، ضبط صوتي متقدم، تصوير مجاني"
+        "description": "التسجيل، المكساج، الماسترينغ، تصوير مجاني. الجلسة محدودة في 5 ساعات (كل ساعة إضافية: 100 درهم)"
       },
       "pack-professionnel": {
         "name": "الباقة المهنية",
         "duration": "جلسة كاملة",
         "price": "1100 درهم",
-        "description": "التسجيل، المكساج، الماسترينغ، ضبط صوتي متقدم، إيقاع غير حصري، تصوير مجاني، فيديو كواليس الجلسة لشبكاتك الاجتماعية"
+        "description": "التسجيل، المكساج، الماسترينغ، إيقاع غير حصري، تصوير مجاني، فيديو كواليس الجلسة لشبكاتك الاجتماعية، جلستان من 5 ساعات (كل ساعة إضافية: 100 درهم)"
       },
       "pack-premium": {
         "name": "الباقة المميزة",
         "duration": "جلسة كاملة",
         "price": "ابتداءً من 2500 درهم",
-        "description": "التسجيل، المكساج، الماسترينغ، ضبط صوتي متقدم +، إيقاع حصري، تصوير مجاني، فيديو كواليس الجلسة لشبكاتك الاجتماعية"
+        "description": "التسجيل، المكساج، الماسترينغ، ضبط صوتي متقدم +، إيقاع حصري، تصوير مجاني، فيديو كواليس الجلسة لشبكاتك الاجتماعية، جلسة كاملة بلا حدود زمنية"
       },
       "pack-personnalise": {
         "name": "باقة مخصصة",
@@ -504,19 +504,19 @@
         "name": "باقة الطلبة",
         "duration": "جلسة كاملة",
         "price": "900 درهم (800 درهم بكارط الطالب)",
-        "description": "التسجيل، الميكساج، الماسترينغ، تيونينغ متقدم، تصوير فابور"
+        "description": "التسجيل، الميكساج، الماسترينغ، تصوير فابور. الجلسة محدودة ف 5 ساعات (كل ساعة زايدة: 100 درهم)"
       },
       "pack-professionnel": {
         "name": "الباقة المهنية",
         "duration": "جلسة كاملة",
         "price": "1100 درهم",
-        "description": "التسجيل، الميكساج، الماسترينغ، تيونينغ متقدم، بيت ماشي حصري، تصوير فابور، فيديو ديال الكواليس ديال الجلسة للسوشيال ميديا"
+        "description": "التسجيل، الميكساج، الماسترينغ، بيت ماشي حصري، تصوير فابور، فيديو ديال الكواليس ديال الجلسة للسوشيال ميديا، جوج جلسات ديال 5 ساعات (كل ساعة زايدة: 100 درهم)"
       },
       "pack-premium": {
         "name": "الباقة المميزة",
         "duration": "جلسة كاملة",
         "price": "من 2500 درهم وطالع",
-        "description": "التسجيل، الميكساج، الماسترينغ، تيونينغ متقدم +، بيت حصري، تصوير فابور، فيديو ديال الكواليس ديال الجلسة للسوشيال ميديا"
+        "description": "التسجيل، الميكساج، الماسترينغ، تيونينغ متقدم +، بيت حصري، تصوير فابور، فيديو ديال الكواليس ديال الجلسة للسوشيال ميديا، Full session بلا حدود ديال الوقت"
       },
       "pack-personnalise": {
         "name": "باقة مخصصة",
