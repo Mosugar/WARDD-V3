@@ -14,6 +14,7 @@ const PACKS = [
   {
     id: "etudiant",
     name: "Étudiant",
+    price: "700 DH",
     featured: false,
     image: "/images/packs/etudiant.jpg",
     imageAlt: "Artiste au micro dans la cabine d'enregistrement",
@@ -35,6 +36,7 @@ const PACKS = [
   {
     id: "pro",
     name: "Pro",
+    price: "1100 DH",
     featured: true,
     image: "/images/packs/pro.jpg",
     imageAlt: "Artiste avec casque en session d'enregistrement",
@@ -58,6 +60,7 @@ const PACKS = [
   {
     id: "premium",
     name: "Premium",
+    price: "1700 DH",
     featured: false,
     image: "/images/packs/premium.jpg",
     imageAlt: "Producteur aux claviers dans le studio",
@@ -83,8 +86,6 @@ const PACKS = [
 // Ticket design size (scales down automatically on small screens)
 const TICKET = { width: 360, height: 580, stub: 120 };
 const BODY_H = TICKET.height - TICKET.stub; // 460
-const PHOTO_H = 176; // photo height inside the ticket
-const PHOTO_SPAN = (PHOTO_H + 16) / BODY_H; // share of the body (16 = 2×8px inset)
 
 const Check = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
@@ -172,11 +173,6 @@ const Package = () => {
               recenter={false}
               border
               borderWidth={1}
-              image={pack.image}
-              imageAlt={pack.imageAlt}
-              imageRadius={14}
-              imageSpan={PHOTO_SPAN}
-              scrim
               background={pack.theme.background}
               stubBackground={pack.theme.stubBackground}
               color={pack.theme.color}
@@ -222,31 +218,38 @@ const Package = () => {
             >
               {/* Ticket body — positioned on the ticket's own design grid */}
               <div className="relative h-full">
-                {/* Pills over the photo */}
-                <div className="absolute inset-x-5 top-5 flex items-center justify-between">
-                  <span className="rounded-full bg-black/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-white backdrop-blur-md">
+                {/* Top pills */}
+                <div className="absolute inset-x-7 top-7 flex items-center justify-between">
+                  <span
+                    className="rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-[0.06em]"
+                    style={{ border: "1px solid color-mix(in srgb, currentColor 25%, transparent)" }}
+                  >
                     N° 0{i + 1}
                   </span>
                   {pack.featured && (
-                    <span className="rounded-full bg-white px-3 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-ink">
+                    <span className="rounded-full bg-[#0dff88] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-ink">
                       Populaire
                     </span>
                   )}
                 </div>
 
-                {/* Name sits on the faded bottom of the photo */}
-                <h3
-                  className="absolute inset-x-7 text-[2.3rem] font-medium leading-none tracking-display text-inherit"
-                  style={{ top: PHOTO_H + 8 - 46 }}
-                >
+                {/* Name + price */}
+                <h3 className="absolute inset-x-7 top-[84px] text-[2.6rem] font-medium leading-none tracking-display text-inherit">
                   {pack.name}
                 </h3>
+                <div className="absolute inset-x-7 top-[140px] flex items-baseline gap-2">
+                  <span className="text-[1.5rem] font-medium tracking-heading">{pack.price}</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.06em] opacity-60">/ projet</span>
+                </div>
+
+                {/* Divider */}
+                <div
+                  className="absolute inset-x-7 top-[190px] h-px"
+                  style={{ background: "color-mix(in srgb, currentColor 15%, transparent)" }}
+                />
 
                 {/* Features */}
-                <ul
-                  className="absolute inset-x-7 flex flex-col gap-[10px] text-[15px] leading-tight"
-                  style={{ top: PHOTO_H + 8 + 20 }}
-                >
+                <ul className="absolute inset-x-7 top-[214px] flex flex-col gap-[10px] text-[15px] leading-tight">
                   {pack.features.map((feature) => (
                     <li key={feature} className="flex items-center gap-3">
                       <Check />

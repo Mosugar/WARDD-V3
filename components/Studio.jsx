@@ -73,11 +73,10 @@ const Studio = () => {
         }
         const img = imgRefs.current[i];
         if (img) {
-          // parallax + gentle zoom-out as the photo reaches the centre
-          const s = 1.08 + Math.min(Math.abs(d), 1) * 0.14;
-          img.style.transform = `translate3d(${d * -9}%,0,0) scale(${s})`;
+          // light parallax only (no colour change)
+          const s = 1.06;
+          img.style.transform = `translate3d(${clamp(d, -1, 1) * -2.5}%,0,0) scale(${s})`;
         }
-        card.style.opacity = String(clamp(1.25 - Math.abs(d) * 0.75, 0.45, 1));
       });
       if (best !== lastActive) {
         lastActive = best;
@@ -164,7 +163,7 @@ const Studio = () => {
                 type="button"
                 onClick={() => setOpen(i)}
                 data-cursor-label="Agrandir"
-                className="cursor-target group relative block shrink-0 text-left transition-opacity duration-300"
+                className="cursor-target group relative block shrink-0 text-left"
                 style={{ width: "clamp(280px, 52vw, 860px)" }}
               >
                 <div className="relative aspect-[16/11] overflow-hidden rounded-media bg-[#1a1410]">
@@ -174,11 +173,11 @@ const Studio = () => {
                       alt={p.alt}
                       fill
                       sizes="(max-width: 640px) 90vw, 55vw"
+                      quality={90}
                       className="object-cover"
                       priority={i < 2}
                     />
                   </div>
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                   <span
                     className={`absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-[13px] font-medium text-ink backdrop-blur transition-all duration-500 ${
                       i === active ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
@@ -237,6 +236,7 @@ const Studio = () => {
               alt={PHOTOS[open].alt}
               fill
               sizes="100vw"
+              quality={92}
               className="studio-viewer-img object-contain px-4 sm:px-20"
               onClick={(e) => e.stopPropagation()}
             />

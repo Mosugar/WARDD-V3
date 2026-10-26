@@ -19,7 +19,7 @@ const SPEEDS = [52, 64, 48, 60];
 
 const StudioLife = () => {
   return (
-    <section id="studio-life" className="container-x section-y">
+    <section id="studio-life" className="container-wide section-y">
       <div className="relative overflow-hidden rounded-[28px] bg-[#0a0a0b] sm:rounded-[36px]">
         {/* Photo wall */}
         <div className="relative h-[520px] overflow-hidden sm:h-[620px] lg:h-[720px]">

@@ -9,7 +9,7 @@ const ShaderWaves = dynamic(() => import("@/components/ui/ShaderWaves"), {
 
 const Hero = () => {
   return (
-    <section id="hero" className="container-x relative pb-3 pt-3 sm:pb-4 sm:pt-4">
+    <section id="hero" className="container-wide relative pb-3 pt-3 sm:pb-4 sm:pt-4">
       <div
         className="media relative flex h-[calc(100svh-24px)] min-h-[640px] flex-col justify-end sm:h-[calc(100svh-32px)]"
         style={{ background: "#0a0a0a" }}
