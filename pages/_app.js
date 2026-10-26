@@ -1,5 +1,4 @@
 import { Inter } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import "@/styles/globals.css";
 
 // Inter, self-hosted by Next.js (no request to Google from the visitor's browser)
@@ -14,7 +13,6 @@ export default function App({ Component, pageProps }) {
         }
       `}</style>
       <Component {...pageProps} />
-      <Analytics />
     </>
   );
 }
