@@ -11,7 +11,7 @@ const Hero = () => {
   return (
     <section id="hero" className="container-wide relative pb-3 pt-3 sm:pb-4 sm:pt-4">
       <div
-        className="media relative flex h-[calc(100svh-24px)] min-h-[640px] flex-col justify-end sm:h-[calc(100svh-32px)]"
+        className="media relative flex h-[86svh] min-h-[560px] flex-col justify-end"
         style={{ background: "#0a0a0a" }}
       >
         {/* Liquid green waves */}

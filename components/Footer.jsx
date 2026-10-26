@@ -24,7 +24,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="container-x pb-28 pt-14 sm:pt-20 lg:pt-28">
+    <footer className="container-wide pb-28 pt-14 sm:pt-20 lg:pt-28">
       {/* Giant faded wordmark — sized to the container, so it always fits */}
       <div ref={boxRef} className="text-center" aria-hidden="true">
         <div
