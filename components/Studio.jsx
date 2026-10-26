@@ -73,7 +73,7 @@ const Studio = () => {
         const img = imgRefs.current[i];
         if (img) {
           // light parallax only (no colour change)
-          const s = 1.24; // zoom-in crop
+          const s = 1.08; // portrait crop is already tight; small margin for the parallax
           img.style.transform = `translate3d(${clamp(d, -1, 1) * -2.5}%,0,0) scale(${s})`;
         }
       });
@@ -162,16 +162,16 @@ const Studio = () => {
                 type="button"
                 onClick={() => setOpen(i)}
                 data-cursor-label="Agrandir"
-                className="cursor-target group relative block shrink-0 text-left"
-                style={{ width: "clamp(280px, 52vw, 860px)" }}
+                className="cursor-target group relative block shrink-0 text-left [--card-vw:70vw] md:[--card-vw:38vw] lg:[--card-vw:28vw]"
+                style={{ width: "min(calc((100svh - 330px) * 0.8), 460px, var(--card-vw))" }}
               >
-                <div className="relative aspect-[16/11] overflow-hidden rounded-media bg-[#1a1410]">
+                <div className="relative aspect-[1080/1350] overflow-hidden rounded-media bg-[#1a1410]">
                   <div ref={(el) => (imgRefs.current[i] = el)} className="absolute inset-0 will-change-transform">
                     <Image
                       src={p.src}
                       alt={p.alt}
                       fill
-                      sizes="(max-width: 640px) 90vw, 55vw"
+                      sizes="(max-width: 768px) 70vw, (max-width: 1024px) 38vw, 460px"
                       quality={90}
                       className="object-cover"
                       priority={i < 2}

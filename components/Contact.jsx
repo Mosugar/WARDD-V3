@@ -13,7 +13,7 @@ const SOCIALS = [
     label: "Spotify",
     href: "https://open.spotify.com/user/314t6ingile3jrokd6pkp5rdjyjm?si=4da048657bb14825",
   },
-  { label: "Instagram", href: "https://www.instagram.com/warddmusic_/" },
+  { label: "Instagram", href: "https://www.instagram.com/warddstudio/" },
   { label: "YouTube", href: "https://www.youtube.com/@warddmusic" },
   { label: "Facebook", href: "https://www.facebook.com/warddmusic" },
 ];

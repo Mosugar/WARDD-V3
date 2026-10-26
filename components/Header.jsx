@@ -35,7 +35,7 @@ const SOCIALS = [
     label: "Spotify",
     href: "https://open.spotify.com/playlist/2GznjCPT7BhHuci5z2gLMt?si=039fac172df0428d",
   },
-  { label: "Instagram", href: "https://www.instagram.com/warddmusic_/" },
+  { label: "Instagram", href: "https://www.instagram.com/warddstudio/" },
   { label: "YouTube", href: "https://youtube.com/@omflow1?si=wgU7SbCpPVx3PXpf" },
   { label: "Facebook", href: "https://www.facebook.com/warddmusic" },
 ];
