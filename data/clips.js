@@ -2,15 +2,13 @@
 // To add a clip: paste the ID from its YouTube link
 //   https://www.youtube.com/watch?v=<THIS_PART>
 export const CLIP_IDS = [
-  "iAKam37eHYM",
-  "HYtqFjUIh8Q",
+  "riOo6twzEc0",
+  "6_bDNIAGg24",
   "fWlUmFIdGnA",
   "8uT34tiBPR4",
-  "3qLFE-tx5ec",
-  "S6HAWKi81bs",
-  "E_59pKMr5Cs",
-  "927oWsK59Zk",
-  "5efXnfS7aY4",
+  "iAKam37eHYM",
+  "R6e2G4REOB8",
+  "-pt-fCzQ5Yc",
 ];
 
 // Optional manual overrides. Title and channel name are fetched automatically

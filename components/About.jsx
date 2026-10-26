@@ -94,10 +94,12 @@ const About = () => {
             />
           </h2>
         </div>
-        <p className="max-w-[40ch] text-[15px] leading-relaxed sm:text-base lg:text-right">
-          Depuis 2016, Wardd Studio grandit avec les artistes qu’il accompagne :
-          d’un home studio entre passionnés à un hub créatif pour le son,
-          la photo et la vidéo.
+        <p className="max-w-[52ch] text-[15px] leading-relaxed sm:text-base lg:text-right">
+          Wardd Studio est un hub créatif dédié à l’enregistrement et à la
+          production musicale, où se rencontrent amateurs passionnés et artistes
+          professionnels. Né d’une envie d’artistes de créer ensemble, le studio a
+          accompagné des univers variés avec une même exigence sonore : plus de
+          500 titres produits depuis 2016.
         </p>
       </div>
 
