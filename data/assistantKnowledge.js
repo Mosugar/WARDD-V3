@@ -17,9 +17,9 @@ export const STUDIO = {
 };
 
 export const PACKS = [
-  { name: "Pack Étudiant", price: "700 DH", features: ["Enregistrement", "Mixage", "Mastering", "Shooting offert", "Contenu vidéo pour les réseaux sociaux"] },
-  { name: "Pack Pro", price: "1100 DH", features: ["Tout le pack Étudiant", "Instru non exclusif", "Tuning vocal avancé"] },
-  { name: "Pack Premium", price: "1700 DH", features: ["Tout le pack Étudiant", "Instru exclusif", "Tuning vocal avancé"] },
+  { name: "Pack Étudiant", price: "900 DH (800 DH avec carte étudiant)", features: ["Enregistrement", "Mixage", "Mastering", "Tuning vocal avancé", "Shooting offert"] },
+  { name: "Pack Pro", price: "1100 DH", features: ["Enregistrement", "Mixage", "Mastering", "Tuning vocal avancé", "Instrumentale non exclusive", "Shooting offert", "Vidéo des coulisses de la session pour les réseaux sociaux"] },
+  { name: "Pack Premium", price: "à partir de 2500 DH", features: ["Enregistrement", "Mixage", "Mastering", "Tuning vocal avancé +", "Instrumentale exclusive", "Shooting offert", "Vidéo des coulisses de la session pour les réseaux sociaux"] },
   { name: "Pack Personnalisé", price: "sur devis", features: ["Services à la carte selon ton projet"] },
 ];
 
@@ -49,7 +49,7 @@ export const STUDIO_SPACE =
   "Régie en bois chaud avec traitement acoustique complet du sol au plafond, enceintes de monitoring ADAM Audio, cabine vocale isolée, poste de production (clavier maître, interface audio) et un espace lounge avec le logo Wardd en néon.";
 
 export const STORY =
-  "Né en 2016 entre passionnés (deux beatmakers, deux ingénieurs du son, deux artistes). Ouvert aux autres artistes en 2017, packs jeunes en 2019, nouvelle adresse en 2022, plus de 350 artistes accompagnés depuis 2016. En 2025-2026 Wardd devient un hub créatif son + photo + vidéo. Le studio ne revendique pas les masters et n'oblige pas à signer : l'artiste garde ses droits.";
+  "Wardd Studio est un hub créatif dédié à l'enregistrement et à la production musicale, où se rencontrent amateurs passionnés et artistes professionnels. Né en 2016 entre passionnés (deux beatmakers, deux ingénieurs du son, deux artistes). Ouvert aux autres artistes en 2017, packs jeunes en 2019, nouvelle adresse en 2022, plus de 350 artistes accompagnés et plus de 500 titres produits depuis 2016. En 2025-2026 Wardd devient un hub créatif son + photo + vidéo. Le studio ne revendique pas les masters et n'oblige pas à signer : l'artiste garde ses droits.";
 
 export function buildSystemPrompt() {
   const packs = PACKS.map((p) => `- ${p.name} : ${p.price} — ${p.features.join(", ")}`).join("\n");
@@ -65,7 +65,7 @@ Packs (prix par projet/session complète) :
 ${packs}
 Services : ${SERVICES.join(" ; ")}.
 Équipe : ${TEAM.map((t) => `${t.name} (${t.role})`).join(", ")}.
-Artistes passés au studio : ${ARTISTS.join(", ")} et plus de 350 au total.
+Artistes passés au studio : ${ARTISTS.join(", ")} et plus de 350 au total ; plus de 500 titres produits depuis 2016.
 Le lieu : ${STUDIO_SPACE}
 Histoire : ${STORY}
 Horaires : ${STUDIO.hours}.

@@ -14,7 +14,8 @@ const PACKS = [
   {
     id: "etudiant",
     name: "Étudiant",
-    price: "700 DH",
+    price: "900 DH",
+    priceNote: "800 DH avec carte étudiant",
     featured: false,
     image: "/images/packs/etudiant.jpg",
     imageAlt: "Artiste au micro dans la cabine d'enregistrement",
@@ -23,8 +24,8 @@ const PACKS = [
       "Enregistrement",
       "Mixage",
       "Mastering",
-      "Shooting (Offert)",
-      "Contenu vidéo pour réseaux sociaux",
+      "Tuning vocal avancé",
+      "Shooting offert",
     ],
     theme: {
       background: "#e9edf2",
@@ -37,6 +38,7 @@ const PACKS = [
     id: "pro",
     name: "Pro",
     price: "1100 DH",
+    priceNote: "/ projet",
     featured: true,
     image: "/images/packs/pro.jpg",
     imageAlt: "Artiste avec casque en session d'enregistrement",
@@ -45,10 +47,10 @@ const PACKS = [
       "Enregistrement",
       "Mixage",
       "Mastering",
-      "Shooting (Offert)",
-      "Contenu vidéo pour réseaux sociaux",
-      "Instru non exclusif",
       "Tuning vocal avancé",
+      "Instrumentale non exclusive",
+      "Shooting offert",
+      "Vidéo des coulisses de ta session pour tes réseaux sociaux",
     ],
     theme: {
       background: "#0a0a0a",
@@ -60,7 +62,8 @@ const PACKS = [
   {
     id: "premium",
     name: "Premium",
-    price: "1700 DH",
+    price: "Dès 2500 DH",
+    priceNote: "/ projet",
     featured: false,
     image: "/images/packs/premium.jpg",
     imageAlt: "Producteur aux claviers dans le studio",
@@ -69,10 +72,10 @@ const PACKS = [
       "Enregistrement",
       "Mixage",
       "Mastering",
-      "Shooting (Offert)",
-      "Contenu vidéo pour réseaux sociaux",
-      "Instru exclusif",
-      "Tuning vocal avancé",
+      "Tuning vocal avancé +",
+      "Instrumentale exclusive",
+      "Shooting offert",
+      "Vidéo des coulisses de ta session pour tes réseaux sociaux",
     ],
     theme: {
       background: "#dde5ee",
@@ -239,7 +242,7 @@ const Package = () => {
                 </h3>
                 <div className="absolute inset-x-7 top-[140px] flex items-baseline gap-2">
                   <span className="text-[1.5rem] font-bold tracking-heading">{pack.price}</span>
-                  <span className="font-mono text-[11px] uppercase tracking-[0.06em] opacity-60">/ projet</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.06em] opacity-60">{pack.priceNote}</span>
                 </div>
 
                 {/* Divider */}
@@ -249,7 +252,7 @@ const Package = () => {
                 />
 
                 {/* Features */}
-                <ul className="absolute inset-x-7 top-[214px] flex flex-col gap-[10px] text-[15px] leading-tight">
+                <ul className="absolute inset-x-7 top-[214px] flex flex-col gap-[9px] text-[14.5px] leading-tight">
                   {pack.features.map((feature) => (
                     <li key={feature} className="flex items-center gap-3">
                       <Check />
