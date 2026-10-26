@@ -5,29 +5,26 @@ import Magnet from "@/components/ui/Magnet";
 
 // Main links shown in the bar (desktop)
 const BAR_LINKS = [
-  { label: "À propos", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Studio", href: "#studio" },
-  { label: "Packs", href: "#package" },
-  { label: "Sons", href: "#tracks" },
-  { label: "Artistes", href: "#artists" },
-  { label: "Contact", href: "#contact" },
+  { label: "À propos", href: "/#about" },
+  { label: "Services", href: "/#services" },
+  { label: "Studio", href: "/#studio" },
+  { label: "Packs", href: "/#package" },
+  { label: "Sons", href: "/#tracks" },
+  { label: "Artistes", href: "/#artists" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 // Full list shown in the mobile sheet
 const ALL_LINKS = [
-  { label: "À propos", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Studio", href: "#studio" },
-  { label: "Sons", href: "#tracks" },
-  { label: "Clips", href: "#clips" },
-  { label: "Vie du studio", href: "#studio-life" },
-  { label: "Artistes", href: "#artists" },
-  { label: "Équipe", href: "#team" },
-  { label: "Packs", href: "#package" },
-  { label: "Témoignages", href: "#testimonial" },
-  { label: "Contact", href: "#contact" },
-  { label: "FAQs", href: "#faqs" },
+  { label: "À propos", href: "/#about" },
+  { label: "Services", href: "/#services" },
+  { label: "Studio", href: "/#studio" },
+  { label: "Sons", href: "/#tracks" },
+  { label: "Clips", href: "/#clips" },
+  { label: "Vie du studio", href: "/#studio-life" },
+  { label: "Artistes", href: "/#artists" },
+  { label: "Packs", href: "/#package" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 const SOCIALS = [
@@ -75,11 +72,11 @@ const Header = () => {
 
   // Highlight the link of the section currently in view
   useEffect(() => {
-    const ids = BAR_LINKS.map((l) => l.href.slice(1));
+    const ids = BAR_LINKS.map((l) => l.href.split("#")[1]);
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) setActive("#" + e.target.id);
+          if (e.isIntersecting) setActive("/#" + e.target.id);
         });
       },
       { rootMargin: "-45% 0px -50% 0px" }
@@ -120,7 +117,7 @@ const Header = () => {
         >
           {/* Logo */}
           <a
-            href="#hero"
+            href="/#hero"
             aria-label="Wardd Music — accueil"
             className="cursor-target flex items-center text-ink"
             onClick={() => setOpen(false)}

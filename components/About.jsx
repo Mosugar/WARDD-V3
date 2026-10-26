@@ -192,8 +192,8 @@ const About = () => {
 
         <div ref={lineWrapRef} className="relative">
           {/* Line: grey track + ink fill that follows the scroll */}
-          <div className="absolute bottom-0 left-[7px] top-0 w-px bg-line md:left-1/2 md:-translate-x-1/2" aria-hidden="true">
-            <div ref={lineRef} className="h-full w-full origin-top bg-ink" style={{ transform: "scaleY(0)" }} />
+          <div className="absolute bottom-0 left-[6px] top-0 w-[3px] rounded-full bg-line md:left-1/2 md:-translate-x-1/2" aria-hidden="true">
+            <div ref={lineRef} className="about-line h-full w-full origin-top rounded-full" style={{ transform: "scaleY(0)" }} />
           </div>
 
           <ol className="space-y-12 md:space-y-4">
@@ -210,7 +210,7 @@ const About = () => {
                   {/* Dot */}
                   <span
                     className={`absolute left-0 top-2 h-[15px] w-[15px] rounded-full border-2 transition-colors duration-500 md:left-1/2 md:-translate-x-1/2 ${
-                      on ? "border-ink bg-ink" : "border-line bg-paper"
+                      on ? "border-[#0a0a0a] bg-[#0dff88] shadow-[0_0_0_4px_rgba(13,255,136,0.18),0_0_18px_rgba(13,255,136,0.55)]" : "border-line bg-paper"
                     }`}
                     aria-hidden="true"
                   />
@@ -229,6 +229,28 @@ const About = () => {
           </ol>
         </div>
       </div>
+      <style jsx>{`
+        /* Liquid green line, same colours as the hero waves */
+        .about-line {
+          background: linear-gradient(180deg, #0dff88 0%, #0a7a45 22%, #0dff88 45%, #063d24 68%, #0dff88 100%);
+          background-size: 100% 300%;
+          box-shadow: 0 0 12px rgba(13, 255, 136, 0.55), 0 0 2px rgba(13, 255, 136, 0.9);
+          animation: aboutFlow 5s linear infinite;
+        }
+        @keyframes aboutFlow {
+          from {
+            background-position: 0 0;
+          }
+          to {
+            background-position: 0 300%;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .about-line {
+            animation: none;
+          }
+        }
+      `}</style>
     </section>
   );
 };
