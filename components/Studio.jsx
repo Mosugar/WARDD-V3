@@ -73,7 +73,7 @@ const Studio = () => {
         const img = imgRefs.current[i];
         if (img) {
           // light parallax only (no colour change)
-          const s = 1.14; // slight zoom-in crop
+          const s = 1.24; // zoom-in crop
           img.style.transform = `translate3d(${clamp(d, -1, 1) * -2.5}%,0,0) scale(${s})`;
         }
       });
