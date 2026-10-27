@@ -37,7 +37,7 @@ const PACKS = [
   {
     id: "pro",
     name: "Pro",
-    price: "1100 DH",
+    price: "1500 DH",
     priceNote: "/ projet",
     featured: true,
     image: "/images/packs/pro.jpg",
