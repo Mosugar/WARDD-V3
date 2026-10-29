@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import BlurText from "@/components/ui/BlurText";
+import { useLang } from "@/lib/i18n";
 
 const Threads = dynamic(() => import("@/components/ui/Threads"), {
   ssr: false,
@@ -17,6 +18,9 @@ const Threads = dynamic(() => import("@/components/ui/Threads"), {
 const SERVICES = [
   {
     title: "Recording",
+    title_ar: "التسجيل",
+    text_ar: "كابينة معالجة صوتياً، وميكروفونات استوديو، ومهندس صوت ينصت إليك. يُلتقط صوتك بدفء ودقة، تسجيلةً بعد أخرى.",
+    tags_ar: ["كابينة صوتية", "ميكروفونات استوديو", "إدارة فنية"],
     text: "Une cabine traitée, des micros de studio et un ingé son à l'écoute. Ta voix est captée avec chaleur et précision, prise après prise.",
     tags: ["Cabine vocale", "Micros studio", "Direction artistique"],
     video: "fWlUmFIdGnA",
@@ -24,6 +28,9 @@ const SERVICES = [
   },
   {
     title: "Mixage",
+    title_ar: "المكساج",
+    text_ar: "نوازن ونَنحت ونمنح العمق لكل مسار، حتى تصبح أغنيتك واضحة وقوية وجاهزة للإصدار.",
+    tags_ar: ["الموازنة", "المؤثرات والفضاء", "الماسترينغ"],
     text: "On équilibre, on sculpte et on donne de la profondeur à chaque piste pour que ton morceau sonne clair, puissant et prêt à sortir.",
     tags: ["Équilibrage", "Effets & espace", "Mastering"],
     video: "3qLFE-tx5ec",
@@ -31,6 +38,9 @@ const SERVICES = [
   },
   {
     title: "Beatmaking",
+    title_ar: "صناعة الإيقاعات",
+    text_ar: "إيقاعات أصلية بكل الأنماط: هيب هوب، تراب، آر أند بي، أفرو، بوب. حصرية أو غير حصرية، مفصّلة على مقاس صوتك.",
+    tags_ar: ["هيب هوب وتراب", "أفرو وآر أند بي", "إيقاعات حصرية"],
     text: "Des instrus originaux dans tous les styles : hip-hop, trap, R&B, afro, pop. Exclusifs ou non, taillés pour ta voix.",
     tags: ["Hip-hop & Trap", "Afro & R&B", "Instrus exclusifs"],
     video: "S6HAWKi81bs",
@@ -38,6 +48,9 @@ const SERVICES = [
   },
   {
     title: "Producing",
+    title_ar: "الإنتاج",
+    text_ar: "من الفكرة إلى الأغنية النهائية: توزيع وإدارة فنية وإنتاج كامل لمنح مشروعك هوية خاصة.",
+    tags_ar: ["التوزيع", "إدارة فنية", "مشروع متكامل"],
     text: "De l'idée au morceau fini : arrangement, direction artistique et production complète pour donner une identité à ton projet.",
     tags: ["Arrangement", "Direction artistique", "Projet complet"],
     video: "iAKam37eHYM",
@@ -45,6 +58,9 @@ const SERVICES = [
   },
   {
     title: "Ghost production",
+    title_ar: "الإنتاج الخفي",
+    text_ar: "أنت تملك الرؤية، ونحن نكتب النوتة خلف الكواليس. إنتاج حسب الطلب، جاهز ليحمل اسمك.",
+    tags_ar: ["حسب الطلب", "سرية تامة", "جاهز للإصدار"],
     text: "Tu as la vision, on écrit la partition en coulisses. Une production sur mesure, livrée prête à être signée de ton nom.",
     tags: ["Sur mesure", "Discrétion", "Prêt à sortir"],
     video: "HYtqFjUIh8Q",
@@ -52,6 +68,9 @@ const SERVICES = [
   },
   {
     title: "Composition",
+    title_ar: "التأليف الموسيقي",
+    text_ar: "ألحان وهارموني وتوب لاين: نؤلف معك عالماً موسيقياً يشبهك، من أول نوتة إلى آخر وتر.",
+    tags_ar: ["ألحان", "هارموني", "توب لاين"],
     text: "Mélodies, harmonies, topline : on compose avec toi un univers musical qui te ressemble, de la première note au dernier accord.",
     tags: ["Mélodies", "Harmonies", "Topline"],
     video: "927oWsK59Zk",
@@ -59,6 +78,9 @@ const SERVICES = [
   },
   {
     title: "Voice dubbing",
+    title_ar: "الدبلجة الصوتية",
+    text_ar: "دبلجة صوتية للفيديوهات والإعلانات والأفلام: تسجيل صوتك ومزامنته ومكساجه مباشرة على الصورة.",
+    tags_ar: ["دبلجة", "تعليق صوتي", "مزامنة مع الصورة"],
     text: "Doublage voix pour vidéos, pubs et films : enregistrement, calage et mixage de ta voix directement sur l'image.",
     tags: ["Doublage", "Voix off", "Calage sur l'image"],
     video: "8uT34tiBPR4",
@@ -66,6 +88,9 @@ const SERVICES = [
   },
   {
     title: "Movie soundtracks",
+    title_ar: "موسيقى الأفلام",
+    text_ar: "موسيقى أصلية للسينما والمسلسلات والمحتوى المرئي، مصممة لتحمل عاطفة كل مشهد.",
+    tags_ar: ["موسيقى أصلية", "سينما ومسلسلات", "محتوى مرئي"],
     text: "Des musiques originales pour le cinéma, les séries et les contenus vidéo, pensées pour porter l'émotion de chaque scène.",
     tags: ["Musique originale", "Cinéma & séries", "Contenu vidéo"],
     video: "E_59pKMr5Cs",
@@ -80,6 +105,7 @@ const pad = (n) => String(n).padStart(2, "0");
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
 const Expertise = () => {
+  const { tr, isAr } = useLang();
   const sectionRef = useRef(null);
   const wheelRef = useRef(null);
   const itemRefs = useRef([]);
@@ -167,6 +193,7 @@ const Expertise = () => {
         "--arc-x": "calc(var(--gutter) + clamp(16px, 3vw, 56px))",
       }}
       className="relative w-full bg-paper"
+      dir="ltr" // keep the wheel layout; the text block below is set to RTL in Arabic
     >
       <div className="sticky top-0 h-svh overflow-hidden">
         {/* ── Wheel (desktop) ───────────────────────────────────────── */}
@@ -233,7 +260,7 @@ const Expertise = () => {
             >
               {s.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={s.image} alt={s.title} className="h-full w-full object-cover" />
+                <img src={s.image} alt={isAr ? s.title_ar : s.title} className="h-full w-full object-cover" />
               ) : (
                 <Threads
                   color="#2f3d52"
@@ -257,18 +284,18 @@ const Expertise = () => {
           </div>
 
           {/* Text */}
-          <div className="order-2 w-full min-w-0 max-w-[560px] lg:order-1 lg:flex-1">
+          <div dir={isAr ? "rtl" : "ltr"} className="order-2 w-full min-w-0 max-w-[560px] lg:order-1 lg:flex-1">
             <div className="mb-5 flex items-center justify-between gap-4 sm:mb-8">
-              <span className="label">Notre expertise</span>
+              <span className="label">{tr("Notre expertise", "خبرتنا")}</span>
               <span className="font-mono text-xs tracking-[0.04em] text-muted lg:hidden">
                 {pad(active + 1)} / {pad(N)}
               </span>
             </div>
 
             <div aria-live="polite">
-              <h2 key={`t-${active}`} className="text-[clamp(2.4rem,5.4vw,5rem)] leading-[0.98] tracking-display">
+              <h2 key={`t-${active}-${isAr}`} className="text-[clamp(2.4rem,5.4vw,5rem)] leading-[0.98] tracking-display">
                 <BlurText
-                  text={s.title}
+                  text={isAr ? s.title_ar : s.title}
                   trigger="load"
                   delay={70}
                   stepDuration={0.35}
@@ -281,11 +308,11 @@ const Expertise = () => {
 
               <div key={`d-${active}`} className="anim-fade-up" style={{ animationDelay: "120ms" }}>
                 <p className="mt-5 max-w-[46ch] text-[15px] leading-relaxed sm:mt-7 sm:text-base">
-                  {s.text}
+                  {isAr ? s.text_ar : s.text}
                 </p>
 
                 <ul className="mt-6 flex flex-wrap gap-2 sm:mt-8">
-                  {s.tags.map((t) => (
+                  {(isAr ? s.tags_ar : s.tags).map((t) => (
                     <li
                       key={t}
                       className="rounded-full border border-line bg-white px-4 py-2 text-[13px] text-ink sm:text-sm"
@@ -299,11 +326,11 @@ const Expertise = () => {
                   href={`https://www.youtube.com/watch?v=${s.video}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  data-cursor-label="Voir"
+                  data-cursor-label={tr("Voir", "شاهد")}
                   className="cursor-target mt-7 inline-flex items-center gap-2 text-sm text-ink underline underline-offset-4 sm:mt-9"
                 >
-                  Voir la démo
-                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  {tr("Voir la démo", "شاهد العرض")}
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="rtl-flip">
                     <path d="M3 11L11 3M11 3H4.5M11 3V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </a>

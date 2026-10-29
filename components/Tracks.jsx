@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import BlurText from "@/components/ui/BlurText";
+import { useLang } from "@/lib/i18n";
 
 const PLAYLIST_URL =
   "https://open.spotify.com/playlist/2GznjCPT7BhHuci5z2gLMt?si=039fac172df0428d";
@@ -38,13 +39,14 @@ const Arrow = ({ dir = "right" }) => (
     viewBox="0 0 24 24"
     fill="none"
     aria-hidden="true"
-    style={{ transform: dir === "left" ? "scaleX(-1)" : undefined }}
+    className={dir === "left" ? "arrow-left" : "arrow-right"}
   >
     <path d="M5 12h14m0 0l-6-6m6 6l-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const Tracks = ({ tracks = [] }) => {
+  const { tr, isAr } = useLang();
   const [active, setActive] = useState(0);
   const tileRefs = useRef([]);
   const moved = useRef(false); // don't scroll the rail on first render
@@ -71,7 +73,7 @@ const Tracks = ({ tracks = [] }) => {
   if (!total) return null;
 
   const title = current.title || `Sortie ${pad(active + 1)}`;
-  const artist = current.artist || "Wardd Music";
+  const artist = current.artist || "Wardd Studio";
   const tint = current.color
     ? `color-mix(in srgb, ${current.color} 16%, #f4f5f7)`
     : "#eaeef1";
@@ -81,10 +83,11 @@ const Tracks = ({ tracks = [] }) => {
       {/* Heading */}
       <div className="mb-12 flex flex-col gap-6 lg:mb-16 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <span className="label">Nos sorties</span>
+          <span className="label">{tr("Nos sorties", "إصداراتنا")}</span>
           <h2 className="mt-5 text-[clamp(2.6rem,6vw,5.4rem)] leading-[0.98] tracking-display">
             <BlurText
-              text="Nos dernières sorties"
+              key={isAr ? "ar" : "fr"}
+              text={tr("Nos dernières sorties", "أحدث إصداراتنا")}
               delay={90}
               stepDuration={0.35}
               direction="bottom"
@@ -94,10 +97,12 @@ const Tracks = ({ tracks = [] }) => {
             />
           </h2>
         </div>
-        <div className="flex flex-col gap-5 lg:items-end lg:text-right">
+        <div className="flex flex-col gap-5 lg:items-end lg:text-end">
           <p className="max-w-[36ch] text-[15px] leading-relaxed sm:text-base">
-            Écoute les derniers titres sortis du studio. Choisis une pochette
-            pour lancer le morceau.
+            {tr(
+              "Écoute les derniers titres sortis du studio. Choisis une pochette pour lancer le morceau.",
+              "استمع لأحدث الأغاني التي خرجت من الاستوديو. اختر غلافاً لتشغيل الأغنية."
+            )}
           </p>
           <a
             href={PLAYLIST_URL}
@@ -106,8 +111,8 @@ const Tracks = ({ tracks = [] }) => {
             data-cursor-label="Spotify"
             className="btn-ghost cursor-target"
           >
-            Tout écouter sur Spotify
-            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            {tr("Tout écouter sur Spotify", "استمع للكل على سبوتيفاي")}
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="rtl-flip">
               <path d="M3 11L11 3M11 3H4.5M11 3V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </a>
@@ -138,8 +143,8 @@ const Tracks = ({ tracks = [] }) => {
                 <button
                   type="button"
                   onClick={() => go(active - 1)}
-                  aria-label="Titre précédent"
-                  data-cursor-label="Préc."
+                  aria-label={tr("Titre précédent", "الأغنية السابقة")}
+                  data-cursor-label={tr("Préc.", "السابق")}
                   className="cursor-target grid h-11 w-11 place-items-center rounded-full border border-line bg-white/70 text-ink transition-colors hover:bg-white"
                 >
                   <Arrow dir="left" />
@@ -147,8 +152,8 @@ const Tracks = ({ tracks = [] }) => {
                 <button
                   type="button"
                   onClick={() => go(active + 1)}
-                  aria-label="Titre suivant"
-                  data-cursor-label="Suiv."
+                  aria-label={tr("Titre suivant", "الأغنية التالية")}
+                  data-cursor-label={tr("Suiv.", "التالي")}
                   className="cursor-target grid h-11 w-11 place-items-center rounded-full bg-ink text-white transition-transform hover:-translate-y-0.5"
                 >
                   <Arrow />
@@ -178,7 +183,7 @@ const Tracks = ({ tracks = [] }) => {
             {/* One compact Spotify player instead of 20 iframes */}
             <iframe
               key={`player-${current.id}`}
-              title={`Lecteur Spotify — ${title}`}
+              title={`${tr("Lecteur Spotify", "مشغل سبوتيفاي")} — ${title}`}
               src={`https://open.spotify.com/embed/track/${current.id}?utm_source=generator&theme=0`}
               width="100%"
               height="152"
@@ -193,13 +198,13 @@ const Tracks = ({ tracks = [] }) => {
 
       {/* Cover rail */}
       <div
-        className="no-scrollbar -mx-1 mt-3 flex snap-x gap-4 overflow-x-auto px-1 pb-5 pr-10 pt-3 sm:gap-5"
+        className="no-scrollbar -mx-1 mt-3 flex snap-x gap-4 overflow-x-auto px-1 pb-5 pe-10 pt-3 sm:gap-5"
         style={{
-          maskImage: "linear-gradient(to right, #000 92%, transparent)",
-          WebkitMaskImage: "linear-gradient(to right, #000 92%, transparent)",
+          maskImage: `linear-gradient(to ${isAr ? "left" : "right"}, #000 92%, transparent)`,
+          WebkitMaskImage: `linear-gradient(to ${isAr ? "left" : "right"}, #000 92%, transparent)`,
         }}
         role="list"
-        aria-label="Toutes les sorties"
+        aria-label={tr("Toutes les sorties", "كل الإصدارات")}
       >
         {tracks.map((t, i) => {
           const isActive = i === active;
@@ -211,8 +216,8 @@ const Tracks = ({ tracks = [] }) => {
               role="listitem"
               onClick={() => go(i)}
               aria-pressed={isActive}
-              aria-label={`Écouter ${t.title || `la sortie ${pad(i + 1)}`}`}
-              data-cursor-label="Écouter"
+              aria-label={`${tr("Écouter", "استمع إلى")} ${t.title || pad(i + 1)}`}
+              data-cursor-label={tr("Écouter", "استمع")}
               className="cursor-target group w-[150px] shrink-0 snap-start text-left sm:w-[176px]"
             >
               <span
@@ -243,7 +248,7 @@ const Tracks = ({ tracks = [] }) => {
                 {t.title || `Sortie ${pad(i + 1)}`}
               </span>
               <span className="mt-0.5 block truncate text-[12.5px] text-muted">
-                {t.artist || "Wardd Music"}
+                {t.artist || "Wardd Studio"}
               </span>
             </button>
           );

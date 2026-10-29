@@ -1,30 +1,33 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useLang } from "@/lib/i18n";
 import Logo from "@/components/ui/Logo";
 import Magnet from "@/components/ui/Magnet";
 
 // Main links shown in the bar (desktop)
 const BAR_LINKS = [
-  { label: "À propos", href: "/#about" },
-  { label: "Services", href: "/#services" },
-  { label: "Studio", href: "/#studio" },
-  { label: "Packs", href: "/#package" },
-  { label: "Sons", href: "/#tracks" },
-  { label: "Artistes", href: "/#artists" },
-  { label: "Contact", href: "/#contact" },
+  { label: { fr: "À propos", ar: "من نحن" }, hash: "#about" },
+  { label: { fr: "Services", ar: "خدماتنا" }, hash: "#services" },
+  { label: { fr: "Studio", ar: "الاستوديو" }, hash: "#studio" },
+  { label: { fr: "Packs", ar: "الباقات" }, hash: "#package" },
+  { label: { fr: "Sons", ar: "إصداراتنا" }, hash: "#tracks" },
+  { label: { fr: "Artistes", ar: "الفنانون" }, hash: "#artists" },
+  { label: { fr: "Contact", ar: "اتصل بنا" }, hash: "#contact" },
 ];
 
 // Full list shown in the mobile sheet
 const ALL_LINKS = [
-  { label: "À propos", href: "/#about" },
-  { label: "Services", href: "/#services" },
-  { label: "Studio", href: "/#studio" },
-  { label: "Sons", href: "/#tracks" },
-  { label: "Clips", href: "/#clips" },
-  { label: "Vie du studio", href: "/#studio-life" },
-  { label: "Artistes", href: "/#artists" },
-  { label: "Packs", href: "/#package" },
-  { label: "Contact", href: "/#contact" },
+  { label: { fr: "À propos", ar: "من نحن" }, hash: "#about" },
+  { label: { fr: "Services", ar: "خدماتنا" }, hash: "#services" },
+  { label: { fr: "Studio", ar: "الاستوديو" }, hash: "#studio" },
+  { label: { fr: "Sons", ar: "إصداراتنا" }, hash: "#tracks" },
+  { label: { fr: "Clips", ar: "الكليبات" }, hash: "#clips" },
+  { label: { fr: "Vie du studio", ar: "حياة الاستوديو" }, hash: "#studio-life" },
+  { label: { fr: "Artistes", ar: "الفنانون" }, hash: "#artists" },
+  { label: { fr: "Packs", ar: "الباقات" }, hash: "#package" },
+  { label: { fr: "Contact", ar: "اتصل بنا" }, hash: "#contact" },
 ];
 
 const SOCIALS = [
@@ -38,7 +41,7 @@ const SOCIALS = [
 ];
 
 const Arrow = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" className="rtl-flip">
     <path
       d="M3 11L11 3M11 3H4.5M11 3V9.5"
       stroke="currentColor"
@@ -54,6 +57,23 @@ const Header = () => {
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState("");
+  const router = useRouter();
+  const { tr, pick, home, isAr } = useLang();
+  const bookingHref = isAr ? "/ar/booking" : "/booking";
+
+  // FR <-> عربي on the same page
+  const LangSwitch = ({ className = "" }) => (
+    <Link
+      href={router.asPath}
+      locale={isAr ? "fr" : "ar"}
+      scroll={false}
+      onClick={() => setOpen(false)}
+      aria-label={isAr ? "Version française" : "النسخة العربية"}
+      className={`cursor-target inline-flex h-11 items-center rounded-full border border-line px-4 text-[14px] font-medium text-ink transition-colors hover:border-ink ${className}`}
+    >
+      <span lang={isAr ? "fr" : "ar"}>{isAr ? "FR" : "عربي"}</span>
+    </Link>
+  );
 
   // Hide on scroll down, show on scroll up
   useEffect(() => {
@@ -72,11 +92,11 @@ const Header = () => {
 
   // Highlight the link of the section currently in view
   useEffect(() => {
-    const ids = BAR_LINKS.map((l) => l.href.split("#")[1]);
+    const ids = BAR_LINKS.map((l) => l.hash.slice(1));
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) setActive("/#" + e.target.id);
+          if (e.isIntersecting) setActive("#" + e.target.id);
         });
       },
       { rootMargin: "-45% 0px -50% 0px" }
@@ -108,8 +128,8 @@ const Header = () => {
       >
         <div className="container-x">
         <nav
-          aria-label="Navigation principale"
-          className={`flex h-[60px] items-center justify-between rounded-full border pl-5 pr-2 backdrop-blur-xl transition-colors duration-300 ${
+          aria-label={tr("Navigation principale", "التنقل الرئيسي")}
+          className={`flex h-[60px] items-center justify-between rounded-full border ps-5 pe-2 backdrop-blur-xl transition-colors duration-300 ${
             scrolled || open
               ? "border-line bg-white/85 shadow-[0_8px_30px_rgba(10,10,10,0.06)]"
               : "border-white/60 bg-white/55"
@@ -117,8 +137,8 @@ const Header = () => {
         >
           {/* Logo */}
           <a
-            href="/#hero"
-            aria-label="Wardd Music — accueil"
+            href={home("#hero")}
+            aria-label={tr("Wardd Studio — accueil", "Wardd Studio — الرئيسية")}
             className="cursor-target flex items-center text-ink"
             onClick={() => setOpen(false)}
           >
@@ -128,17 +148,17 @@ const Header = () => {
           {/* Links — desktop */}
           <ul className="hidden items-center gap-1 lg:flex">
             {BAR_LINKS.map((l) => (
-              <li key={l.href}>
+              <li key={l.hash}>
                 <a
-                  href={l.href}
+                  href={home(l.hash)}
                   className={`cursor-target relative rounded-full px-4 py-2 text-[15px] tracking-[-0.01em] transition-colors duration-200 hover:text-ink ${
-                    active === l.href ? "text-ink" : "text-muted"
+                    active === l.hash ? "text-ink" : "text-muted"
                   }`}
                 >
-                  {l.label}
+                  {pick(l.label)}
                   <span
                     className={`absolute bottom-[5px] left-1/2 h-[3px] w-[3px] -translate-x-1/2 rounded-full bg-ink transition-opacity duration-300 ${
-                      active === l.href ? "opacity-100" : "opacity-0"
+                      active === l.hash ? "opacity-100" : "opacity-0"
                     }`}
                   />
                 </a>
@@ -148,13 +168,14 @@ const Header = () => {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
+            <LangSwitch className="hidden sm:inline-flex" />
             <Magnet padding={50} magnetStrength={4} wrapperClassName="hidden sm:inline-block">
               <a
-                href="/booking"
-                data-cursor-label="Réserver"
+                href={bookingHref}
+                data-cursor-label={tr("Réserver", "احجز")}
                 className="cursor-target btn-pill !h-11 !px-5"
               >
-                Réserver
+                {tr("Réserver", "احجز")}
                 <Arrow />
               </a>
             </Magnet>
@@ -167,7 +188,7 @@ const Header = () => {
               aria-controls="mobile-menu"
               className="btn-ghost !h-11 !px-5 lg:!hidden"
             >
-              {open ? "Fermer" : "Menu"}
+              {open ? tr("Fermer", "إغلاق") : tr("Menu", "القائمة")}
             </button>
           </div>
         </nav>
@@ -184,24 +205,25 @@ const Header = () => {
       >
         <ul className="flex flex-col">
           {ALL_LINKS.map((l, i) => (
-            <li key={l.href} className="border-b border-line">
+            <li key={l.hash} className="border-b border-line">
               <a
-                href={l.href}
+                href={home(l.hash)}
                 onClick={() => setOpen(false)}
                 className="flex items-baseline gap-4 py-3 text-[clamp(1.7rem,7vw,2.4rem)] font-medium leading-none tracking-heading text-ink"
               >
                 <span className="w-8 text-xs font-normal tracking-normal text-subtle">
                   [{i + 1}]
                 </span>
-                {l.label}
+                {pick(l.label)}
               </a>
             </li>
           ))}
         </ul>
 
         <div className="mt-8 flex flex-col gap-6">
-          <a href="/booking" onClick={() => setOpen(false)} className="btn-pill w-full">
-            Réserver une session
+          <LangSwitch className="w-full justify-center" />
+          <a href={bookingHref} onClick={() => setOpen(false)} className="btn-pill w-full">
+            {tr("Réserver une session", "احجز جلستك")}
             <Arrow />
           </a>
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">

@@ -654,3 +654,32 @@ svg.active {
   height: 4px;
   animation: eq 0.9s ease-in-out infinite;
 }
+
+/* --------------------------------------------------------------------------
+   ARABIC (/ar) — right-to-left, Arabic font, no negative letter-spacing
+   (tight tracking breaks the joined Arabic letters)
+   -------------------------------------------------------------------------- */
+html[lang="ar"] body {
+  font-family: var(--font-arabic, "IBM Plex Sans Arabic"), var(--font-sans);
+}
+html[lang="ar"] *:not(.font-mono):not(.latin) {
+  letter-spacing: 0 !important;
+}
+html[lang="ar"] .font-mono {
+  font-family: var(--font-arabic, "IBM Plex Sans Arabic"), ui-monospace, monospace;
+}
+
+/* Arrows point the other way in right-to-left */
+html[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+/* Prev / next arrows mirror in right-to-left */
+.arrow-left {
+  transform: scaleX(-1);
+}
+html[dir="rtl"] .arrow-left {
+  transform: none;
+}
+html[dir="rtl"] .arrow-right {
+  transform: scaleX(-1);
+}

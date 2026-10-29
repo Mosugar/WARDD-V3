@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useLang } from "@/lib/i18n";
 
 /* ── Edit photos and link here ───────────────────────────────────────── */
 const INSTAGRAM_URL = "https://www.instagram.com/warddstudio/";
@@ -18,6 +19,7 @@ const columns = Array.from({ length: COLS }, (_, c) => PHOTOS.filter((_, i) => i
 const SPEEDS = [52, 64, 48, 60];
 
 const StudioLife = () => {
+  const { tr } = useLang();
   return (
     <section id="studio-life" className="container-wide section-y">
       <div className="relative overflow-hidden rounded-[28px] bg-[#0a0a0b] sm:rounded-[36px]">
@@ -38,7 +40,7 @@ const StudioLife = () => {
                     <div className="group relative aspect-[4/5] w-full overflow-hidden rounded-[18px] bg-[#1a1a1d]">
                       <Image
                         src={src}
-                        alt="Session au studio Wardd"
+                        alt={tr("Session au studio Wardd", "جلسة في استوديو وارد")}
                         fill
                         sizes="(max-width: 768px) 50vw, 25vw"
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
@@ -59,7 +61,7 @@ const StudioLife = () => {
         {/* Caption, sitting on the dark fade (no separator line) */}
         <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-5 px-6 pb-7 sm:flex-row sm:items-end sm:justify-between sm:px-10 sm:pb-9 lg:px-14 lg:pb-11">
             <h2 className="text-[clamp(2rem,3.6vw,3.4rem)] font-bold leading-none tracking-[-0.04em] text-white">
-              Studio Life
+              {tr("Studio Life", "حياة الاستوديو")}
             </h2>
 
           <a
@@ -69,9 +71,9 @@ const StudioLife = () => {
             data-cursor-label="Instagram"
             className="cursor-target group inline-flex w-fit items-center gap-5 rounded-full bg-white py-2 pl-7 pr-2 text-[15px] font-medium text-ink transition-colors hover:bg-[#e9ecef]"
           >
-            Voir sur Instagram
+            {tr("Voir sur Instagram", "شاهد على إنستغرام")}
             <span className="flex h-11 w-14 items-center justify-center rounded-full bg-ink text-white transition-transform duration-300 group-hover:translate-x-1">
-              <svg width="22" height="12" viewBox="0 0 22 12" fill="none" aria-hidden="true">
+              <svg width="22" height="12" viewBox="0 0 22 12" fill="none" aria-hidden="true" className="rtl-flip">
                 <path d="M1 6h19m0 0l-5-5m5 5l-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>

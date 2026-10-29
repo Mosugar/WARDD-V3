@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import BlurText from "@/components/ui/BlurText";
 import Magnet from "@/components/ui/Magnet";
+import { useLang } from "@/lib/i18n";
 
 // WebGL canvas: client-only, so it never blocks server rendering.
 const Threads = dynamic(() => import("@/components/ui/Threads"), { ssr: false });
@@ -19,12 +20,13 @@ const SOCIALS = [
 ];
 
 const ArrowUpRight = ({ size = 12 }) => (
-  <svg width={size} height={size} viewBox="0 0 14 14" fill="none" aria-hidden="true">
+  <svg width={size} height={size} viewBox="0 0 14 14" fill="none" aria-hidden="true" className="rtl-flip">
     <path d="M3 11L11 3M11 3H4.5M11 3V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const Contact = () => {
+  const { tr, isAr } = useLang();
   return (
     <section id="contact" className="container-wide pb-6 pt-6 sm:pb-10">
       <div className="relative isolate overflow-hidden rounded-[28px] bg-[#111112] text-white [clip-path:inset(0_round_28px)] sm:rounded-[36px] sm:[clip-path:inset(0_round_36px)]">
@@ -32,8 +34,8 @@ const Contact = () => {
         <div
           className="pointer-events-none absolute inset-0 -z-10 opacity-90"
           style={{
-            maskImage: "linear-gradient(to right, transparent 8%, #000 62%)",
-            WebkitMaskImage: "linear-gradient(to right, transparent 8%, #000 62%)",
+            maskImage: `linear-gradient(to ${isAr ? "left" : "right"}, transparent 8%, #000 62%)`,
+            WebkitMaskImage: `linear-gradient(to ${isAr ? "left" : "right"}, transparent 8%, #000 62%)`,
           }}
           aria-hidden="true"
         >
@@ -62,12 +64,13 @@ const Contact = () => {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
               </span>
-              Idée → Réalité
+              {tr("Idée → Réalité", "فكرة ← واقع")}
             </span>
 
             <h2 className="mt-7 max-w-[13em] text-[clamp(2rem,4.2vw,4.25rem)] font-medium leading-[1.02] tracking-display text-white">
               <BlurText
-                text="Nous pouvons tirer le meilleur parti de ton potentiel."
+                key={isAr ? "ar" : "fr"}
+                text={tr("Nous pouvons tirer le meilleur parti de ton potentiel.", "نستطيع أن نُخرج أفضل ما في موهبتك.")}
                 delay={70}
                 stepDuration={0.35}
                 direction="bottom"
@@ -80,11 +83,11 @@ const Contact = () => {
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <Magnet padding={80} magnetStrength={3}>
                 <a
-                  href="/booking"
-                  data-cursor-label="Réserver"
+                  href={isAr ? "/ar/booking" : "/booking"}
+                  data-cursor-label={tr("Réserver", "احجز")}
                   className="btn-pill cursor-target !bg-white !text-ink hover:!bg-[#e9ecef]"
                 >
-                  Réserver maintenant
+                  {tr("Réserver maintenant", "احجز الآن")}
                   <ArrowUpRight size={14} />
                 </a>
               </Magnet>
@@ -95,7 +98,7 @@ const Contact = () => {
                 data-cursor-label="WhatsApp"
                 className="btn-ghost cursor-target !border-white/25 !text-white hover:!border-white/60 hover:!bg-white/10"
               >
-                Écrire sur WhatsApp
+                {tr("Écrire sur WhatsApp", "راسلنا على واتساب")}
               </a>
             </div>
 

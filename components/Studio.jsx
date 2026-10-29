@@ -2,21 +2,26 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import BlurText from "@/components/ui/BlurText";
+import { useLang } from "@/lib/i18n";
 
 /* ── Edit photos and captions here (files live in /public/studio) ────── */
 const PHOTOS = [
-  { src: "/studio/regie.jpg", label: "La régie", text: "Le cœur du studio : écoute précise, lumière chaude.", alt: "Régie du studio Wardd : bureau, écrans, enceintes et éclairage chaud" },
-  { src: "/studio/monitoring.jpg", label: "Monitoring", text: "Des enceintes ADAM Audio pour entendre chaque détail.", alt: "Enceinte de monitoring ADAM Audio" },
-  { src: "/studio/cabine.jpg", label: "Cabine vocale", text: "Une prise de voix propre, sans bruit parasite.", alt: "Micro de studio avec filtre anti-pop et panneau acoustique" },
-  { src: "/studio/poste.jpg", label: "Poste de production", text: "Clavier, interface et casque, prêts pour la session.", alt: "Clavier maître, interface audio et casque sur le bureau" },
-  { src: "/studio/regie-3.jpg", label: "Vue d'ensemble", text: "Un espace traité du sol au plafond, pensé pour créer.", alt: "Régie vue depuis l'entrée du studio" },
-  { src: "/studio/lounge.jpg", label: "Le lounge", text: "Un espace pour souffler entre deux prises.", alt: "Coin lounge avec fauteuil et logo Wardd en néon" },
+  { src: "/studio/regie.jpg", label: "La régie", text: "Le cœur du studio : écoute précise, lumière chaude.", alt: "Régie du studio Wardd : bureau, écrans, enceintes et éclairage chaud", label_ar: "غرفة التحكم", text_ar: "قلب الاستوديو: استماع دقيق وإضاءة دافئة.", alt_ar: "غرفة التحكم في استوديو وارد: مكتب وشاشات وسماعات وإضاءة دافئة" },
+  { src: "/studio/monitoring.jpg", label: "Monitoring", text: "Des enceintes ADAM Audio pour entendre chaque détail.", alt: "Enceinte de monitoring ADAM Audio", label_ar: "السماعات", text_ar: "سماعات ADAM Audio لسماع كل التفاصيل.", alt_ar: "سماعة مراقبة من ADAM Audio" },
+  { src: "/studio/cabine.jpg", label: "Cabine vocale", text: "Une prise de voix propre, sans bruit parasite.", alt: "Micro de studio avec filtre anti-pop et panneau acoustique", label_ar: "كابينة التسجيل", text_ar: "تسجيل صوتي نقي، بلا أي ضجيج.", alt_ar: "ميكروفون استوديو مع فلتر وعازل صوتي" },
+  { src: "/studio/poste.jpg", label: "Poste de production", text: "Clavier, interface et casque, prêts pour la session.", alt: "Clavier maître, interface audio et casque sur le bureau", label_ar: "ركن الإنتاج", text_ar: "لوحة مفاتيح وواجهة صوتية وسماعة رأس، جاهزة للجلسة.", alt_ar: "لوحة مفاتيح موسيقية وواجهة صوتية وسماعة رأس على المكتب" },
+  { src: "/studio/regie-3.jpg", label: "Vue d'ensemble", text: "Un espace traité du sol au plafond, pensé pour créer.", alt: "Régie vue depuis l'entrée du studio", label_ar: "نظرة شاملة", text_ar: "فضاء معالج صوتياً من الأرض إلى السقف، مصمم للإبداع.", alt_ar: "غرفة التحكم من مدخل الاستوديو" },
+  { src: "/studio/lounge.jpg", label: "Le lounge", text: "Un espace pour souffler entre deux prises.", alt: "Coin lounge avec fauteuil et logo Wardd en néon", label_ar: "الصالة", text_ar: "مكان للاستراحة بين التسجيلات.", alt_ar: "ركن الاستراحة مع أريكة وشعار وارد المضيء" },
 ];
 
 const pad = (n) => String(n).padStart(2, "0");
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
 const Studio = () => {
+  const { tr, isAr } = useLang();
+  const L = (p) => (isAr ? p.label_ar : p.label);
+  const T = (p) => (isAr ? p.text_ar : p.text);
+  const A = (p) => (isAr ? p.alt_ar : p.alt);
   const [open, setOpen] = useState(-1); // photo in the viewer, -1 = closed
   const [active, setActive] = useState(0);
   const [pinned, setPinned] = useState(true); // false when reduced motion
@@ -126,10 +131,11 @@ const Studio = () => {
         {/* Heading */}
         <div className="container-x mb-8 flex flex-col gap-5 pt-20 sm:mb-10 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <span className="label">Le studio</span>
+            <span className="label">{tr("Le studio", "الاستوديو")}</span>
             <h2 className="mt-4 text-[clamp(2.2rem,4.6vw,4.4rem)] leading-[0.98] tracking-display">
               <BlurText
-                text="Un lieu pensé pour le son"
+                key={isAr ? "ar" : "fr"}
+                text={tr("Un lieu pensé pour le son", "مكان صُمّم من أجل الصوت")}
                 delay={90}
                 stepDuration={0.35}
                 direction="bottom"
@@ -143,14 +149,14 @@ const Studio = () => {
             <div className="font-mono text-xs text-muted">
               <span className="text-ink">{pad(active + 1)}</span> / {pad(PHOTOS.length)}
             </div>
-            <p key={active} className="studio-caption max-w-[34ch] text-[15px] leading-relaxed sm:text-base lg:text-right">
-              <span className="font-medium text-ink">{PHOTOS[active].label}.</span> {PHOTOS[active].text}
+            <p key={active} className="studio-caption max-w-[34ch] text-[15px] leading-relaxed sm:text-base lg:text-end">
+              <span className="font-medium text-ink">{L(PHOTOS[active])}.</span> {T(PHOTOS[active])}
             </p>
           </div>
         </div>
 
         {/* Track */}
-        <div className={pinned ? "" : "overflow-x-auto"}>
+        <div dir="ltr" className={pinned ? "" : "overflow-x-auto"}>
           <div
             ref={trackRef}
             className="studio-track flex w-max gap-4 will-change-transform sm:gap-6"
@@ -161,7 +167,7 @@ const Studio = () => {
                 ref={(el) => (cardRefs.current[i] = el)}
                 type="button"
                 onClick={() => setOpen(i)}
-                data-cursor-label="Agrandir"
+                data-cursor-label={tr("Agrandir", "تكبير")}
                 className="cursor-target group relative block shrink-0 text-left [--card-vw:70vw] md:[--card-vw:38vw] lg:[--card-vw:28vw]"
                 style={{ width: "min(calc((100svh - 330px) * 0.8), 460px, var(--card-vw))" }}
               >
@@ -169,7 +175,7 @@ const Studio = () => {
                   <div ref={(el) => (imgRefs.current[i] = el)} className="absolute inset-0 will-change-transform">
                     <Image
                       src={p.src}
-                      alt={p.alt}
+                      alt={A(p)}
                       fill
                       sizes="(max-width: 768px) 70vw, (max-width: 1024px) 38vw, 460px"
                       quality={90}
@@ -183,7 +189,7 @@ const Studio = () => {
                     }`}
                   >
                     <span className="font-mono text-[11px] text-subtle">{pad(i + 1)}</span>
-                    {p.label}
+                    {L(p)}
                   </span>
                   <span className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-ink opacity-0 backdrop-blur transition-opacity duration-300 group-hover:opacity-100">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -198,12 +204,12 @@ const Studio = () => {
 
         {/* Progress */}
         <div className="container-x mt-8 flex items-center gap-5">
-          <span className="font-mono text-xs text-muted">Faites défiler</span>
+          <span className="font-mono text-xs text-muted">{tr("Faites défiler", "مرّر للأسفل")}</span>
           <div className="h-[2px] flex-1 overflow-hidden rounded-full bg-line">
             <div ref={barRef} className="h-full w-full origin-left rounded-full bg-ink" style={{ transform: "scaleX(0.02)" }} />
           </div>
-          <button type="button" onClick={() => setOpen(0)} data-cursor-label="Visiter" className="cursor-target font-mono text-xs text-ink underline underline-offset-4">
-            Voir en plein écran
+          <button type="button" onClick={() => setOpen(0)} data-cursor-label={tr("Visiter", "زيارة")} className="cursor-target font-mono text-xs text-ink underline underline-offset-4">
+            {tr("Voir en plein écran", "عرض بملء الشاشة")}
           </button>
         </div>
       </div>
@@ -213,15 +219,15 @@ const Studio = () => {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Photos du studio"
+          aria-label={tr("Photos du studio", "صور الاستوديو")}
           className="studio-viewer fixed inset-0 z-[100] flex flex-col bg-black/95 text-white"
           onClick={close}
         >
           <div className="flex items-center justify-between px-5 py-4 sm:px-8" onClick={(e) => e.stopPropagation()}>
             <span className="font-mono text-xs text-white/60">
-              {pad(open + 1)} / {pad(PHOTOS.length)} · {PHOTOS[open].label}
+              {pad(open + 1)} / {pad(PHOTOS.length)} · {L(PHOTOS[open])}
             </span>
-            <button type="button" onClick={close} aria-label="Fermer" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-colors hover:bg-white/10">
+            <button type="button" onClick={close} aria-label={tr("Fermer", "إغلاق")} className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-colors hover:bg-white/10">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                 <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
@@ -232,7 +238,7 @@ const Studio = () => {
             <Image
               key={PHOTOS[open].src}
               src={PHOTOS[open].src}
-              alt={PHOTOS[open].alt}
+              alt={A(PHOTOS[open])}
               fill
               sizes="100vw"
               quality={92}
@@ -247,7 +253,7 @@ const Studio = () => {
                   e.stopPropagation();
                   step(d);
                 }}
-                aria-label={d < 0 ? "Photo précédente" : "Photo suivante"}
+                aria-label={d < 0 ? tr("Photo précédente", "الصورة السابقة") : tr("Photo suivante", "الصورة التالية")}
                 className={`absolute top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 backdrop-blur transition-colors hover:bg-white/25 ${
                   d < 0 ? "left-3 sm:left-6" : "right-3 sm:right-6"
                 }`}
@@ -266,7 +272,7 @@ const Studio = () => {
                 key={p.src}
                 type="button"
                 onClick={() => setOpen(i)}
-                aria-label={`Voir ${p.label}`}
+                aria-label={`${tr("Voir", "عرض")} ${L(p)}`}
                 className={`relative h-12 w-16 shrink-0 overflow-hidden rounded-md transition-opacity ${i === open ? "opacity-100 ring-2 ring-white" : "opacity-40 hover:opacity-80"}`}
               >
                 <Image src={p.src} alt="" fill sizes="64px" className="object-cover" />
