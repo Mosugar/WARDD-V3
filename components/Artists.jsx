@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import BlurText from "@/components/ui/BlurText";
+import { useLang } from "@/lib/i18n";
 
 /* ── Edit artists here ───────────────────────────────────────────────────
    src:  photo in /public/art
@@ -31,13 +32,13 @@ const ARTISTS = [
 
 const pad = (n) => String(n).padStart(2, "0");
 
-const ArrowBtn = ({ dir, onClick, disabled }) => (
+const ArrowBtn = ({ dir, onClick, disabled, tr }) => (
   <button
     type="button"
     onClick={onClick}
     disabled={disabled}
-    aria-label={dir === "prev" ? "Artistes précédents" : "Artistes suivants"}
-    data-cursor-label={dir === "prev" ? "Précédent" : "Suivant"}
+    aria-label={dir === "prev" ? tr("Artistes précédents", "الفنانون السابقون") : tr("Artistes suivants", "الفنانون التاليون")}
+    data-cursor-label={dir === "prev" ? tr("Précédent", "السابق") : tr("Suivant", "التالي")}
     className="cursor-target flex h-12 w-12 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white disabled:pointer-events-none disabled:opacity-30"
   >
     <svg width="18" height="12" viewBox="0 0 22 12" fill="none" aria-hidden="true" className={dir === "prev" ? "rotate-180" : ""}>
@@ -47,6 +48,7 @@ const ArrowBtn = ({ dir, onClick, disabled }) => (
 );
 
 const Artists = () => {
+  const { tr, isAr } = useLang();
   const railRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [atStart, setAtStart] = useState(true);
@@ -120,10 +122,11 @@ const Artists = () => {
       {/* Heading */}
       <div className="container-x mb-12 flex flex-col gap-6 lg:mb-16 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <span className="label">Artistes</span>
+          <span className="label">{tr("Artistes", "الفنانون")}</span>
           <h2 className="mt-5 text-[clamp(2.6rem,6vw,5.4rem)] leading-[0.98] tracking-display">
             <BlurText
-              text="Ils sont passés en cabine"
+              key={isAr ? "ar" : "fr"}
+              text={tr("Ils sont passés en cabine", "مرّوا من كابينتنا")}
               delay={90}
               stepDuration={0.35}
               direction="bottom"
@@ -134,13 +137,15 @@ const Artists = () => {
           </h2>
         </div>
         <div className="flex flex-col gap-6 lg:items-end">
-          <p className="max-w-[36ch] text-[15px] leading-relaxed sm:text-base lg:text-right">
-            Plus de 350 artistes, autant d&apos;univers. Ceux qui portent l&apos;art
-            aux gens, les yeux et les oreilles grands ouverts.
+          <p className="max-w-[36ch] text-[15px] leading-relaxed sm:text-base lg:text-end">
+            {tr(
+              "Plus de 350 artistes, autant d’univers. Ceux qui portent l’art aux gens, les yeux et les oreilles grands ouverts.",
+              "أكثر من 350 فناناً، وعوالم بقدر عددهم. هم من يحملون الفن إلى الناس، بعيون وآذان مفتوحة."
+            )}
           </p>
           <div className="flex gap-3">
-            <ArrowBtn dir="prev" onClick={() => scrollByCards(-1)} disabled={atStart} />
-            <ArrowBtn dir="next" onClick={() => scrollByCards(1)} disabled={atEnd} />
+            <ArrowBtn tr={tr} dir="prev" onClick={() => scrollByCards(-1)} disabled={atStart} />
+            <ArrowBtn tr={tr} dir="next" onClick={() => scrollByCards(1)} disabled={atEnd} />
           </div>
         </div>
       </div>
@@ -148,6 +153,7 @@ const Artists = () => {
       {/* Rail */}
       <ul
         ref={railRef}
+        dir="ltr" // scroll math and arrows assume left-to-right
         className="artists-rail flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto pb-2 active:cursor-grabbing"
       >
         {ARTISTS.map((a, i) => (
@@ -158,7 +164,7 @@ const Artists = () => {
             <div className="relative aspect-[3/4] overflow-hidden rounded-media bg-surface-2">
               <Image
                 src={a.src}
-                alt={a.name || `Artiste Wardd ${i + 1}`}
+                alt={a.name || `${tr("Artiste Wardd", "فنان Wardd")} ${i + 1}`}
                 fill
                 draggable={false}
                 sizes="(max-width: 640px) 68vw, (max-width: 1024px) 30vw, 20vw"

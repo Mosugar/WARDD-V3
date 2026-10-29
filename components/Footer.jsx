@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { useLang } from "@/lib/i18n";
 
 const Footer = () => {
+  const { tr } = useLang();
   const year = new Date().getFullYear();
   const boxRef = useRef(null);
   const textRef = useRef(null);
@@ -29,7 +31,8 @@ const Footer = () => {
       <div ref={boxRef} className="text-center" aria-hidden="true">
         <div
           ref={textRef}
-          className="inline-block select-none whitespace-nowrap text-[13vw] font-semibold leading-[0.82] tracking-[-0.065em]"
+          dir="ltr"
+            className="latin inline-block select-none whitespace-nowrap text-[13vw] font-semibold leading-[0.82] tracking-[-0.065em]"
           style={{
             background:
               "linear-gradient(90deg, #aab1ba 0%, #cfd4da 40%, #eceef1 78%, #f4f5f7 100%)",
@@ -49,9 +52,9 @@ const Footer = () => {
       {/* Bottom line */}
       <div className="mt-8 flex flex-col gap-4 border-t border-line pt-6 text-[13px] text-muted sm:flex-row sm:items-center sm:justify-between sm:text-sm">
         <p className="!leading-relaxed">
-          © {year} Wardd Studio. Tous droits réservés.
+          © {year} Wardd Studio. {tr("Tous droits réservés.", "جميع الحقوق محفوظة.")}
           <span className="mx-2 opacity-40">|</span>
-          Développé par{" "}
+          {tr("Développé par", "تطوير")}{" "}
           <a
             href="https://doodle.ma/"
             target="_blank"
@@ -66,10 +69,10 @@ const Footer = () => {
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          data-cursor-label="Haut"
+          data-cursor-label={tr("Haut", "للأعلى")}
           className="cursor-target inline-flex w-fit items-center gap-2 font-mono text-[11px] uppercase tracking-[0.06em] text-ink sm:text-xs"
         >
-          Haut de page
+          {tr("Haut de page", "العودة للأعلى")}
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M12 20V5m0 0l-6 6m6-6l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>

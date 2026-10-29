@@ -75,7 +75,8 @@ const inputCls =
 
 const BookingSystem = () => {
   const router = useRouter();
-  const [lang, setLang] = useState("fr");
+  // Start in Arabic on /ar/booking (visitors can still switch below)
+  const [lang, setLang] = useState(router.locale === "ar" ? "ar" : "fr");
   const [step, setStep] = useState(1); // 1..4, 5 = success
   const [pack, setPack] = useState("");
   const [extras, setExtras] = useState([]); // individual services for the custom pack
@@ -304,7 +305,7 @@ const BookingSystem = () => {
             </p>
           </div>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
-            <a href="/" className="btn-pill !bg-white !text-ink">
+            <a href={router.locale === "ar" ? "/ar" : "/"} className="btn-pill !bg-white !text-ink">
               {ui.successCta}
             </a>
             <button type="button" onClick={reset} className="btn-ghost !border-white/25 !text-white hover:!bg-white/10">

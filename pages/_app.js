@@ -1,9 +1,11 @@
 import Head from "next/head";
-import { Inter } from "next/font/google";
+import { Inter, IBM_Plex_Sans_Arabic } from "next/font/google";
 import "@/styles/globals.css";
 
 // Inter, self-hosted by Next.js (no request to Google from the visitor's browser)
 const inter = Inter({ subsets: ["latin", "latin-ext"], display: "swap" });
+// Arabic letters (Inter has none); used automatically on /ar
+const arabic = IBM_Plex_Sans_Arabic({ subsets: ["arabic"], weight: ["400", "500", "600", "700"], display: "swap" });
 
 export default function App({ Component, pageProps }) {
   return (
@@ -15,6 +17,7 @@ export default function App({ Component, pageProps }) {
       <style jsx global>{`
         :root {
           --font-inter: ${inter.style.fontFamily};
+          --font-arabic: ${arabic.style.fontFamily};
         }
       `}</style>
       <Component {...pageProps} />

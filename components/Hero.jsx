@@ -1,6 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import BlurText from "@/components/ui/BlurText";
+import { useLang } from "@/lib/i18n";
 
 // WebGL canvas: client-only, so it never blocks server rendering.
 const ShaderWaves = dynamic(() => import("@/components/ui/ShaderWaves"), {
@@ -8,6 +9,7 @@ const ShaderWaves = dynamic(() => import("@/components/ui/ShaderWaves"), {
 });
 
 const Hero = () => {
+  const { isAr } = useLang();
   return (
     <section id="hero" className="container-wide relative pb-4 pt-[84px] sm:pb-6 sm:pt-[104px]">
       <div
@@ -31,7 +33,7 @@ const Hero = () => {
           className="pointer-events-none absolute inset-0 rounded-[inherit]"
           style={{
             background:
-              "radial-gradient(ellipse 85% 70% at 0% 100%, rgba(10,10,10,0.88) 0%, rgba(10,10,10,0.55) 45%, rgba(10,10,10,0) 80%)",
+              `radial-gradient(ellipse 85% 70% at ${isAr ? "100%" : "0%"} 100%, rgba(10,10,10,0.88) 0%, rgba(10,10,10,0.55) 45%, rgba(10,10,10,0) 80%)`,
           }}
         />
 
@@ -39,7 +41,8 @@ const Hero = () => {
         <div className="relative z-10 p-6 pb-10 sm:p-10 sm:pb-14 lg:p-16 lg:pb-20">
           <h1 className="text-[clamp(3.6rem,11vw,11.5rem)] font-semibold leading-[0.9] tracking-display text-white">
             <BlurText
-              text="We make"
+              key={isAr ? "ar1" : "fr1"}
+              text={isAr ? "نصنع" : "We make"}
               trigger="load"
               delay={110}
               stepDuration={0.35}
@@ -49,7 +52,8 @@ const Hero = () => {
               color="#ffffff"
             />
             <BlurText
-              text="Creative Things."
+              key={isAr ? "ar2" : "fr2"}
+              text={isAr ? "أشياء مبدعة." : "Creative Things."}
               trigger="load"
               delay={110}
               stepDuration={0.35}

@@ -3,6 +3,32 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import BlurText from "@/components/ui/BlurText";
 import TearTicket from "@/components/ui/TearTicket";
+import { useLang } from "@/lib/i18n";
+
+/* Arabic texts for the tickets (French stays in PACKS below) */
+const AR = {
+  "Étudiant": "طالب",
+  "Pro": "برو",
+  "Premium": "بريميوم",
+  "900 DH": "900 درهم",
+  "1500 DH": "1500 درهم",
+  "Dès 2500 DH": "من 2500 درهم",
+  "800 DH avec carte étudiant": "800 درهم ببطاقة الطالب",
+  "/ projet": "/ للمشروع",
+  "Enregistrement": "التسجيل",
+  "Mixage": "المكساج",
+  "Mastering": "الماسترينغ",
+  "Shooting offert": "جلسة تصوير مجانية",
+  "Instrumentale non exclusive": "إيقاع غير حصري",
+  "Instrumentale exclusive": "إيقاع حصري",
+  "Tuning vocal avancé +": "ضبط صوتي متقدم +",
+  "Vidéo des coulisses de ta session pour tes réseaux sociaux": "فيديو من كواليس جلستك لشبكاتك الاجتماعية",
+  "Double session de 5 heures": "جلستان من 5 ساعات",
+  "Chaque heure supplémentaire : 100 DH": "كل ساعة إضافية: 100 درهم",
+  "* Session limitée à 5 heures (chaque heure supplémentaire : 100 DH)": "* الجلسة محددة في 5 ساعات (كل ساعة إضافية: 100 درهم)",
+  "Full session": "جلسة كاملة",
+  "Sans limite d'heures. Prends tout ton temps.": "بدون حدّ للساعات. خذ كل وقتك.",
+};
 
 /* ──────────────────────────────────────────────────────────────────────────
    PACKS — edit content here.
@@ -105,6 +131,8 @@ const Check = () => (
 );
 
 const Package = () => {
+  const { tr, isAr } = useLang();
+  const a = (fr) => (isAr && AR[fr] ? AR[fr] : fr);
   const router = useRouter();
 
   useEffect(() => {
@@ -121,10 +149,11 @@ const Package = () => {
       {/* Heading */}
       <div className="mb-14 flex flex-col gap-6 lg:mb-20 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <span className="label">Nos packs</span>
+          <span className="label">{tr("Nos packs", "باقاتنا")}</span>
           <h2 className="mt-5 text-[clamp(2.6rem,6vw,5.4rem)] leading-[0.98] tracking-display">
             <BlurText
-              text="Choisis ton pack"
+              key={isAr ? "ar" : "fr"}
+              text={tr("Choisis ton pack", "اختر باقتك")}
               delay={90}
               stepDuration={0.35}
               direction="bottom"
@@ -135,8 +164,10 @@ const Package = () => {
           </h2>
         </div>
         <p className="max-w-[36ch] text-[15px] leading-relaxed sm:text-base">
-          Trouve la formule qui te correspond, puis déchire le coupon pour
-          lancer ta réservation.
+          {tr(
+            "Trouve la formule qui te correspond, puis déchire le coupon pour lancer ta réservation.",
+            "اختر الصيغة التي تناسبك، ثم اسحب القسيمة لبدء حجزك."
+          )}
         </p>
       </div>
 
@@ -181,16 +212,16 @@ const Package = () => {
               stubBackground={pack.theme.stubBackground}
               color={pack.theme.color}
               borderColor={pack.theme.borderColor}
-              ariaLabel={`Déchirer pour réserver le pack ${pack.name}`}
+              ariaLabel={tr(`Déchirer pour réserver le pack ${pack.name}`, `اسحب لحجز باقة ${a(pack.name)}`)}
               onTear={() => book(pack)}
               stub={
                 <div className="flex h-full items-center justify-between px-7">
                   <div className="flex flex-col gap-2">
                     <span className="font-mono text-[11px] uppercase tracking-[0.06em] opacity-60">
-                      Déchire pour réserver
+                      {tr("Déchire pour réserver", "اسحب القسيمة للحجز")}
                     </span>
                     <span className="text-[1.7rem] font-bold leading-none tracking-heading">
-                      Réserver
+                      {tr("Réserver", "احجز")}
                     </span>
                   </div>
                   <span
@@ -232,18 +263,18 @@ const Package = () => {
                   </span>
                   {pack.featured && (
                     <span className="rounded-full bg-[#0dff88] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-ink">
-                      Populaire
+                      {tr("Populaire", "الأكثر طلباً")}
                     </span>
                   )}
                 </div>
 
                 {/* Name + price */}
                 <h3 className="absolute inset-x-7 top-[80px] text-[2.9rem] font-extrabold uppercase leading-none tracking-[-0.04em] text-inherit">
-                  {pack.name}
+                  {a(pack.name)}
                 </h3>
                 <div className="absolute inset-x-7 top-[140px] flex items-baseline gap-2">
-                  <span className="text-[1.5rem] font-bold tracking-heading">{pack.price}</span>
-                  <span className="font-mono text-[11px] uppercase tracking-[0.06em] opacity-60">{pack.priceNote}</span>
+                  <span className="text-[1.5rem] font-bold tracking-heading">{a(pack.price)}</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.06em] opacity-60">{a(pack.priceNote)}</span>
                 </div>
 
                 {/* Divider */}
@@ -261,14 +292,14 @@ const Package = () => {
                         <li key={f.text} className="flex items-start gap-3">
                           <Check />
                           <span>
-                            {f.text}
-                            {f.detail && <span className="mt-0.5 block text-[12px] opacity-60">{f.detail}</span>}
+                            {a(f.text)}
+                            {f.detail && <span className="mt-0.5 block text-[12px] opacity-60">{a(f.detail)}</span>}
                           </span>
                         </li>
                       );
                     })}
                   </ul>
-                  {pack.note && <p className="mt-auto text-[12px] leading-snug !text-current opacity-60">{pack.note}</p>}
+                  {pack.note && <p className="mt-auto text-[12px] leading-snug !text-current opacity-60">{a(pack.note)}</p>}
                   {pack.highlight && (
                     <div className="relative mt-auto overflow-hidden rounded-2xl bg-ink px-4 py-3 text-white">
                       <div
@@ -276,9 +307,9 @@ const Package = () => {
                         style={{ background: "radial-gradient(circle, #0dff88 0%, rgba(13,255,136,0) 70%)" }}
                       />
                       <div className="relative flex items-center gap-2 text-[15px] font-extrabold uppercase tracking-[-0.01em]">
-                        <span className="text-[#0dff88]">∞</span> {pack.highlight.title}
+                        <span className="text-[#0dff88]">∞</span> {a(pack.highlight.title)}
                       </div>
-                      <div className="relative mt-0.5 text-[12px] text-white/70">{pack.highlight.detail}</div>
+                      <div className="relative mt-0.5 text-[12px] text-white/70">{a(pack.highlight.detail)}</div>
                     </div>
                   )}
                 </div>
