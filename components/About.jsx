@@ -59,14 +59,13 @@ const STATS = [
   { text: "3 en 1", label: "Son · Photo · Vidéo" },
 ];
 
+// Shows the final number by default (no JS, slow phones, translated pages),
+// and only counts up from 0 once the numbers scroll into view.
 const CountUp = ({ value, suffix = "", plain = false, start }) => {
-  const [n, setN] = useState(plain ? value : 0);
+  const [n, setN] = useState(value);
   useEffect(() => {
     if (!start || plain) return undefined;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setN(value);
-      return undefined;
-    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
     let raf = 0;
     const t0 = performance.now();
     const dur = 1400;
@@ -172,7 +171,7 @@ const About = () => {
         {STATS.map((s) => (
           <div key={s.label} className="flex flex-col justify-between gap-10 bg-paper p-6 sm:p-8">
             <span className="font-mono text-[11px] uppercase tracking-[0.06em] text-subtle">{s.label}</span>
-            <span className="text-[clamp(2.6rem,5vw,4.6rem)] font-bold leading-none tracking-[-0.05em] text-ink">
+            <span translate="no" className="notranslate text-[clamp(2.6rem,5vw,4.6rem)] font-bold leading-none tracking-[-0.05em] text-ink">
               {s.text ?? <CountUp value={s.value} suffix={s.suffix} plain={s.plain} start={statsOn} />}
             </span>
           </div>

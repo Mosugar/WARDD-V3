@@ -27,7 +27,7 @@ const ArrowUpRight = ({ size = 12 }) => (
 const Contact = () => {
   return (
     <section id="contact" className="container-wide pb-6 pt-6 sm:pb-10">
-      <div className="relative isolate overflow-hidden rounded-[28px] bg-[#111112] text-white sm:rounded-[36px]">
+      <div className="relative isolate overflow-hidden rounded-[28px] bg-[#111112] text-white [clip-path:inset(0_round_28px)] sm:rounded-[36px] sm:[clip-path:inset(0_round_36px)]">
         {/* Light flowing lines on black, fading out toward the text */}
         <div
           className="pointer-events-none absolute inset-0 -z-10 opacity-90"

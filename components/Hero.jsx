@@ -12,16 +12,23 @@ const Hero = () => {
     <section id="hero" className="container-wide relative pb-4 pt-[84px] sm:pb-6 sm:pt-[104px]">
       <div
         className="media relative flex h-[calc(100svh-108px)] min-h-[520px] flex-col justify-end sm:h-[calc(100svh-136px)]"
-        style={{ background: "#0a0a0a" }}
+        style={{
+          background: "#0a0a0a",
+          // Belt and braces: some browsers stop clipping the animated WebGL
+          // layer to the rounded corners after a while; clip-path always holds.
+          clipPath: "inset(0 round var(--radius-lg))",
+          WebkitClipPath: "inset(0 round var(--radius-lg))",
+          isolation: "isolate",
+        }}
       >
         {/* Liquid green waves */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
           <ShaderWaves color1="#0dff88" color2="#0a0a0a" speed={0.3} scale={1.4} warp={1.2} softness={0.4} frequency={5.5} />
         </div>
 
         {/* Darken the lower-left corner so the headline always reads */}
         <div
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute inset-0 rounded-[inherit]"
           style={{
             background:
               "radial-gradient(ellipse 85% 70% at 0% 100%, rgba(10,10,10,0.88) 0%, rgba(10,10,10,0.55) 45%, rgba(10,10,10,0) 80%)",
