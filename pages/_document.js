@@ -1,7 +1,7 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
 const TITLE = "Wardd Studio";
-const DESC = "Wardd Studio, hub créatif d'enregistrement et de production musicale à Kénitra, Maroc : enregistrement, mixage, mastering, beatmaking, photo et vidéo.";
+const DESC = "Wardd Studio, hub créatif d'enregistrement et de production musicale à Salé, Maroc : enregistrement, mixage, mastering, beatmaking, photo et vidéo.";
 const URL = "https://warddstudio.ma/";
 const IMAGE = "https://warddstudio.ma/op.jpg";
 

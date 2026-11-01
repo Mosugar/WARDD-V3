@@ -5,8 +5,8 @@
 
 export const STUDIO = {
   name: "Wardd Studio",
-  city: "Kénitra, Maroc",
-  mapsUrl: "https://www.google.com/maps?q=34.261911,-6.584118",
+  city: "Salé, Maroc",
+  mapsUrl: "https://www.google.com/maps/place/Doodle+Studios/@34.0135436,-6.7377102,17z/data=!3m1!4b1!4m6!3m5!1s0xda7592f64c0f2b7:0xf35f6ca860a40456!8m2!3d34.0135436!4d-6.7351353!16s%2Fg%2F11x0g4bkh4",
   phone: "+212 617 869 001",
   email: "contact@warddstudio.com",
   whatsapp: "212617869001",
