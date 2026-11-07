@@ -56,13 +56,13 @@ const Footer = () => {
           <span className="mx-2 opacity-40">|</span>
           {tr("Développé par", "تطوير")}{" "}
           <a
-            href="https://doodle.ma/"
+            href="https://www.mohamedsekkar.com"
             target="_blank"
             rel="noopener noreferrer"
-            data-cursor-label="Doodle"
+            data-cursor-label="Mohamed Sekkar"
             className="cursor-target text-ink underline underline-offset-4"
           >
-            Doodle
+            Mohamed Sekkar
           </a>
         </p>
 
