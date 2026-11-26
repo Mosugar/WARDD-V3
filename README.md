@@ -1,4 +1,4 @@
-# Wardd Studio — Official Website
+# Wardd Music — warddstudio.ma
 
 The official website for **Wardd Studio**, a professional music recording and production studio based in Salé, Morocco. Built with Next.js, fully bilingual (French & Arabic with RTL support), and featuring an AI-powered chatbot assistant.
 
