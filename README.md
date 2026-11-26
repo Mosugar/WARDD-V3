@@ -1,4 +1,4 @@
-# Wardd Studio — Official Website
+# Wardd Music — warddstudio.ma
 
 The official website for **Wardd Studio**, a professional music recording and production studio based in Salé, Morocco. Built with Next.js, fully bilingual (French & Arabic with RTL support), and featuring an AI-powered chatbot assistant.
 
@@ -111,6 +111,11 @@ The site is deployed on **Vercel**. Pushes to `main` trigger automatic deploys.
 
 ---
 
-## Credits
+## Team & Credits
 
-Developed by [Mohamed Sekkar](https://www.mohamedsekkar.com)
+**[Wardd Studios](https://warddstudio.ma/)** is an agency co-founded by **Mohamed Sekkar** and **Ali Yara**.
+
+| | Role |
+|---|---|
+| **[Mohamed Sekkar](https://www.mohamedsekkar.com)** | Co-founder — design and development of the website |
+| **Ali Yara** | Co-founder — past contributions to the project (2025): initial import of the codebase, studio gallery and photos, artists section styling |
