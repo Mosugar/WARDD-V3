@@ -1,4 +1,5 @@
   import React, { useState, useRef, useEffect } from 'react';
+  import Link from 'next/link';
 
   const BeatsShowcase = () => {
     const [selectedGenre, setSelectedGenre] = useState('all');
@@ -562,7 +563,7 @@
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                    <a
+                    <Link
                       href="/booking"
                       className="group bg-gradient-to-r from-green-500 to-emerald-600 text-white px-10 py-5 rounded-2xl font-black text-lg transition-all duration-500 transform hover:scale-110 hover:shadow-2xl inline-flex items-center justify-center gap-3 relative overflow-hidden"
                       style={{fontFamily: 'Sequel Bold'}}
@@ -574,7 +575,7 @@
                         </svg>
                         <span>Réserver une Session</span>
                       </div>
-                    </a>
+                    </Link>
                     
                     <a
                       href="https://wa.me/212617869001?text=Salut! Je suis intéressé par vos beats personnalisés et votre catalogue exclusif."
