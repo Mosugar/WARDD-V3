@@ -391,7 +391,7 @@
 
                     {/* Description */}
                     <p className="text-gray-600 text-sm mb-6 italic" style={{fontFamily: 'Nexa bold'}}>
-                      "{beat.description}"
+                      &ldquo;{beat.description}&rdquo;
                     </p>
 
                     {/* Enhanced Waveform */}
@@ -558,7 +558,7 @@
                   
                   <p className="text-gray-300 mb-12 max-w-3xl mx-auto text-lg leading-relaxed" style={{fontFamily: 'Nexa bold'}}>
                     Nos producteurs créent des instrumentales exclusives adaptées à votre style et vision artistique. 
-                    Du concept à la livraison finale, nous transformons vos idées en chef-d'œuvre sonore.
+                    Du concept à la livraison finale, nous transformons vos idées en chef-d&rsquo;œuvre sonore.
                   </p>
                   
                   <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
